@@ -3,4 +3,9 @@ name = "uniswap-rs"
 version = "0.1.0"
 edition = "2021"
 
+[build-dependencies]
+ethers-contract = { git = "https://github.com/gakonst/ethers-rs", features = ["abigen"] }
+
 [dependencies]
+ethers = { git = "https://github.com/gakonst/ethers-rs", features = ["abigen"] }
+thiserror = "1.0.32"
