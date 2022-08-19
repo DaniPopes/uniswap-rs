@@ -1,5 +1,7 @@
+#![allow(unused)]
+
 use crate::bindings::i_uniswap_v2_pair::IUniswapV2Pair;
-use ethers::{contract::Lazy, prelude::*};
+use ethers::prelude::*;
 use std::sync::Arc;
 use thiserror::Error;
 
@@ -32,13 +34,17 @@ pub enum UniswapV2LibraryError {
 
 type Result<T> = std::result::Result<T, UniswapV2LibraryError>;
 
-// Sushiswap: "e18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303"
+// /// 0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303
+// const SUSHISWAP_FACTORY_CODE_HASH: H256 = H256([
+//     0xe1, 0x8a, 0x34, 0xeb, 0x0e, 0x04, 0xb0, 0x4f, 0x7a, 0x0a, 0xc2, 0x9a, 0x6e, 0x80, 0x74, 0x8d,
+//     0xca, 0x96, 0x31, 0x9b, 0x42, 0xc5, 0x4d, 0x67, 0x9c, 0xb8, 0x21, 0xdc, 0xa9, 0x0c, 0x63, 0x03,
+// ]);
 
-static UNISWAP_V2_FACTORY_CODE_HASH: Lazy<H256> = Lazy::new(|| {
-    "96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f"
-        .parse()
-        .unwrap()
-});
+/// 0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f
+const UNISWAP_V2_FACTORY_CODE_HASH: H256 = H256([
+    0x96, 0xe8, 0xac, 0x42, 0x77, 0x19, 0x8f, 0xf8, 0xb6, 0xf7, 0x85, 0x47, 0x8a, 0xa9, 0xa3, 0x9f,
+    0x40, 0x3c, 0xb7, 0x68, 0xdd, 0x02, 0xcb, 0xee, 0x32, 0x6c, 0x3e, 0x7d, 0xa3, 0x48, 0x84, 0x5f,
+]);
 
 // TODO: Create Factory struct that wraps (Address) with chain + dex_type that replaces factory
 // param in pair_for. Traits?
