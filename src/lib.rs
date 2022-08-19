@@ -1,14 +1,10 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+pub mod bindings;
+pub mod contracts;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+mod dex;
+mod library;
+mod pair;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use dex::*;
+pub use library::*;
+pub use pair::*;
