@@ -1,10 +1,9 @@
 use crate::bindings::i_uniswap_v2_router_02::IUniswapV2Router02;
 use crate::contracts::address;
+use crate::{UniswapV2Library, UniswapV2LibraryError};
 use ethers::prelude::{builders::ContractCall, *};
 use std::{sync::Arc, time::SystemTime};
 use thiserror::Error;
-
-use super::{UniswapV2Library, UniswapV2LibraryError};
 
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub enum Protocol {
@@ -139,7 +138,6 @@ impl<M: Middleware> Dex<M> {
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [`self.client.default_address()`]: Middleware
-    /// [`std::time::SystemTime::now()`]: SystemTime
     pub async fn swap(
         &self,
         amount: Amount,
