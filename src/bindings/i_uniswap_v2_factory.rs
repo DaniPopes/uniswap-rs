@@ -164,11 +164,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "allPairs", abi = "allPairs(uint256)")]
     pub struct AllPairsCall(pub ethers::core::types::U256);
@@ -176,11 +176,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "allPairsLength", abi = "allPairsLength()")]
     pub struct AllPairsLengthCall;
@@ -188,11 +188,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "createPair", abi = "createPair(address,address)")]
     pub struct CreatePairCall {
@@ -203,11 +203,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "feeTo", abi = "feeTo()")]
     pub struct FeeToCall;
@@ -215,11 +215,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "feeToSetter", abi = "feeToSetter()")]
     pub struct FeeToSetterCall;
@@ -227,11 +227,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "getPair", abi = "getPair(address,address)")]
     pub struct GetPairCall {
@@ -242,11 +242,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "setFeeTo", abi = "setFeeTo(address)")]
     pub struct SetFeeToCall(pub ethers::core::types::Address);
@@ -254,11 +254,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "setFeeToSetter", abi = "setFeeToSetter(address)")]
     pub struct SetFeeToSetterCall(pub ethers::core::types::Address);
@@ -391,11 +391,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct AllPairsReturn {
         pub pair: ethers::core::types::Address,
@@ -404,22 +404,22 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct AllPairsLengthReturn(pub ethers::core::types::U256);
     #[doc = "Container type for all return fields from the `createPair` function with signature `createPair(address,address)` and selector `[201, 198, 83, 150]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct CreatePairReturn {
         pub pair: ethers::core::types::Address,
@@ -428,33 +428,33 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FeeToReturn(pub ethers::core::types::Address);
     #[doc = "Container type for all return fields from the `feeToSetter` function with signature `feeToSetter()` and selector `[9, 75, 116, 21]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FeeToSetterReturn(pub ethers::core::types::Address);
     #[doc = "Container type for all return fields from the `getPair` function with signature `getPair(address,address)` and selector `[230, 164, 57, 5]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct GetPairReturn {
         pub pair: ethers::core::types::Address,

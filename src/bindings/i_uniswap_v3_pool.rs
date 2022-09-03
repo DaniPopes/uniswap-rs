@@ -660,11 +660,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "burn", abi = "burn(int24,int24,uint128)")]
     pub struct BurnCall {
@@ -676,11 +676,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "collect", abi = "collect(address,int24,int24,uint128,uint128)")]
     pub struct CollectCall {
@@ -694,11 +694,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "collectProtocol",
@@ -713,11 +713,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "factory", abi = "factory()")]
     pub struct FactoryCall;
@@ -725,11 +725,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "fee", abi = "fee()")]
     pub struct FeeCall;
@@ -737,11 +737,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "feeGrowthGlobal0X128", abi = "feeGrowthGlobal0X128()")]
     pub struct FeeGrowthGlobal0X128Call;
@@ -749,11 +749,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "feeGrowthGlobal1X128", abi = "feeGrowthGlobal1X128()")]
     pub struct FeeGrowthGlobal1X128Call;
@@ -761,11 +761,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "flash", abi = "flash(address,uint256,uint256,bytes)")]
     pub struct FlashCall {
@@ -778,11 +778,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "increaseObservationCardinalityNext",
@@ -795,11 +795,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "initialize", abi = "initialize(uint160)")]
     pub struct InitializeCall {
@@ -809,11 +809,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "liquidity", abi = "liquidity()")]
     pub struct LiquidityCall;
@@ -821,11 +821,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "maxLiquidityPerTick", abi = "maxLiquidityPerTick()")]
     pub struct MaxLiquidityPerTickCall;
@@ -833,11 +833,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "mint", abi = "mint(address,int24,int24,uint128,bytes)")]
     pub struct MintCall {
@@ -851,11 +851,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "observations", abi = "observations(uint256)")]
     pub struct ObservationsCall {
@@ -865,11 +865,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "observe", abi = "observe(uint32[])")]
     pub struct ObserveCall {
@@ -879,11 +879,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "positions", abi = "positions(bytes32)")]
     pub struct PositionsCall {
@@ -893,11 +893,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "protocolFees", abi = "protocolFees()")]
     pub struct ProtocolFeesCall;
@@ -905,11 +905,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "setFeeProtocol", abi = "setFeeProtocol(uint8,uint8)")]
     pub struct SetFeeProtocolCall {
@@ -920,11 +920,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "slot0", abi = "slot0()")]
     pub struct Slot0Call;
@@ -932,11 +932,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "snapshotCumulativesInside",
@@ -950,11 +950,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "swap", abi = "swap(address,bool,int256,uint160,bytes)")]
     pub struct SwapCall {
@@ -968,11 +968,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "tickBitmap", abi = "tickBitmap(int16)")]
     pub struct TickBitmapCall {
@@ -982,11 +982,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "tickSpacing", abi = "tickSpacing()")]
     pub struct TickSpacingCall;
@@ -994,11 +994,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "ticks", abi = "ticks(int24)")]
     pub struct TicksCall {
@@ -1008,11 +1008,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "token0", abi = "token0()")]
     pub struct Token0Call;
@@ -1020,11 +1020,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "token1", abi = "token1()")]
     pub struct Token1Call;
@@ -1387,11 +1387,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct BurnReturn {
         pub amount_0: ethers::core::types::U256,
@@ -1401,11 +1401,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct CollectReturn {
         pub amount_0: u128,
@@ -1415,11 +1415,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct CollectProtocolReturn {
         pub amount_0: u128,
@@ -1429,77 +1429,77 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FactoryReturn(pub ethers::core::types::Address);
     #[doc = "Container type for all return fields from the `fee` function with signature `fee()` and selector `[221, 202, 63, 67]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FeeReturn(pub u32);
     #[doc = "Container type for all return fields from the `feeGrowthGlobal0X128` function with signature `feeGrowthGlobal0X128()` and selector `[243, 5, 131, 153]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FeeGrowthGlobal0X128Return(pub ethers::core::types::U256);
     #[doc = "Container type for all return fields from the `feeGrowthGlobal1X128` function with signature `feeGrowthGlobal1X128()` and selector `[70, 20, 19, 25]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FeeGrowthGlobal1X128Return(pub ethers::core::types::U256);
     #[doc = "Container type for all return fields from the `liquidity` function with signature `liquidity()` and selector `[26, 104, 101, 2]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct LiquidityReturn(pub u128);
     #[doc = "Container type for all return fields from the `maxLiquidityPerTick` function with signature `maxLiquidityPerTick()` and selector `[112, 207, 117, 74]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct MaxLiquidityPerTickReturn(pub u128);
     #[doc = "Container type for all return fields from the `mint` function with signature `mint(address,int24,int24,uint128,bytes)` and selector `[60, 138, 125, 141]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct MintReturn {
         pub amount_0: ethers::core::types::U256,
@@ -1509,11 +1509,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ObservationsReturn {
         pub block_timestamp: u32,
@@ -1525,11 +1525,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ObserveReturn {
         pub tick_cumulatives: ::std::vec::Vec<i64>,
@@ -1539,11 +1539,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct PositionsReturn {
         pub liquidity: u128,
@@ -1556,11 +1556,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ProtocolFeesReturn {
         pub token_0: u128,
@@ -1570,11 +1570,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct Slot0Return {
         pub sqrt_price_x96: ethers::core::types::U256,
@@ -1589,11 +1589,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct SnapshotCumulativesInsideReturn {
         pub tick_cumulative_inside: i64,
@@ -1604,11 +1604,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct SwapReturn {
         pub amount_0: I256,
@@ -1618,33 +1618,33 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct TickBitmapReturn(pub ethers::core::types::U256);
     #[doc = "Container type for all return fields from the `tickSpacing` function with signature `tickSpacing()` and selector `[208, 201, 58, 124]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct TickSpacingReturn(pub i32);
     #[doc = "Container type for all return fields from the `ticks` function with signature `ticks(int24)` and selector `[243, 13, 186, 147]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct TicksReturn {
         pub liquidity_gross: u128,
@@ -1660,22 +1660,22 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct Token0Return(pub ethers::core::types::Address);
     #[doc = "Container type for all return fields from the `token1` function with signature `token1()` and selector `[210, 18, 32, 167]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct Token1Return(pub ethers::core::types::Address);
 }

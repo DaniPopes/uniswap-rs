@@ -106,11 +106,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "exactInput",
@@ -123,11 +123,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "exactInputSingle",
@@ -140,11 +140,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "exactOutput",
@@ -157,11 +157,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "exactOutputSingle",
@@ -174,11 +174,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(
         name = "uniswapV3SwapCallback",
@@ -280,11 +280,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ExactInputReturn {
         pub amount_out: ethers::core::types::U256,
@@ -293,11 +293,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ExactInputSingleReturn {
         pub amount_out: ethers::core::types::U256,
@@ -306,11 +306,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ExactOutputReturn {
         pub amount_in: ethers::core::types::U256,
@@ -319,11 +319,11 @@ pub mod i_swap_router {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct ExactOutputSingleReturn {
         pub amount_in: ethers::core::types::U256,

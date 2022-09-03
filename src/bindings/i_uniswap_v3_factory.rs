@@ -231,11 +231,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "createPool", abi = "createPool(address,address,uint24)")]
     pub struct CreatePoolCall {
@@ -247,11 +247,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "enableFeeAmount", abi = "enableFeeAmount(uint24,int24)")]
     pub struct EnableFeeAmountCall {
@@ -262,11 +262,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "feeAmountTickSpacing", abi = "feeAmountTickSpacing(uint24)")]
     pub struct FeeAmountTickSpacingCall {
@@ -276,11 +276,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "getPool", abi = "getPool(address,address,uint24)")]
     pub struct GetPoolCall {
@@ -292,11 +292,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "owner", abi = "owner()")]
     pub struct OwnerCall;
@@ -304,11 +304,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthCall,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethcall(name = "setOwner", abi = "setOwner(address)")]
     pub struct SetOwnerCall {
@@ -417,11 +417,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct CreatePoolReturn {
         pub pool: ethers::core::types::Address,
@@ -430,22 +430,22 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct FeeAmountTickSpacingReturn(pub i32);
     #[doc = "Container type for all return fields from the `getPool` function with signature `getPool(address,address,uint24)` and selector `[22, 152, 238, 130]`"]
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct GetPoolReturn {
         pub pool: ethers::core::types::Address,
@@ -454,11 +454,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthAbiType,
         ethers :: contract :: EthAbiCodec,
+        Default,
     )]
     pub struct OwnerReturn(pub ethers::core::types::Address);
 }
