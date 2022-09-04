@@ -16,6 +16,7 @@ pub enum Amount {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum DexError<M: Middleware> {
     #[error(transparent)]
     UniswapV2LibraryError(#[from] UniswapV2LibraryError),
@@ -281,6 +282,7 @@ mod tests {
         .unwrap()
     }
 
+    #[allow(unused)]
     fn decode_call_with_value(calldata: &Bytes) -> Vec<Token> {
         abi::decode(
             &[
@@ -371,6 +373,7 @@ mod tests {
 
         let amount_out_min = args[1].clone().into_uint().unwrap();
 
+        // TODO: Approx eq
         assert_eq!(amounts_out[1].clone(), amount_out_min);
     }
 

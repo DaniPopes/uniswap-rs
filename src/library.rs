@@ -4,6 +4,7 @@ use std::sync::Arc;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
+#[non_exhaustive]
 pub enum UniswapV2LibraryError {
     #[error("Sorting identical addresses")]
     IdenticalAddresses,
@@ -171,11 +172,13 @@ impl UniswapV2Library {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Protocol;
 
-    static UNIV2_FACTORY: Lazy<Address> = Lazy::new(|| {
-        "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+    static UNIV2_FACTORY: Lazy<Factory> = Lazy::new(|| {
+        let address: Address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
             .parse()
-            .unwrap()
+            .unwrap();
+        Factory::new(Some(address), None, Protocol::UniswapV2)
     });
     static WETH: Lazy<Address> = Lazy::new(|| {
         "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"

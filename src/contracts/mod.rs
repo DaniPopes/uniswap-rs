@@ -81,7 +81,7 @@ mod tests {
             .address(Chain::MoonbeamDev)
             .is_none());
 
-        assert!(try_address("DAI", Chain::Mainnet).unwrap().is_some());
-        assert!(try_address("DAI", Chain::MoonbeamDev).unwrap().is_none());
+        assert!(try_address("DAI", Chain::Mainnet).is_some());
+        assert!(try_address("DAI", Chain::MoonbeamDev).is_none());
     }
 }
