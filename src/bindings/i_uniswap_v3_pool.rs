@@ -5,15 +5,17 @@ pub mod i_uniswap_v3_pool {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
+    use ethers::{
+        contract::{
+            builders::{ContractCall, Event},
+            Contract, Lazy,
+        },
+        core::{
+            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+            types::*,
+        },
+        providers::Middleware,
     };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
     #[doc = "IUniswapV3Pool was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     pub static IUNISWAPV3POOL_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
@@ -34,9 +36,7 @@ pub mod i_uniswap_v3_pool {
     }
     impl<M: ethers::providers::Middleware> std::fmt::Debug for IUniswapV3Pool<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(IUniswapV3Pool))
-                .field(&self.address())
-                .finish()
+            f.debug_tuple(stringify!(IUniswapV3Pool)).field(&self.address()).finish()
         }
     }
     impl<M: ethers::providers::Middleware> IUniswapV3Pool<M> {
@@ -76,13 +76,7 @@ pub mod i_uniswap_v3_pool {
             self.0
                 .method_hash(
                     [79, 30, 179, 216],
-                    (
-                        recipient,
-                        tick_lower,
-                        tick_upper,
-                        amount_0_requested,
-                        amount_1_requested,
-                    ),
+                    (recipient, tick_lower, tick_upper, amount_0_requested, amount_1_requested),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -185,10 +179,7 @@ pub mod i_uniswap_v3_pool {
             (ethers::core::types::U256, ethers::core::types::U256),
         > {
             self.0
-                .method_hash(
-                    [60, 138, 125, 141],
-                    (recipient, tick_lower, tick_upper, amount, data),
-                )
+                .method_hash([60, 138, 125, 141], (recipient, tick_lower, tick_upper, amount, data))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `observations` (0x252c09d7) function"]
@@ -207,10 +198,7 @@ pub mod i_uniswap_v3_pool {
             seconds_agos: ::std::vec::Vec<u32>,
         ) -> ethers::contract::builders::ContractCall<
             M,
-            (
-                ::std::vec::Vec<i64>,
-                ::std::vec::Vec<ethers::core::types::U256>,
-            ),
+            (::std::vec::Vec<i64>, ::std::vec::Vec<ethers::core::types::U256>),
         > {
             self.0
                 .method_hash([136, 59, 219, 253], seconds_agos)
@@ -222,13 +210,7 @@ pub mod i_uniswap_v3_pool {
             key: [u8; 32],
         ) -> ethers::contract::builders::ContractCall<
             M,
-            (
-                u128,
-                ethers::core::types::U256,
-                ethers::core::types::U256,
-                u128,
-                u128,
-            ),
+            (u128, ethers::core::types::U256, ethers::core::types::U256, u128, u128),
         > {
             self.0
                 .method_hash([81, 78, 164, 191], key)
@@ -284,13 +266,7 @@ pub mod i_uniswap_v3_pool {
             self.0
                 .method_hash(
                     [18, 138, 203, 8],
-                    (
-                        recipient,
-                        zero_for_one,
-                        amount_specified,
-                        sqrt_price_limit_x96,
-                        data,
-                    ),
+                    (recipient, zero_for_one, amount_specified, sqrt_price_limit_x96, data),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -408,10 +384,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "Burn",
-        abi = "Burn(address,int24,int24,uint128,uint256,uint256)"
-    )]
+    #[ethevent(name = "Burn", abi = "Burn(address,int24,int24,uint128,uint256,uint256)")]
     pub struct BurnFilter {
         #[ethevent(indexed)]
         pub owner: ethers::core::types::Address,
@@ -432,10 +405,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "Collect",
-        abi = "Collect(address,address,int24,int24,uint128,uint128)"
-    )]
+    #[ethevent(name = "Collect", abi = "Collect(address,address,int24,int24,uint128,uint128)")]
     pub struct CollectFilter {
         #[ethevent(indexed)]
         pub owner: ethers::core::types::Address,
@@ -456,10 +426,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "CollectProtocol",
-        abi = "CollectProtocol(address,address,uint128,uint128)"
-    )]
+    #[ethevent(name = "CollectProtocol", abi = "CollectProtocol(address,address,uint128,uint128)")]
     pub struct CollectProtocolFilter {
         #[ethevent(indexed)]
         pub sender: ethers::core::types::Address,
@@ -477,10 +444,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "Flash",
-        abi = "Flash(address,address,uint256,uint256,uint256,uint256)"
-    )]
+    #[ethevent(name = "Flash", abi = "Flash(address,address,uint256,uint256,uint256,uint256)")]
     pub struct FlashFilter {
         #[ethevent(indexed)]
         pub sender: ethers::core::types::Address,
@@ -531,10 +495,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "Mint",
-        abi = "Mint(address,address,int24,int24,uint128,uint256,uint256)"
-    )]
+    #[ethevent(name = "Mint", abi = "Mint(address,address,int24,int24,uint128,uint256,uint256)")]
     pub struct MintFilter {
         pub sender: ethers::core::types::Address,
         #[ethevent(indexed)]
@@ -556,10 +517,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "SetFeeProtocol",
-        abi = "SetFeeProtocol(uint8,uint8,uint8,uint8)"
-    )]
+    #[ethevent(name = "SetFeeProtocol", abi = "SetFeeProtocol(uint8,uint8,uint8,uint8)")]
     pub struct SetFeeProtocolFilter {
         pub fee_protocol_0_old: u8,
         pub fee_protocol_1_old: u8,
@@ -575,10 +533,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "Swap",
-        abi = "Swap(address,address,int256,int256,uint160,uint128,int24)"
-    )]
+    #[ethevent(name = "Swap", abi = "Swap(address,address,int256,int256,uint160,uint128,int24)")]
     pub struct SwapFilter {
         #[ethevent(indexed)]
         pub sender: ethers::core::types::Address,
@@ -610,31 +565,31 @@ pub mod i_uniswap_v3_pool {
             Self: Sized,
         {
             if let Ok(decoded) = BurnFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::BurnFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::BurnFilter(decoded))
             }
             if let Ok(decoded) = CollectFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::CollectFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::CollectFilter(decoded))
             }
             if let Ok(decoded) = CollectProtocolFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::CollectProtocolFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::CollectProtocolFilter(decoded))
             }
             if let Ok(decoded) = FlashFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::FlashFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::FlashFilter(decoded))
             }
             if let Ok(decoded) = IncreaseObservationCardinalityNextFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::IncreaseObservationCardinalityNextFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::IncreaseObservationCardinalityNextFilter(decoded))
             }
             if let Ok(decoded) = InitializeFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::InitializeFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::InitializeFilter(decoded))
             }
             if let Ok(decoded) = MintFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::MintFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::MintFilter(decoded))
             }
             if let Ok(decoded) = SetFeeProtocolFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::SetFeeProtocolFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::SetFeeProtocolFilter(decoded))
             }
             if let Ok(decoded) = SwapFilter::decode_log(log) {
-                return Ok(IUniswapV3PoolEvents::SwapFilter(decoded));
+                return Ok(IUniswapV3PoolEvents::SwapFilter(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData)
         }
@@ -700,10 +655,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(
-        name = "collectProtocol",
-        abi = "collectProtocol(address,uint128,uint128)"
-    )]
+    #[ethcall(name = "collectProtocol", abi = "collectProtocol(address,uint128,uint128)")]
     pub struct CollectProtocolCall {
         pub recipient: ethers::core::types::Address,
         pub amount_0_requested: u128,
@@ -938,10 +890,7 @@ pub mod i_uniswap_v3_pool {
         ethers :: contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(
-        name = "snapshotCumulativesInside",
-        abi = "snapshotCumulativesInside(int24,int24)"
-    )]
+    #[ethcall(name = "snapshotCumulativesInside", abi = "snapshotCumulativesInside(int24,int24)")]
     pub struct SnapshotCumulativesInsideCall {
         pub tick_lower: i32,
         pub tick_upper: i32,
@@ -1062,127 +1011,125 @@ pub mod i_uniswap_v3_pool {
             data: impl AsRef<[u8]>,
         ) -> ::std::result::Result<Self, ethers::core::abi::AbiError> {
             if let Ok(decoded) = <BurnCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV3PoolCalls::Burn(decoded));
+                return Ok(IUniswapV3PoolCalls::Burn(decoded))
             }
             if let Ok(decoded) =
                 <CollectCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Collect(decoded));
+                return Ok(IUniswapV3PoolCalls::Collect(decoded))
             }
             if let Ok(decoded) =
                 <CollectProtocolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::CollectProtocol(decoded));
+                return Ok(IUniswapV3PoolCalls::CollectProtocol(decoded))
             }
             if let Ok(decoded) =
                 <FactoryCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Factory(decoded));
+                return Ok(IUniswapV3PoolCalls::Factory(decoded))
             }
             if let Ok(decoded) = <FeeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV3PoolCalls::Fee(decoded));
+                return Ok(IUniswapV3PoolCalls::Fee(decoded))
             }
             if let Ok(decoded) =
                 <FeeGrowthGlobal0X128Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::FeeGrowthGlobal0X128(decoded));
+                return Ok(IUniswapV3PoolCalls::FeeGrowthGlobal0X128(decoded))
             }
             if let Ok(decoded) =
                 <FeeGrowthGlobal1X128Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::FeeGrowthGlobal1X128(decoded));
+                return Ok(IUniswapV3PoolCalls::FeeGrowthGlobal1X128(decoded))
             }
             if let Ok(decoded) = <FlashCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Flash(decoded));
+                return Ok(IUniswapV3PoolCalls::Flash(decoded))
             }
             if let Ok(decoded) =
                 <IncreaseObservationCardinalityNextCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV3PoolCalls::IncreaseObservationCardinalityNext(
-                    decoded,
-                ));
+                return Ok(IUniswapV3PoolCalls::IncreaseObservationCardinalityNext(decoded))
             }
             if let Ok(decoded) =
                 <InitializeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Initialize(decoded));
+                return Ok(IUniswapV3PoolCalls::Initialize(decoded))
             }
             if let Ok(decoded) =
                 <LiquidityCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Liquidity(decoded));
+                return Ok(IUniswapV3PoolCalls::Liquidity(decoded))
             }
             if let Ok(decoded) =
                 <MaxLiquidityPerTickCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::MaxLiquidityPerTick(decoded));
+                return Ok(IUniswapV3PoolCalls::MaxLiquidityPerTick(decoded))
             }
             if let Ok(decoded) = <MintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV3PoolCalls::Mint(decoded));
+                return Ok(IUniswapV3PoolCalls::Mint(decoded))
             }
             if let Ok(decoded) =
                 <ObservationsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Observations(decoded));
+                return Ok(IUniswapV3PoolCalls::Observations(decoded))
             }
             if let Ok(decoded) =
                 <ObserveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Observe(decoded));
+                return Ok(IUniswapV3PoolCalls::Observe(decoded))
             }
             if let Ok(decoded) =
                 <PositionsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Positions(decoded));
+                return Ok(IUniswapV3PoolCalls::Positions(decoded))
             }
             if let Ok(decoded) =
                 <ProtocolFeesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::ProtocolFees(decoded));
+                return Ok(IUniswapV3PoolCalls::ProtocolFees(decoded))
             }
             if let Ok(decoded) =
                 <SetFeeProtocolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::SetFeeProtocol(decoded));
+                return Ok(IUniswapV3PoolCalls::SetFeeProtocol(decoded))
             }
             if let Ok(decoded) = <Slot0Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Slot0(decoded));
+                return Ok(IUniswapV3PoolCalls::Slot0(decoded))
             }
             if let Ok(decoded) =
                 <SnapshotCumulativesInsideCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV3PoolCalls::SnapshotCumulativesInside(decoded));
+                return Ok(IUniswapV3PoolCalls::SnapshotCumulativesInside(decoded))
             }
             if let Ok(decoded) = <SwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV3PoolCalls::Swap(decoded));
+                return Ok(IUniswapV3PoolCalls::Swap(decoded))
             }
             if let Ok(decoded) =
                 <TickBitmapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::TickBitmap(decoded));
+                return Ok(IUniswapV3PoolCalls::TickBitmap(decoded))
             }
             if let Ok(decoded) =
                 <TickSpacingCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::TickSpacing(decoded));
+                return Ok(IUniswapV3PoolCalls::TickSpacing(decoded))
             }
             if let Ok(decoded) = <TicksCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Ticks(decoded));
+                return Ok(IUniswapV3PoolCalls::Ticks(decoded))
             }
             if let Ok(decoded) = <Token0Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Token0(decoded));
+                return Ok(IUniswapV3PoolCalls::Token0(decoded))
             }
             if let Ok(decoded) = <Token1Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3PoolCalls::Token1(decoded));
+                return Ok(IUniswapV3PoolCalls::Token1(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }

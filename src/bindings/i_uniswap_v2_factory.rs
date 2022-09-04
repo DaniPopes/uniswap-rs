@@ -5,15 +5,17 @@ pub mod i_uniswap_v2_factory {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
+    use ethers::{
+        contract::{
+            builders::{ContractCall, Event},
+            Contract, Lazy,
+        },
+        core::{
+            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+            types::*,
+        },
+        providers::Middleware,
     };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
     #[doc = "IUniswapV2Factory was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     pub static IUNISWAPV2FACTORY_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
@@ -34,9 +36,7 @@ pub mod i_uniswap_v2_factory {
     }
     impl<M: ethers::providers::Middleware> std::fmt::Debug for IUniswapV2Factory<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(IUniswapV2Factory))
-                .field(&self.address())
-                .finish()
+            f.debug_tuple(stringify!(IUniswapV2Factory)).field(&self.address()).finish()
         }
     }
     impl<M: ethers::providers::Middleware> IUniswapV2Factory<M> {
@@ -148,10 +148,7 @@ pub mod i_uniswap_v2_factory {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "PairCreated",
-        abi = "PairCreated(address,address,address,uint256)"
-    )]
+    #[ethevent(name = "PairCreated", abi = "PairCreated(address,address,address,uint256)")]
     pub struct PairCreatedFilter {
         #[ethevent(indexed)]
         pub token_0: ethers::core::types::Address,
@@ -280,41 +277,41 @@ pub mod i_uniswap_v2_factory {
             if let Ok(decoded) =
                 <AllPairsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::AllPairs(decoded));
+                return Ok(IUniswapV2FactoryCalls::AllPairs(decoded))
             }
             if let Ok(decoded) =
                 <AllPairsLengthCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::AllPairsLength(decoded));
+                return Ok(IUniswapV2FactoryCalls::AllPairsLength(decoded))
             }
             if let Ok(decoded) =
                 <CreatePairCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::CreatePair(decoded));
+                return Ok(IUniswapV2FactoryCalls::CreatePair(decoded))
             }
             if let Ok(decoded) = <FeeToCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::FeeTo(decoded));
+                return Ok(IUniswapV2FactoryCalls::FeeTo(decoded))
             }
             if let Ok(decoded) =
                 <FeeToSetterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::FeeToSetter(decoded));
+                return Ok(IUniswapV2FactoryCalls::FeeToSetter(decoded))
             }
             if let Ok(decoded) =
                 <GetPairCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::GetPair(decoded));
+                return Ok(IUniswapV2FactoryCalls::GetPair(decoded))
             }
             if let Ok(decoded) =
                 <SetFeeToCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::SetFeeTo(decoded));
+                return Ok(IUniswapV2FactoryCalls::SetFeeTo(decoded))
             }
             if let Ok(decoded) =
                 <SetFeeToSetterCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::SetFeeToSetter(decoded));
+                return Ok(IUniswapV2FactoryCalls::SetFeeToSetter(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }

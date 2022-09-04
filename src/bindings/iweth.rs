@@ -5,15 +5,17 @@ pub mod iweth {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
+    use ethers::{
+        contract::{
+            builders::{ContractCall, Event},
+            Contract, Lazy,
+        },
+        core::{
+            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+            types::*,
+        },
+        providers::Middleware,
     };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
     #[doc = "IWETH was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     pub static IWETH_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
@@ -34,9 +36,7 @@ pub mod iweth {
     }
     impl<M: ethers::providers::Middleware> std::fmt::Debug for IWETH<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(IWETH))
-                .field(&self.address())
-                .finish()
+            f.debug_tuple(stringify!(IWETH)).field(&self.address()).finish()
         }
     }
     impl<M: ethers::providers::Middleware> IWETH<M> {
@@ -132,17 +132,17 @@ pub mod iweth {
             if let Ok(decoded) =
                 <DepositCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Deposit(decoded));
+                return Ok(IWETHCalls::Deposit(decoded))
             }
             if let Ok(decoded) =
                 <TransferCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Transfer(decoded));
+                return Ok(IWETHCalls::Transfer(decoded))
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Withdraw(decoded));
+                return Ok(IWETHCalls::Withdraw(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }

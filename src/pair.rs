@@ -1,5 +1,7 @@
-use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory};
-use crate::{UniswapV2Library, UniswapV2LibraryError};
+use crate::{
+    bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory, UniswapV2Library,
+    UniswapV2LibraryError,
+};
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
@@ -52,13 +54,7 @@ impl<M: Middleware> Pair<M> {
             UniswapV2Library::pair_for(factory, tokens.0, tokens.1)?
         };
 
-        Ok(Self {
-            client,
-            address,
-            tokens,
-            deployed: false,
-            reserves: (0, 0, 0),
-        })
+        Ok(Self { client, address, tokens, deployed: false, reserves: (0, 0, 0) })
     }
 
     /// Manually set whether the pair has been deployed.

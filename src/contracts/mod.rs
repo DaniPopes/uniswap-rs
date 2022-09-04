@@ -72,14 +72,8 @@ mod tests {
 
     #[test]
     fn test_addresses() {
-        assert!(try_contract("DAI")
-            .unwrap()
-            .address(Chain::Mainnet)
-            .is_some());
-        assert!(try_contract("DAI")
-            .unwrap()
-            .address(Chain::MoonbeamDev)
-            .is_none());
+        assert!(try_contract("DAI").unwrap().address(Chain::Mainnet).is_some());
+        assert!(try_contract("DAI").unwrap().address(Chain::MoonbeamDev).is_none());
 
         assert!(try_address("DAI", Chain::Mainnet).is_some());
         assert!(try_address("DAI", Chain::MoonbeamDev).is_none());

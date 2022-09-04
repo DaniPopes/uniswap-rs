@@ -21,7 +21,7 @@ pub const SUSHISWAP_PAIR_CODE_HASH: H256 = H256([
 
 /// [0x00fb7f630766e6a796048ea87d01acd3068e8ff67d078148a3fa3f4a84f69bd5](https://bscscan.com/address/0xca143ce32fe78f1f7019d7d551a6402fc5350c73#readContract)
 ///
-/// Using the on-chain hash as the one in [`pancakeswap/pancake-smart-contracts`](https://github.com/pancakeswap/pancake-smart-contracts/blob/d8f55093a43a7e8913f7730cfff3589a46f5c014/projects/exchange-protocol/contracts/libraries/PancakeLibrary.sol#L32)
+/// This is the on-chain hash as the one in [`pancakeswap/pancake-smart-contracts`](https://github.com/pancakeswap/pancake-smart-contracts/blob/d8f55093a43a7e8913f7730cfff3589a46f5c014/projects/exchange-protocol/contracts/libraries/PancakeLibrary.sol#L32)
 /// is incorrect.
 pub const PANCAKESWAP_PAIR_CODE_HASH: H256 = H256([
     0x00, 0xfb, 0x7f, 0x63, 0x07, 0x66, 0xe6, 0xa7, 0x96, 0x04, 0x8e, 0xa8, 0x7d, 0x01, 0xac, 0xd3,
@@ -75,6 +75,38 @@ impl Protocol {
             Protocol::Custom(_router, _factory) => {
                 todo!("Factory::pair_codehash of Protocol::Custom is not yet implemented")
             }
+        }
+    }
+
+    /// Returns whether the protocol is or is a fork of UniswapV2.
+    pub fn is_v2(&self) -> bool {
+        !self.is_v3()
+    }
+
+    /// Returns whether the protocol is or is a fork of UniswapV3.
+    pub fn is_v3(&self) -> bool {
+        matches!(self, Self::UniswapV3)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use Protocol::*;
+
+    #[test]
+    fn test_versions() {
+        let v2s = [UniswapV2, Sushiswap, Pancakeswap];
+        let v3s = [UniswapV3];
+
+        for v2 in v2s {
+            assert!(v2.is_v2());
+            assert!(!v2.is_v3());
+        }
+
+        for v3 in v3s {
+            assert!(v3.is_v3());
+            assert!(!v3.is_v2());
         }
     }
 }

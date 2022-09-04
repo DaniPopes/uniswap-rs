@@ -5,15 +5,17 @@ pub mod i_uniswap_v2_router_02 {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
+    use ethers::{
+        contract::{
+            builders::{ContractCall, Event},
+            Contract, Lazy,
+        },
+        core::{
+            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+            types::*,
+        },
+        providers::Middleware,
     };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
     #[doc = "IUniswapV2Router02 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     pub static IUNISWAPV2ROUTER02_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
@@ -34,9 +36,7 @@ pub mod i_uniswap_v2_router_02 {
     }
     impl<M: ethers::providers::Middleware> std::fmt::Debug for IUniswapV2Router02<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(IUniswapV2Router02))
-                .field(&self.address())
-                .finish()
+            f.debug_tuple(stringify!(IUniswapV2Router02)).field(&self.address()).finish()
         }
     }
     impl<M: ethers::providers::Middleware> IUniswapV2Router02<M> {
@@ -71,11 +71,7 @@ pub mod i_uniswap_v2_router_02 {
             deadline: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<
             M,
-            (
-                ethers::core::types::U256,
-                ethers::core::types::U256,
-                ethers::core::types::U256,
-            ),
+            (ethers::core::types::U256, ethers::core::types::U256, ethers::core::types::U256),
         > {
             self.0
                 .method_hash(
@@ -104,23 +100,12 @@ pub mod i_uniswap_v2_router_02 {
             deadline: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<
             M,
-            (
-                ethers::core::types::U256,
-                ethers::core::types::U256,
-                ethers::core::types::U256,
-            ),
+            (ethers::core::types::U256, ethers::core::types::U256, ethers::core::types::U256),
         > {
             self.0
                 .method_hash(
                     [243, 5, 215, 25],
-                    (
-                        token,
-                        amount_token_desired,
-                        amount_token_min,
-                        amount_eth_min,
-                        to,
-                        deadline,
-                    ),
+                    (token, amount_token_desired, amount_token_min, amount_eth_min, to, deadline),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -204,15 +189,7 @@ pub mod i_uniswap_v2_router_02 {
             self.0
                 .method_hash(
                     [186, 162, 171, 222],
-                    (
-                        token_a,
-                        token_b,
-                        liquidity,
-                        amount_a_min,
-                        amount_b_min,
-                        to,
-                        deadline,
-                    ),
+                    (token_a, token_b, liquidity, amount_a_min, amount_b_min, to, deadline),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -232,14 +209,7 @@ pub mod i_uniswap_v2_router_02 {
             self.0
                 .method_hash(
                     [2, 117, 28, 236],
-                    (
-                        token,
-                        liquidity,
-                        amount_token_min,
-                        amount_eth_min,
-                        to,
-                        deadline,
-                    ),
+                    (token, liquidity, amount_token_min, amount_eth_min, to, deadline),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -256,14 +226,7 @@ pub mod i_uniswap_v2_router_02 {
             self.0
                 .method_hash(
                     [175, 41, 121, 235],
-                    (
-                        token,
-                        liquidity,
-                        amount_token_min,
-                        amount_eth_min,
-                        to,
-                        deadline,
-                    ),
+                    (token, liquidity, amount_token_min, amount_eth_min, to, deadline),
                 )
                 .expect("method not found (this should never happen)")
         }
@@ -420,10 +383,7 @@ pub mod i_uniswap_v2_router_02 {
         ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<ethers::core::types::U256>>
         {
             self.0
-                .method_hash(
-                    [24, 203, 175, 229],
-                    (amount_in, amount_out_min, path, to, deadline),
-                )
+                .method_hash([24, 203, 175, 229], (amount_in, amount_out_min, path, to, deadline))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `swapExactTokensForETHSupportingFeeOnTransferTokens` (0x791ac947) function"]
@@ -436,10 +396,7 @@ pub mod i_uniswap_v2_router_02 {
             deadline: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash(
-                    [121, 26, 201, 71],
-                    (amount_in, amount_out_min, path, to, deadline),
-                )
+                .method_hash([121, 26, 201, 71], (amount_in, amount_out_min, path, to, deadline))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `swapExactTokensForTokens` (0x38ed1739) function"]
@@ -453,10 +410,7 @@ pub mod i_uniswap_v2_router_02 {
         ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<ethers::core::types::U256>>
         {
             self.0
-                .method_hash(
-                    [56, 237, 23, 57],
-                    (amount_in, amount_out_min, path, to, deadline),
-                )
+                .method_hash([56, 237, 23, 57], (amount_in, amount_out_min, path, to, deadline))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `swapExactTokensForTokensSupportingFeeOnTransferTokens` (0x5c11d795) function"]
@@ -469,10 +423,7 @@ pub mod i_uniswap_v2_router_02 {
             deadline: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash(
-                    [92, 17, 215, 149],
-                    (amount_in, amount_out_min, path, to, deadline),
-                )
+                .method_hash([92, 17, 215, 149], (amount_in, amount_out_min, path, to, deadline))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `swapTokensForExactETH` (0x4a25d94a) function"]
@@ -486,10 +437,7 @@ pub mod i_uniswap_v2_router_02 {
         ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<ethers::core::types::U256>>
         {
             self.0
-                .method_hash(
-                    [74, 37, 217, 74],
-                    (amount_out, amount_in_max, path, to, deadline),
-                )
+                .method_hash([74, 37, 217, 74], (amount_out, amount_in_max, path, to, deadline))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `swapTokensForExactTokens` (0x8803dbee) function"]
@@ -503,10 +451,7 @@ pub mod i_uniswap_v2_router_02 {
         ) -> ethers::contract::builders::ContractCall<M, ::std::vec::Vec<ethers::core::types::U256>>
         {
             self.0
-                .method_hash(
-                    [136, 3, 219, 238],
-                    (amount_out, amount_in_max, path, to, deadline),
-                )
+                .method_hash([136, 3, 219, 238], (amount_out, amount_in_max, path, to, deadline))
                 .expect("method not found (this should never happen)")
         }
     }
@@ -1039,56 +984,56 @@ pub mod i_uniswap_v2_router_02 {
             data: impl AsRef<[u8]>,
         ) -> ::std::result::Result<Self, ethers::core::abi::AbiError> {
             if let Ok(decoded) = <WethCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2Router02Calls::Weth(decoded));
+                return Ok(IUniswapV2Router02Calls::Weth(decoded))
             }
             if let Ok(decoded) =
                 <AddLiquidityCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::AddLiquidity(decoded));
+                return Ok(IUniswapV2Router02Calls::AddLiquidity(decoded))
             }
             if let Ok(decoded) =
                 <AddLiquidityETHCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::AddLiquidityETH(decoded));
+                return Ok(IUniswapV2Router02Calls::AddLiquidityETH(decoded))
             }
             if let Ok(decoded) =
                 <FactoryCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::Factory(decoded));
+                return Ok(IUniswapV2Router02Calls::Factory(decoded))
             }
             if let Ok(decoded) =
                 <GetAmountInCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountIn(decoded));
+                return Ok(IUniswapV2Router02Calls::GetAmountIn(decoded))
             }
             if let Ok(decoded) =
                 <GetAmountOutCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountOut(decoded));
+                return Ok(IUniswapV2Router02Calls::GetAmountOut(decoded))
             }
             if let Ok(decoded) =
                 <GetAmountsInCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountsIn(decoded));
+                return Ok(IUniswapV2Router02Calls::GetAmountsIn(decoded))
             }
             if let Ok(decoded) =
                 <GetAmountsOutCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountsOut(decoded));
+                return Ok(IUniswapV2Router02Calls::GetAmountsOut(decoded))
             }
             if let Ok(decoded) = <QuoteCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::Quote(decoded));
+                return Ok(IUniswapV2Router02Calls::Quote(decoded))
             }
             if let Ok(decoded) =
                 <RemoveLiquidityCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidity(decoded));
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidity(decoded))
             }
             if let Ok(decoded) =
                 <RemoveLiquidityETHCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETH(decoded));
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETH(decoded))
             }
             if let Ok (decoded) = < RemoveLiquidityETHSupportingFeeOnTransferTokensCall as ethers :: core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: RemoveLiquidityETHSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
@@ -1096,9 +1041,7 @@ pub mod i_uniswap_v2_router_02 {
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETHWithPermit(
-                    decoded,
-                ));
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETHWithPermit(decoded))
             }
             if let Ok (decoded) = < RemoveLiquidityETHWithPermitSupportingFeeOnTransferTokensCall as ethers :: core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: RemoveLiquidityETHWithPermitSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
@@ -1106,23 +1049,23 @@ pub mod i_uniswap_v2_router_02 {
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidityWithPermit(decoded));
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidityWithPermit(decoded))
             }
             if let Ok(decoded) =
                 <SwapETHForExactTokensCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapETHForExactTokens(decoded));
+                return Ok(IUniswapV2Router02Calls::SwapETHForExactTokens(decoded))
             }
             if let Ok(decoded) =
                 <SwapExactETHForTokensCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapExactETHForTokens(decoded));
+                return Ok(IUniswapV2Router02Calls::SwapExactETHForTokens(decoded))
             }
             if let Ok (decoded) = < SwapExactETHForTokensSupportingFeeOnTransferTokensCall as ethers :: core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: SwapExactETHForTokensSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
                 <SwapExactTokensForETHCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapExactTokensForETH(decoded));
+                return Ok(IUniswapV2Router02Calls::SwapExactTokensForETH(decoded))
             }
             if let Ok (decoded) = < SwapExactTokensForETHSupportingFeeOnTransferTokensCall as ethers :: core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: SwapExactTokensForETHSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
@@ -1130,20 +1073,20 @@ pub mod i_uniswap_v2_router_02 {
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV2Router02Calls::SwapExactTokensForTokens(decoded));
+                return Ok(IUniswapV2Router02Calls::SwapExactTokensForTokens(decoded))
             }
             if let Ok (decoded) = < SwapExactTokensForTokensSupportingFeeOnTransferTokensCall as ethers :: core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: SwapExactTokensForTokensSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
                 <SwapTokensForExactETHCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapTokensForExactETH(decoded));
+                return Ok(IUniswapV2Router02Calls::SwapTokensForExactETH(decoded))
             }
             if let Ok(decoded) =
                 <SwapTokensForExactTokensCall as ethers::core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV2Router02Calls::SwapTokensForExactTokens(decoded));
+                return Ok(IUniswapV2Router02Calls::SwapTokensForExactTokens(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }

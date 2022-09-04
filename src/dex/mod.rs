@@ -1,6 +1,7 @@
-use crate::contracts::address;
-use crate::{bindings::i_uniswap_v2_router_02::IUniswapV2Router02, factory::Factory};
-use crate::{UniswapV2Library, UniswapV2LibraryError};
+use crate::{
+    bindings::i_uniswap_v2_router_02::IUniswapV2Router02, contracts::address, factory::Factory,
+    UniswapV2Library, UniswapV2LibraryError,
+};
 use ethers::prelude::{builders::ContractCall, *};
 use std::{sync::Arc, time::SystemTime};
 
@@ -111,19 +112,15 @@ impl<M: Middleware> Dex<M> {
         deadline: Option<u64>,
     ) -> Result<ContractCall<M, Vec<U256>>, M> {
         if !(0.0..=100.0).contains(&slippage_tolerance) {
-            return Err(DexError::InvalidSlippage);
+            return Err(DexError::InvalidSlippage)
         }
 
         let to = to.unwrap_or_else(|| {
-            self.client
-                .default_sender()
-                .expect("Missing self.client.default_sender()")
+            self.client.default_sender().expect("Missing self.client.default_sender()")
         });
 
         if path.len() < 2 {
-            return Err(DexError::UniswapV2LibraryError(
-                UniswapV2LibraryError::InvalidPath,
-            ));
+            return Err(DexError::UniswapV2LibraryError(UniswapV2LibraryError::InvalidPath))
         }
 
         // can unwrap since we just asserted path.len() >= 2
@@ -134,16 +131,12 @@ impl<M: Middleware> Dex<M> {
         let to_native = last_address.is_zero();
 
         if first_address == last_address {
-            return Err(DexError::UniswapV2LibraryError(
-                UniswapV2LibraryError::InvalidPath,
-            ));
+            return Err(DexError::UniswapV2LibraryError(UniswapV2LibraryError::InvalidPath))
         }
 
         // map Address::zero() to self.weth
-        let path: Vec<H160> = path
-            .iter()
-            .map(|addr| if addr.is_zero() { self.weth } else { *addr })
-            .collect();
+        let path: Vec<H160> =
+            path.iter().map(|addr| if addr.is_zero() { self.weth } else { *addr }).collect();
 
         // let total_path = [first_address, last_address];
 
@@ -257,9 +250,7 @@ mod tests {
     fn default_dex() -> Dex<SignerMiddleware<Provider<Http>, Wallet<k256::ecdsa::SigningKey>>> {
         let provider: Provider<Http> = MAINNET.provider();
         let signer: LocalWallet =
-            "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-                .parse()
-                .unwrap();
+            "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80".parse().unwrap();
         let client = SignerMiddleware::new(provider, signer);
 
         let chain = Chain::Mainnet;
@@ -307,13 +298,7 @@ mod tests {
         let deadline_pre = 1000;
 
         let contract_call = dex
-            .swap(
-                amount,
-                100.0,
-                path_pre.clone(),
-                Some(to_pre),
-                Some(deadline_pre),
-            )
+            .swap(amount, 100.0, path_pre.clone(), Some(to_pre), Some(deadline_pre))
             .await
             .unwrap();
 
@@ -362,10 +347,7 @@ mod tests {
         .await
         .unwrap();
 
-        let contract_call = dex
-            .swap(amount, 0.0, path_pre.clone(), None, None)
-            .await
-            .unwrap();
+        let contract_call = dex.swap(amount, 0.0, path_pre.clone(), None, None).await.unwrap();
 
         let calldata = contract_call.calldata().unwrap();
 
@@ -397,10 +379,8 @@ mod tests {
         for i in 2..=10 {
             let slippage_tolerance = 100.0 / i as f32;
 
-            let contract_call = dex
-                .swap(amount, slippage_tolerance, path_pre.clone(), None, None)
-                .await
-                .unwrap();
+            let contract_call =
+                dex.swap(amount, slippage_tolerance, path_pre.clone(), None, None).await.unwrap();
 
             let calldata = contract_call.calldata().unwrap();
 

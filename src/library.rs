@@ -41,13 +41,13 @@ impl UniswapV2Library {
     /// order.
     pub fn sort_tokens(a: Address, b: Address) -> Result<(Address, Address)> {
         if a == b {
-            return Err(UniswapV2LibraryError::IdenticalAddresses);
+            return Err(UniswapV2LibraryError::IdenticalAddresses)
         }
 
         let (a, b) = if a < b { (a, b) } else { (b, a) };
 
         if a.is_zero() {
-            return Err(UniswapV2LibraryError::ZeroAddress);
+            return Err(UniswapV2LibraryError::ZeroAddress)
         }
 
         Ok((a, b))
@@ -101,10 +101,10 @@ impl UniswapV2Library {
     /// the other asset.
     pub fn get_amount_out(amount_in: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if amount_in.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientInputAmount);
+            return Err(UniswapV2LibraryError::InsufficientInputAmount)
         }
         if reserve_in.is_zero() || reserve_out.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientLiquidity);
+            return Err(UniswapV2LibraryError::InsufficientLiquidity)
         }
         let amount_in_with_fee: U256 = amount_in * 997;
         let numerator: U256 = amount_in_with_fee * reserve_out;
@@ -116,10 +116,10 @@ impl UniswapV2Library {
     /// other asset.
     pub fn get_amount_in(amount_out: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if amount_out.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientOutputAmount);
+            return Err(UniswapV2LibraryError::InsufficientOutputAmount)
         }
         if reserve_in.is_zero() || reserve_out.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientLiquidity);
+            return Err(UniswapV2LibraryError::InsufficientLiquidity)
         }
         let numerator: U256 = (reserve_in * amount_out) * 1000;
         let denominator: U256 = (reserve_out - amount_out) * 997;
@@ -135,7 +135,7 @@ impl UniswapV2Library {
     ) -> Result<Vec<U256>> {
         let l = path.len();
         if l < 2 {
-            return Err(UniswapV2LibraryError::InvalidPath);
+            return Err(UniswapV2LibraryError::InvalidPath)
         }
         let mut amounts = vec![U256::zero(); l];
         amounts[0] = amount_in;
@@ -156,7 +156,7 @@ impl UniswapV2Library {
     ) -> Result<Vec<U256>> {
         let l = path.len();
         if l < 2 {
-            return Err(UniswapV2LibraryError::InvalidPath);
+            return Err(UniswapV2LibraryError::InvalidPath)
         }
         let mut amounts = vec![U256::zero(); l];
         amounts[l - 1] = amount_out;
@@ -175,48 +175,28 @@ mod tests {
     use crate::Protocol;
 
     static UNIV2_FACTORY: Lazy<Factory> = Lazy::new(|| {
-        let address: Address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
-            .parse()
-            .unwrap();
+        let address: Address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f".parse().unwrap();
         Factory::new(Some(address), None, Protocol::UniswapV2)
     });
-    static WETH: Lazy<Address> = Lazy::new(|| {
-        "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-            .parse()
-            .unwrap()
-    });
-    static USDC: Lazy<Address> = Lazy::new(|| {
-        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-            .parse()
-            .unwrap()
-    });
-    static WETH_USDC: Lazy<Address> = Lazy::new(|| {
-        "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc"
-            .parse()
-            .unwrap()
-    });
+    static WETH: Lazy<Address> =
+        Lazy::new(|| "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2".parse().unwrap());
+    static USDC: Lazy<Address> =
+        Lazy::new(|| "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".parse().unwrap());
+    static WETH_USDC: Lazy<Address> =
+        Lazy::new(|| "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap());
 
     #[test]
     fn can_sort_tokens() {
         let addr = Address::repeat_byte(0x69);
         let (a, b) = (addr, addr);
         let res = UniswapV2Library::sort_tokens(a, b);
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::IdenticalAddresses
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::IdenticalAddresses));
 
         let res = UniswapV2Library::sort_tokens(Address::zero(), b);
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::ZeroAddress
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::ZeroAddress));
 
         let res = UniswapV2Library::sort_tokens(a, Address::zero());
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::ZeroAddress
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::ZeroAddress));
 
         let (a, b) = (Address::random(), Address::random());
         UniswapV2Library::sort_tokens(a, b).unwrap();
@@ -229,16 +209,11 @@ mod tests {
         // let usdc: Address = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".parse().unwrap();
         // let weth_usdc: Address = "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap();
 
-        assert_eq!(
-            UniswapV2Library::pair_for(*UNIV2_FACTORY, *WETH, *USDC).unwrap(),
-            *WETH_USDC
-        );
+        assert_eq!(UniswapV2Library::pair_for(*UNIV2_FACTORY, *WETH, *USDC).unwrap(), *WETH_USDC);
     }
 
     async fn get_weth_usdc_reserves<M: Middleware>(provider: Arc<M>) -> (U256, U256) {
-        UniswapV2Library::get_reserves(*UNIV2_FACTORY, *WETH, *USDC, provider)
-            .await
-            .unwrap()
+        UniswapV2Library::get_reserves(*UNIV2_FACTORY, *WETH, *USDC, provider).await.unwrap()
     }
 
     #[tokio::test]
@@ -258,28 +233,16 @@ mod tests {
         let reserve_b = U256::from(5000) * base;
 
         let res = UniswapV2Library::quote(U256::zero(), reserve_a, reserve_b);
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::InsufficientAmount
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientAmount));
 
         let res = UniswapV2Library::quote(amount_a, U256::zero(), reserve_b);
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::InsufficientLiquidity
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientLiquidity));
 
         let res = UniswapV2Library::quote(amount_a, U256::zero(), U256::zero());
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::InsufficientLiquidity
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientLiquidity));
 
         let res = UniswapV2Library::quote(amount_a, reserve_a, U256::zero());
-        assert!(matches!(
-            res.unwrap_err(),
-            UniswapV2LibraryError::InsufficientLiquidity
-        ));
+        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientLiquidity));
 
         let amount_b = UniswapV2Library::quote(amount_a, reserve_a, reserve_b).unwrap();
 

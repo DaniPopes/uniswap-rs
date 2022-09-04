@@ -5,15 +5,17 @@ pub mod i_uniswap_v3_factory {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
+    use ethers::{
+        contract::{
+            builders::{ContractCall, Event},
+            Contract, Lazy,
+        },
+        core::{
+            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+            types::*,
+        },
+        providers::Middleware,
     };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
     #[doc = "IUniswapV3Factory was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     pub static IUNISWAPV3FACTORY_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
@@ -34,9 +36,7 @@ pub mod i_uniswap_v3_factory {
     }
     impl<M: ethers::providers::Middleware> std::fmt::Debug for IUniswapV3Factory<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(IUniswapV3Factory))
-                .field(&self.address())
-                .finish()
+            f.debug_tuple(stringify!(IUniswapV3Factory)).field(&self.address()).finish()
         }
     }
     impl<M: ethers::providers::Middleware> IUniswapV3Factory<M> {
@@ -179,10 +179,7 @@ pub mod i_uniswap_v3_factory {
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
     )]
-    #[ethevent(
-        name = "PoolCreated",
-        abi = "PoolCreated(address,address,uint24,int24,address)"
-    )]
+    #[ethevent(name = "PoolCreated", abi = "PoolCreated(address,address,uint24,int24,address)")]
     pub struct PoolCreatedFilter {
         #[ethevent(indexed)]
         pub token_0: ethers::core::types::Address,
@@ -207,13 +204,13 @@ pub mod i_uniswap_v3_factory {
             Self: Sized,
         {
             if let Ok(decoded) = FeeAmountEnabledFilter::decode_log(log) {
-                return Ok(IUniswapV3FactoryEvents::FeeAmountEnabledFilter(decoded));
+                return Ok(IUniswapV3FactoryEvents::FeeAmountEnabledFilter(decoded))
             }
             if let Ok(decoded) = OwnerChangedFilter::decode_log(log) {
-                return Ok(IUniswapV3FactoryEvents::OwnerChangedFilter(decoded));
+                return Ok(IUniswapV3FactoryEvents::OwnerChangedFilter(decoded))
             }
             if let Ok(decoded) = PoolCreatedFilter::decode_log(log) {
-                return Ok(IUniswapV3FactoryEvents::PoolCreatedFilter(decoded));
+                return Ok(IUniswapV3FactoryEvents::PoolCreatedFilter(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData)
         }
@@ -330,31 +327,31 @@ pub mod i_uniswap_v3_factory {
             if let Ok(decoded) =
                 <CreatePoolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::CreatePool(decoded));
+                return Ok(IUniswapV3FactoryCalls::CreatePool(decoded))
             }
             if let Ok(decoded) =
                 <EnableFeeAmountCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::EnableFeeAmount(decoded));
+                return Ok(IUniswapV3FactoryCalls::EnableFeeAmount(decoded))
             }
             if let Ok(decoded) =
                 <FeeAmountTickSpacingCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::FeeAmountTickSpacing(decoded));
+                return Ok(IUniswapV3FactoryCalls::FeeAmountTickSpacing(decoded))
             }
             if let Ok(decoded) =
                 <GetPoolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::GetPool(decoded));
+                return Ok(IUniswapV3FactoryCalls::GetPool(decoded))
             }
             if let Ok(decoded) = <OwnerCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::Owner(decoded));
+                return Ok(IUniswapV3FactoryCalls::Owner(decoded))
             }
             if let Ok(decoded) =
                 <SetOwnerCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::SetOwner(decoded));
+                return Ok(IUniswapV3FactoryCalls::SetOwner(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }

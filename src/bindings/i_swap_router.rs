@@ -5,15 +5,17 @@ pub mod i_swap_router {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::contract::{
-        builders::{ContractCall, Event},
-        Contract, Lazy,
+    use ethers::{
+        contract::{
+            builders::{ContractCall, Event},
+            Contract, Lazy,
+        },
+        core::{
+            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+            types::*,
+        },
+        providers::Middleware,
     };
-    use ethers::core::{
-        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-        types::*,
-    };
-    use ethers::providers::Middleware;
     #[doc = "ISwapRouter was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     pub static ISWAPROUTER_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
@@ -34,9 +36,7 @@ pub mod i_swap_router {
     }
     impl<M: ethers::providers::Middleware> std::fmt::Debug for ISwapRouter<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-            f.debug_tuple(stringify!(ISwapRouter))
-                .field(&self.address())
-                .finish()
+            f.debug_tuple(stringify!(ISwapRouter)).field(&self.address()).finish()
         }
     }
     impl<M: ethers::providers::Middleware> ISwapRouter<M> {
@@ -112,10 +112,7 @@ pub mod i_swap_router {
         ethers :: contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(
-        name = "exactInput",
-        abi = "exactInput((bytes,address,uint256,uint256,uint256))"
-    )]
+    #[ethcall(name = "exactInput", abi = "exactInput((bytes,address,uint256,uint256,uint256))")]
     pub struct ExactInputCall {
         pub params: ExactInputParams,
     }
@@ -146,10 +143,7 @@ pub mod i_swap_router {
         ethers :: contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(
-        name = "exactOutput",
-        abi = "exactOutput((bytes,address,uint256,uint256,uint256))"
-    )]
+    #[ethcall(name = "exactOutput", abi = "exactOutput((bytes,address,uint256,uint256,uint256))")]
     pub struct ExactOutputCall {
         pub params: ExactOutputParams,
     }
@@ -180,10 +174,7 @@ pub mod i_swap_router {
         ethers :: contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(
-        name = "uniswapV3SwapCallback",
-        abi = "uniswapV3SwapCallback(int256,int256,bytes)"
-    )]
+    #[ethcall(name = "uniswapV3SwapCallback", abi = "uniswapV3SwapCallback(int256,int256,bytes)")]
     pub struct UniswapV3SwapCallbackCall {
         pub amount_0_delta: I256,
         pub amount_1_delta: I256,
@@ -204,27 +195,27 @@ pub mod i_swap_router {
             if let Ok(decoded) =
                 <ExactInputCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactInput(decoded));
+                return Ok(ISwapRouterCalls::ExactInput(decoded))
             }
             if let Ok(decoded) =
                 <ExactInputSingleCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactInputSingle(decoded));
+                return Ok(ISwapRouterCalls::ExactInputSingle(decoded))
             }
             if let Ok(decoded) =
                 <ExactOutputCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactOutput(decoded));
+                return Ok(ISwapRouterCalls::ExactOutput(decoded))
             }
             if let Ok(decoded) =
                 <ExactOutputSingleCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactOutputSingle(decoded));
+                return Ok(ISwapRouterCalls::ExactOutputSingle(decoded))
             }
             if let Ok(decoded) =
                 <UniswapV3SwapCallbackCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::UniswapV3SwapCallback(decoded));
+                return Ok(ISwapRouterCalls::UniswapV3SwapCallback(decoded))
             }
             Err(ethers::core::abi::Error::InvalidData.into())
         }
