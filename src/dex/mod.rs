@@ -1,36 +1,11 @@
-use crate::bindings::i_uniswap_v2_router_02::IUniswapV2Router02;
 use crate::contracts::address;
+use crate::{bindings::i_uniswap_v2_router_02::IUniswapV2Router02, factory::Factory};
 use crate::{UniswapV2Library, UniswapV2LibraryError};
 use ethers::prelude::{builders::ContractCall, *};
 use std::{sync::Arc, time::SystemTime};
-use thiserror::Error;
 
-#[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq, PartialOrd, Ord)]
-pub enum Protocol {
-    #[default]
-    UniswapV2,
-    UniswapV3,
-    Sushiswap,
-    Custom(Address, Address),
-}
-
-impl Protocol {
-    /// Returns (router_address, factory_address)
-    pub fn get_addresses(&self, chain: Chain) -> (Address, Address) {
-        if let Self::Custom(router_address, factory_address) = self {
-            (*router_address, *factory_address)
-        } else {
-            let (router_name, factory_name) = match self {
-                Self::UniswapV2 => ("UniswapV2Router02", "UniswapV2Factory"),
-                Self::UniswapV3 => ("UniswapV3Router02", "UniswapV3Factory"),
-                Self::Sushiswap => ("SushiswapV2Router02", "SushiswapV2Factory"),
-                Self::Custom(_, _) => unreachable!(),
-            };
-
-            (address(router_name, chain), address(factory_name, chain))
-        }
-    }
-}
+mod protocol;
+pub use protocol::Protocol;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub enum Amount {
@@ -40,7 +15,7 @@ pub enum Amount {
     ExactOut(U256),
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, thiserror::Error)]
 pub enum DexError<M: Middleware> {
     #[error(transparent)]
     UniswapV2LibraryError(#[from] UniswapV2LibraryError),
@@ -64,38 +39,23 @@ const MIN_DEADLINE_SECONDS: u64 = 30;
 const DEFAULT_DEADLINE_SECONDS: u64 = 1800;
 const BPS_U256: U256 = U256([10_000u64, 0, 0, 0]);
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Dex<M> {
     /// The node and signer.
-    pub client: Arc<M>,
+    client: Arc<M>,
 
     /// The dex swap router.
-    pub router: Address,
+    router: Address,
 
     /// The dex liquidity pair factory.
-    pub factory: Address,
+    factory: Factory,
 
     /// The chain's wrapped native token.
-    pub weth: Address,
-
-    /// The chain.
-    pub chain: Chain,
+    weth: Address,
 
     /// The protocol.
-    pub protocol: Protocol,
-}
-
-impl<M> Clone for Dex<M> {
-    fn clone(&self) -> Self {
-        Self {
-            client: self.client.clone(),
-            router: self.router,
-            factory: self.factory,
-            weth: self.weth,
-            chain: self.chain,
-            protocol: self.protocol,
-        }
-    }
+    #[allow(dead_code)]
+    protocol: Protocol,
 }
 
 // TODO: UniV3. Separate as UniV2 and UniV3 Dex structs?
@@ -110,13 +70,16 @@ impl<M: Middleware> Dex<M> {
         // TODO: Query factory for .WETH()
         let weth_address = address("WETH", chain);
         Self {
-            router: router_address,
-            factory: factory_address,
-            weth: weth_address,
             client,
-            chain,
+            router: router_address,
+            factory: Factory::new(Some(factory_address), Some(chain), protocol),
+            weth: weth_address,
             protocol,
         }
+    }
+
+    pub fn new_with_factory(_factory: Factory) -> Self {
+        todo!()
     }
 
     /// Generalized swap function for the various [UniswapV2Router] `swap[Exact]XFor[Exact]Y`.

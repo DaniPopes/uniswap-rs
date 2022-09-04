@@ -1,4 +1,4 @@
-use crate::bindings::i_uniswap_v2_pair::IUniswapV2Pair;
+use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory};
 use crate::{UniswapV2Library, UniswapV2LibraryError};
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
@@ -7,6 +7,7 @@ type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
 /// Represents a UniswapV2 liquidity pair, composed of 2 different tokens.
+#[derive(Clone)]
 pub struct Pair<M> {
     /// The client.
     client: Arc<M>,
@@ -24,19 +25,7 @@ pub struct Pair<M> {
     reserves: Reserves,
 }
 
-impl<M> Clone for Pair<M> {
-    fn clone(&self) -> Self {
-        Self {
-            client: self.client.clone(),
-            address: self.address,
-            tokens: self.tokens,
-            deployed: self.deployed,
-            reserves: self.reserves,
-        }
-    }
-}
-
-// Skip dex in formatting
+// Skip client in formatting
 impl<M> std::fmt::Debug for Pair<M> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Pair")
@@ -51,7 +40,7 @@ impl<M> std::fmt::Debug for Pair<M> {
 impl<M: Middleware> Pair<M> {
     pub async fn new(
         client: Arc<M>,
-        factory: Address,
+        factory: Factory,
         tokens: Option<Tokens>,
         address: Option<Address>,
     ) -> Result<Self, UniswapV2LibraryError> {

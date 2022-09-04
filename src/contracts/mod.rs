@@ -1,8 +1,8 @@
+//! Contains all the relevant contract addresses. Modified from ethers/ethers-addressbook.
+
 use ethers::prelude::*;
 use serde::Deserialize;
 use std::collections::HashMap;
-
-// modified from ethers/ethers-addressbook/src/lib.rs
 
 const CONTRACTS_JSON: &str = include_str!("./contracts.json");
 
@@ -24,41 +24,38 @@ impl Contract {
 }
 
 /// Fetch the addressbook for a contract by its name. If the contract name is not a part of
-/// [ethers-addressbook] we return None.
+/// [contracts.json] we return None.
 ///
-/// [ethers-addressbook]: https://github.com/gakonst/ethers-rs/tree/master/ethers-addressbook
+/// [contracts.json]: CONTRACTS_JSON
 pub fn try_contract<S: Into<String>>(name: S) -> Option<Contract> {
     CONTRACTS_ADDRESS_BOOK.get(&name.into()).cloned()
 }
 
-/// Fetch the addressbook for a contract by its name. If the contract name is not a part of
-/// [ethers-addressbook] we panic.
+/// Fetch the address for a contract by its name and chain. If the contract name is not a part of
+/// [contracts.json] we return None.
 ///
-/// [ethers-addressbook]: https://github.com/gakonst/ethers-rs/tree/master/ethers-addressbook
-pub fn contract<S: Into<String>>(name: S) -> Contract {
-    let name: String = name.into();
-    try_contract(&name).unwrap_or_else(|| panic!("Missing {} in contracts.json", name))
-}
-
-/// Fetch the address from a contract's addressbook. If the contract name is not a part of
-/// [ethers-addressbook] we return None.
-///
-/// [ethers-addressbook]: https://github.com/gakonst/ethers-rs/tree/master/ethers-addressbook
+/// [contracts.json]: CONTRACTS_JSON
 pub fn try_address<S: Into<String>>(name: S, chain: Chain) -> Option<Address> {
-    let name: String = name.into();
-    let contracts = contract(&name);
+    let contracts = contract(&name.into());
     contracts.address(chain)
 }
 
-/// Fetch the address from a contract's addressbook. If the contract name is not a part of
-/// [ethers-addressbook] we panic.
+/// Fetch the addressbook for a contract by its name. If the contract name is not a part of
+/// [contracts.json] we panic.
 ///
-/// [ethers-addressbook]: https://github.com/gakonst/ethers-rs/tree/master/ethers-addressbook
+/// [contracts.json]: CONTRACTS_JSON
+pub fn contract<S: Into<String>>(name: S) -> Contract {
+    let name = name.into();
+    try_contract(&name).unwrap_or_else(|| panic!("Missing {} in contracts.json", name))
+}
+
+/// Fetch the address for a contract by its name and chain. If the contract name is not a part of
+/// [contracts.json] we panic.
+///
+/// [contracts.json]: CONTRACTS_JSON
 pub fn address<S: Into<String>>(name: S, chain: Chain) -> Address {
-    let name: String = name.into();
-    let contracts = contract(&name);
-    contracts
-        .address(chain)
+    let name = name.into();
+    try_address(&name, chain)
         .unwrap_or_else(|| panic!("Missing {}[\"{}\"] in contracts.json", name, chain))
 }
 
@@ -67,14 +64,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_tokens() {
+    fn test_contracts() {
         assert!(try_contract("DAI").is_some());
         assert!(try_contract("USDC").is_some());
         assert!(try_contract("rand").is_none());
     }
 
     #[test]
-    fn test_addrs() {
+    fn test_addresses() {
         assert!(try_contract("DAI")
             .unwrap()
             .address(Chain::Mainnet)
@@ -83,5 +80,8 @@ mod tests {
             .unwrap()
             .address(Chain::MoonbeamDev)
             .is_none());
+
+        assert!(try_address("DAI", Chain::Mainnet).unwrap().is_some());
+        assert!(try_address("DAI", Chain::MoonbeamDev).unwrap().is_none());
     }
 }

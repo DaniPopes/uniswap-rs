@@ -1,6 +1,4 @@
-#![allow(unused)]
-
-use crate::bindings::i_uniswap_v2_pair::IUniswapV2Pair;
+use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory};
 use ethers::prelude::*;
 use std::sync::Arc;
 use thiserror::Error;
@@ -44,27 +42,29 @@ impl UniswapV2Library {
         if a == b {
             return Err(UniswapV2LibraryError::IdenticalAddresses);
         }
+
         let (a, b) = if a < b { (a, b) } else { (b, a) };
+
         if a.is_zero() {
-            Err(UniswapV2LibraryError::ZeroAddress)
-        } else {
-            Ok((a, b))
+            return Err(UniswapV2LibraryError::ZeroAddress);
         }
+
+        Ok((a, b))
     }
 
     /// Calculates the CREATE2 address for a pair without making any external calls.
-    pub fn pair_for(factory: Address, a: Address, b: Address) -> Result<Address> {
+    pub fn pair_for(factory: Factory, a: Address, b: Address) -> Result<Address> {
         let (a, b) = Self::sort_tokens(a, b)?;
         Ok(ethers::utils::get_create2_address_from_hash(
-            factory,
+            factory.address(),
             ethers::utils::keccak256([a.0, b.0].concat()), // keccak256(abi.encodePacked(a, b))
-            UNISWAP_V2_FACTORY_CODE_HASH.0,
+            factory.pair_codehash().0,
         ))
     }
 
     /// Fetches and sorts the reserves for a pair.
     pub async fn get_reserves<M: Middleware>(
-        factory: Address,
+        factory: Factory,
         a: Address,
         b: Address,
         client: Arc<M>,
@@ -127,7 +127,7 @@ impl UniswapV2Library {
 
     /// Performs chained get_amount_out calculations on any number of pairs.
     pub async fn get_amounts_out<M: Middleware>(
-        factory: Address,
+        factory: Factory,
         amount_in: U256,
         path: Vec<Address>,
         client: Arc<M>,
@@ -148,7 +148,7 @@ impl UniswapV2Library {
 
     /// Performs chained get_amount_in calculations on any number of pairs.
     pub async fn get_amounts_in<M: Middleware>(
-        factory: Address,
+        factory: Factory,
         amount_out: U256,
         path: Vec<Address>,
         client: Arc<M>,
