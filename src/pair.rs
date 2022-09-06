@@ -132,6 +132,10 @@ impl<M: Middleware> Pair<M> {
         self.deployed
     }
 
+    pub fn tokens(&self) -> Option<Tokens> {
+        self.tokens
+    }
+
     /// Returns the reserves of the pair. If it hasn't been synced yet, this will be equal to (0, 0,
     /// 0).
     pub fn reserves(&self) -> Option<Reserves> {
@@ -152,9 +156,9 @@ impl<M: Middleware> Pair<M> {
     /// Syncs the tokens and reserves of the pair by querying the blockchain.
     ///
     /// Assumes that any call failure means the pair has not been deployed yet.
-    pub async fn sync(&mut self, sync_reserves: bool) -> Result<&mut Self, M> {
-        let sync_reserves = sync_reserves || self.reserves.is_none();
-        let sync_tokens = self.tokens.is_none() || !self.deployed;
+    pub async fn sync(&mut self, sync_tokens: bool, sync_reserves: bool) -> Result<&mut Self, M> {
+        // let sync_tokens = sync_tokens || self.tokens.is_none() || !self.deployed;
+        // let sync_reserves = sync_reserves || self.reserves.is_none();
 
         let multicall = Multicall::new(self.client.clone(), None).await?;
         let mut multicall = multicall.version(MulticallVersion::Multicall3);
@@ -289,6 +293,18 @@ fn parse_reserves_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Res
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{contracts::address, Protocol};
+
+    fn default_pair() -> Pair<Provider<Http>> {
+        let chain = Chain::Mainnet;
+        let weth = address("WETH", chain);
+        let usdc = address("USDC", chain);
+        let provider = MAINNET.provider();
+        let client = Arc::new(provider);
+        let factory = Factory::new(None, Some(chain), Protocol::UniswapV2);
+        let pair = Pair::new_with_tokens(client, factory, weth, usdc).unwrap();
+        pair
+    }
 
     #[test]
     #[allow(unused)]
@@ -359,5 +375,26 @@ mod tests {
 
         // let result = parse_reserves_result(failure_tokens).unwrap();
         // assert!(result.is_none());
+    }
+
+    #[tokio::test]
+    async fn test_sync() {
+        let mut pair = default_pair();
+
+        assert!(!pair.deployed());
+        let tokens = pair.tokens().unwrap();
+        assert_ne!(tokens.0, Address::zero());
+        assert_ne!(tokens.1, Address::zero());
+
+        pair.sync(true, false).await.unwrap();
+        assert!(pair.deployed());
+        assert!(pair.reserves().is_none());
+
+        pair.sync(false, true).await.unwrap();
+        let reserves = pair.reserves().unwrap();
+        assert!(pair.deployed());
+        assert_ne!(reserves.0, 0);
+        assert_ne!(reserves.1, 0);
+        assert_ne!(reserves.2, 0);
     }
 }
