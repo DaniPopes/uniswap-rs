@@ -1,7 +1,14 @@
 [package]
-name = "uniswap-rs"
+name = "uniswap"
 version = "0.1.0"
+authors = ["DaniPopes <danipopes1@proton.me>"]
+license = "MIT"
 edition = "2021"
+readme = "README.md"
+documentation = "https://docs.rs/uniswap"
+repository = "https://github.com/danipopes/uniswap"
+homepage = "https://docs.rs/uniswap"
+description = "Simple library for interacting with Uniswap v2 and v3 smart contracts."
 
 [build-dependencies]
 ethers-contract = { git = "https://github.com/gakonst/ethers-rs", features = ["abigen"] }
