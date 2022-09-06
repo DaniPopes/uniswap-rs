@@ -24,5 +24,9 @@ tokio = { version = "1", features = ["macros"] }
 eyre = "0.6"
 
 [[example]]
-name = "simple"
-path = "examples/simple.rs"
+name = "dex"
+path = "examples/dex.rs"
+
+[[example]]
+name = "pair"
+path = "examples/pair.rs"

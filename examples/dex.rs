@@ -1,4 +1,4 @@
-use ethers::prelude::*;
+use ethers::{prelude::*, types::transaction::eip2718::TypedTransaction};
 use std::sync::Arc;
 use uniswap::{contracts::address, Amount, Dex, Protocol, NATIVE_TOKEN_ADDRESS};
 
@@ -33,18 +33,23 @@ async fn main() -> eyre::Result<()> {
     let path = vec![eth, usdc];
     println!("Path: {:?}", path);
 
-    println!("Creating swap tx");
+    // swap with router
     let swap_call = dex.swap(amount, 0.5, path, None, None).await?;
-    println!("Swap tx: {:#?}", swap_call.tx);
+    log_tx("Swap", swap_call.tx);
 
     // deposit and withdraw WETH
-    println!("Creating deposit tx");
     let deposit_call = dex.weth_deposit(raw_amount)?;
-    println!("Deposit tx: {:#?}", deposit_call.tx);
+    log_tx("Deposit", deposit_call.tx);
 
-    println!("Creating withdraw tx");
     let withdraw_call = dex.weth_withdraw(raw_amount)?;
-    println!("Deposit tx: {:#?}", withdraw_call.tx);
+    log_tx("Withdrawal", withdraw_call.tx);
 
     Ok(())
+}
+
+fn log_tx(header: &str, tx: TypedTransaction) {
+    println!("{:-^60}", header);
+    println!("From: {:?}", tx.from().unwrap());
+    println!("To:   {:?}", tx.to().unwrap());
+    println!("Data: {:?}", tx.data().unwrap());
 }
