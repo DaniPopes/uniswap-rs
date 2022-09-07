@@ -30,7 +30,7 @@ type Result<T, M> = std::result::Result<T, PairError<M>>;
 ///
 /// ```no_run
 /// use ethers::prelude::*;
-/// use uniswap_rs::Pair;
+/// use uniswap::Pair;
 /// use std::{convert::TryFrom, sync::Arc};
 ///
 /// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
@@ -40,7 +40,7 @@ type Result<T, M> = std::result::Result<T, PairError<M>>;
 /// let client = Arc::new(client);
 /// let mut pair = Pair::new(client, weth_usdc_address);
 ///
-/// pair.sync(true).await?;
+/// pair.sync(true, true).await?;
 ///
 /// let reserves = pair.reserves().unwrap();
 /// assert!(reserves.0 > 0);

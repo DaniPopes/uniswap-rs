@@ -1,4 +1,4 @@
-use crate::contracts::address;
+use crate::contracts::{address, try_address};
 use ethers::prelude::*;
 
 /// [0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f](https://github.com/Uniswap/v2-periphery/blob/0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f/contracts/libraries/UniswapV2Library.sol#L24)
@@ -43,25 +43,34 @@ pub enum Protocol {
 }
 
 impl Protocol {
-    /// Returns (router_address, factory_address)
-    pub fn get_addresses(&self, chain: Chain) -> (Address, Address) {
+    /// Returns (router_address, factory_address), returning None on any error.
+    pub fn try_addresses(&self, chain: Chain) -> (Option<Address>, Option<Address>) {
+        if let Self::Custom(router_address, factory_address) = self {
+            (Some(*router_address), Some(*factory_address))
+        } else {
+            let (router_name, factory_name) = self.contract_names();
+            (try_address(router_name, chain), try_address(factory_name, chain))
+        }
+    }
+
+    /// Returns (router_address, factory_address), panicking on any error.
+    pub fn addresses(&self, chain: Chain) -> (Address, Address) {
         if let Self::Custom(router_address, factory_address) = self {
             (*router_address, *factory_address)
         } else {
-            let (router_name, factory_name) = match self {
-                Self::UniswapV2 => ("UniswapV2Router02", "UniswapV2Factory"),
-                Self::UniswapV3 => ("UniswapV3Router02", "UniswapV3Factory"),
-                Self::Sushiswap => ("SushiswapV2Router02", "SushiswapV2Factory"),
-                Self::Pancakeswap => match chain {
-                    Chain::BinanceSmartChain | Chain::BinanceSmartChainTestnet => {
-                        ("PancakeRouter", "PancakeFactory")
-                    }
-                    _ => panic!("Pancakeswap is only available on BSC"),
-                },
-                Self::Custom(_, _) => unreachable!(),
-            };
-
+            let (router_name, factory_name) = self.contract_names();
             (address(router_name, chain), address(factory_name, chain))
+        }
+    }
+
+    /// Returns (router_name, factory_name).
+    pub fn contract_names(&self) -> (&str, &str) {
+        match self {
+            Self::UniswapV2 => ("UniswapV2Router02", "UniswapV2Factory"),
+            Self::UniswapV3 => ("UniswapV3Router02", "UniswapV3Factory"),
+            Self::Sushiswap => ("SushiswapV2Router02", "SushiswapV2Factory"),
+            Self::Pancakeswap => ("PancakeRouter", "PancakeFactory"),
+            Self::Custom(_, _) => ("", ""),
         }
     }
 

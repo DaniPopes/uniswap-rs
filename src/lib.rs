@@ -7,5 +7,6 @@ pub mod bindings;
 pub mod contracts;
 
 pub use dex::*;
+pub use factory::*;
 pub use library::*;
 pub use pair::*;

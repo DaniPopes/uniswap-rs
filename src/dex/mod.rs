@@ -1,5 +1,7 @@
 use crate::{
-    bindings::i_uniswap_v2_router_02::IUniswapV2Router02, contracts::address, factory::Factory,
+    bindings::{i_uniswap_v2_router_02::IUniswapV2Router02, iweth::IWETH},
+    contracts::try_address,
+    factory::Factory,
     UniswapV2Library, UniswapV2LibraryError,
 };
 use ethers::prelude::{builders::ContractCall, *};
@@ -8,6 +10,16 @@ use std::{sync::Arc, time::SystemTime};
 mod protocol;
 pub use protocol::Protocol;
 
+/// [0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE](https://etherscan.io/address/0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
+///
+/// A unique address to differentiate the native token from any other ERC20 token.
+pub const NATIVE_TOKEN_ADDRESS: Address = Address::repeat_byte(0xee);
+
+const MIN_DEADLINE_SECONDS: u64 = 30;
+const DEFAULT_DEADLINE_SECONDS: u64 = 1800;
+const BPS_U256: U256 = U256([10_000u64, 0, 0, 0]);
+
+/// A helper enum that wraps a [U256] for determining a swap's input / output.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub enum Amount {
     /// Swap X Token1 for any Token2
@@ -33,13 +45,12 @@ pub enum DexError<M: Middleware> {
 
     #[error("Cannot swap a token into itself")]
     SwapToSelf,
+
+    #[error("WETH has yet to be set")]
+    WethNotSet,
 }
 
 pub type Result<T, M> = std::result::Result<T, DexError<M>>;
-
-const MIN_DEADLINE_SECONDS: u64 = 30;
-const DEFAULT_DEADLINE_SECONDS: u64 = 1800;
-const BPS_U256: U256 = U256([10_000u64, 0, 0, 0]);
 
 #[derive(Clone, Debug)]
 pub struct Dex<M> {
@@ -53,7 +64,7 @@ pub struct Dex<M> {
     factory: Factory,
 
     /// The chain's wrapped native token.
-    weth: Address,
+    weth: Option<Address>,
 
     /// The protocol.
     #[allow(dead_code)]
@@ -65,19 +76,10 @@ pub struct Dex<M> {
 // TODO: Support for more chains
 impl<M: Middleware> Dex<M> {
     pub fn new(client: Arc<M>, chain: Chain, protocol: Protocol) -> Self {
-        if client.default_sender().is_none() {
-            panic!("Client is not a signer");
-        }
-        let (router_address, factory_address) = protocol.get_addresses(chain);
-        // TODO: Query factory for .WETH()
-        let weth_address = address("WETH", chain);
-        Self {
-            client,
-            router: router_address,
-            factory: Factory::new(Some(factory_address), Some(chain), protocol),
-            weth: weth_address,
-            protocol,
-        }
+        let (router_address, factory_address) = protocol.addresses(chain);
+        let factory = Factory::new(Some(factory_address), Some(chain), protocol);
+        let weth_address = try_address("WETH", chain);
+        Self { client, router: router_address, factory, weth: weth_address, protocol }
     }
 
     pub fn new_with_factory(_factory: Factory) -> Self {
@@ -92,8 +94,8 @@ impl<M: Middleware> Dex<M> {
     /// transaction reverts. `0.0` means no price change tolerated, while `100.0` means any price
     /// change is tolerated.
     ///
-    /// Using a `path[0]` or `path[path.length - 1]` == `Address::zero()` indicates intention to
-    /// swap from or to the native coin respectively.
+    /// Using a `path[0]` or `path[path.length - 1]` == [`NATIVE_TOKEN_ADDRESS`] indicates intention
+    /// to swap from or to the native token respectively.
     ///
     /// `to` is the address that will receive the swap output. If [`None`], it will default to
     /// [`self.client.default_address()`].
@@ -104,10 +106,10 @@ impl<M: Middleware> Dex<M> {
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [`self.client.default_address()`]: Middleware
     pub async fn swap(
-        &self,
+        &mut self,
         amount: Amount,
         slippage_tolerance: f32,
-        path: Vec<Address>,
+        mut path: Vec<Address>,
         to: Option<Address>,
         deadline: Option<u64>,
     ) -> Result<ContractCall<M, Vec<U256>>, M> {
@@ -115,30 +117,39 @@ impl<M: Middleware> Dex<M> {
             return Err(DexError::InvalidSlippage)
         }
 
+        let sender = self.client.default_sender();
         let to = to.unwrap_or_else(|| {
-            self.client.default_sender().expect("Missing self.client.default_sender()")
+            sender
+                .expect("Must specify a `to` address if the client does not have a default sender")
         });
 
         if path.len() < 2 {
-            return Err(DexError::UniswapV2LibraryError(UniswapV2LibraryError::InvalidPath))
+            return Err(UniswapV2LibraryError::InvalidPath.into())
         }
 
-        // can unwrap since we just asserted path.len() >= 2
-        let first_address = *path.first().expect("Path is empty, should not happen");
-        let last_address = *path.last().expect("Path is empty, should not happen");
+        // set weth
+        let weth = match self.weth {
+            Some(weth) => weth,
+            None => {
+                self.set_weth().await?;
+                self.weth.expect("couldn't set weth")
+            }
+        };
 
-        let from_native = first_address.is_zero();
-        let to_native = last_address.is_zero();
+        let (from_native, to_native) =
+            (is_eth(path.first().unwrap()), is_eth(path.last().unwrap()));
 
-        if first_address == last_address {
-            return Err(DexError::UniswapV2LibraryError(UniswapV2LibraryError::InvalidPath))
+        // map eth to weth
+        for address in path.iter_mut() {
+            if is_eth(address) {
+                *address = weth
+            }
         }
 
-        // map Address::zero() to self.weth
-        let path: Vec<H160> =
-            path.iter().map(|addr| if addr.is_zero() { self.weth } else { *addr }).collect();
-
-        // let total_path = [first_address, last_address];
+        // after map so it captures eth to weth, weth to eth
+        if path.first().unwrap() == path.last().unwrap() {
+            return Err(DexError::SwapToSelf)
+        }
 
         let deadline = {
             let now = SystemTime::now()
@@ -156,7 +167,7 @@ impl<M: Middleware> Dex<M> {
         .into();
 
         let router = IUniswapV2Router02::new(self.router, self.client.clone());
-        let contract_call = match amount {
+        let mut call = match amount {
             Amount::ExactIn(amount_in) => {
                 let amount_out_min = if slippage_tolerance == 100.0 {
                     U256::zero()
@@ -170,7 +181,7 @@ impl<M: Middleware> Dex<M> {
                     )
                     .await?
                     .last()
-                    .expect("Path is empty, should not happen");
+                    .expect("path is empty, can not happen");
                     if slippage_tolerance == 0.0 {
                         last_amount_out
                     } else {
@@ -209,7 +220,7 @@ impl<M: Middleware> Dex<M> {
                     )
                     .await?
                     .first()
-                    .expect("Path is empty, should not happen");
+                    .expect("path is empty, can not happen");
                     if slippage_tolerance == 0.0 {
                         first_amount_in
                     } else {
@@ -237,12 +248,67 @@ impl<M: Middleware> Dex<M> {
             }
         };
 
-        Ok(contract_call)
+        if let Some(from) = sender {
+            call = call.from(from);
+        }
+
+        Ok(call)
     }
+
+    /// Sets the wrapped native token address by calling the WETH() method on the router.
+    pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
+        let router = IUniswapV2Router02::new(self.router, self.client.clone());
+        self.weth = Some(router.weth().call().await?);
+
+        Ok(self)
+    }
+
+    /// Sets the wrapped native token address.
+    pub fn set_weth_sync(&mut self, weth: Address) -> Result<&mut Self, M> {
+        self.weth = Some(weth);
+
+        Ok(self)
+    }
+
+    pub fn weth_deposit(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
+        let address = match self.weth {
+            Some(address) => address,
+            None => return Err(DexError::WethNotSet),
+        };
+        let weth = IWETH::new(address, self.client.clone());
+        let mut call = weth.deposit().value(amount);
+
+        if let Some(sender) = self.client.default_sender() {
+            call = call.from(sender)
+        }
+
+        Ok(call)
+    }
+
+    pub fn weth_withdraw(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
+        let address = match self.weth {
+            Some(address) => address,
+            None => return Err(DexError::WethNotSet),
+        };
+        let weth = IWETH::new(address, self.client.clone());
+        let mut call = weth.withdraw(amount);
+
+        if let Some(sender) = self.client.default_sender() {
+            call = call.from(sender)
+        }
+
+        Ok(call)
+    }
+}
+
+#[inline]
+fn is_eth(address: &Address) -> bool {
+    address == &NATIVE_TOKEN_ADDRESS
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::contracts::address;
     use ethers::abi::{ParamType, Token, Tokenize};
 
     use super::*;
@@ -289,11 +355,11 @@ mod tests {
 
     #[tokio::test]
     async fn can_swap_infinite_slippage() {
-        let dex = default_dex();
+        let mut dex = default_dex();
 
         let amount_in_pre = U256::exp10(18);
         let amount = Amount::ExactIn(amount_in_pre);
-        let path_pre = [Address::random(), Address::random()].to_vec();
+        let path_pre = vec![Address::random(), Address::random()];
         let to_pre = Address::random();
         let deadline_pre = 1000;
 
@@ -332,11 +398,11 @@ mod tests {
 
     #[tokio::test]
     async fn can_swap_no_slippage() {
-        let dex = default_dex();
+        let mut dex = default_dex();
 
         let amount_in_pre = U256::exp10(18);
         let amount = Amount::ExactIn(amount_in_pre);
-        let path_pre = [dex.weth, address("USDC", Chain::Mainnet)].to_vec();
+        let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
         let amounts_out = UniswapV2Library::get_amounts_out(
             dex.factory,
@@ -361,10 +427,10 @@ mod tests {
 
     #[tokio::test]
     async fn can_swap_slippage() {
-        let dex = default_dex();
+        let mut dex = default_dex();
 
         let amount_in_pre = U256::exp10(18);
-        let path_pre = [dex.weth, address("USDC", Chain::Mainnet)].to_vec();
+        let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
         let amounts_out = UniswapV2Library::get_amounts_out(
             dex.factory,

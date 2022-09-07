@@ -1,11 +1,13 @@
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory};
 use ethers::prelude::*;
 use std::sync::Arc;
-use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum UniswapV2LibraryError {
+    #[error("{0}")]
+    ContractError(String),
+
     #[error("Sorting identical addresses")]
     IdenticalAddresses,
 
@@ -26,9 +28,6 @@ pub enum UniswapV2LibraryError {
 
     #[error("Path length must be greater than or equal to 2")]
     InvalidPath,
-
-    #[error("{0}")]
-    ContractError(String),
 }
 
 type Result<T> = std::result::Result<T, UniswapV2LibraryError>;

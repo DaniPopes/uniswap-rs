@@ -20,7 +20,7 @@ impl Factory {
     pub fn new(address: Option<Address>, chain: Option<Chain>, protocol: Protocol) -> Self {
         let address = address.unwrap_or_else(|| {
             protocol
-                .get_addresses(
+                .addresses(
                     chain.expect("Factory::new: Must provide at least one of: address or chain"),
                 )
                 .1

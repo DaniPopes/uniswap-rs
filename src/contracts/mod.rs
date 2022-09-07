@@ -36,8 +36,8 @@ pub fn try_contract<S: Into<String>>(name: S) -> Option<Contract> {
 ///
 /// [contracts.json]: CONTRACTS_JSON
 pub fn try_address<S: Into<String>>(name: S, chain: Chain) -> Option<Address> {
-    let contracts = contract(&name.into());
-    contracts.address(chain)
+    let c = try_contract(&name.into());
+    c.and_then(|c| c.address(chain))
 }
 
 /// Fetch the addressbook for a contract by its name. If the contract name is not a part of
@@ -45,7 +45,7 @@ pub fn try_address<S: Into<String>>(name: S, chain: Chain) -> Option<Address> {
 ///
 /// [contracts.json]: CONTRACTS_JSON
 pub fn contract<S: Into<String>>(name: S) -> Contract {
-    let name = name.into();
+    let name: String = name.into();
     try_contract(&name).unwrap_or_else(|| panic!("Missing {} in contracts.json", name))
 }
 
@@ -54,9 +54,11 @@ pub fn contract<S: Into<String>>(name: S) -> Contract {
 ///
 /// [contracts.json]: CONTRACTS_JSON
 pub fn address<S: Into<String>>(name: S, chain: Chain) -> Address {
-    let name = name.into();
-    try_address(&name, chain)
-        .unwrap_or_else(|| panic!("Missing {}[\"{}\"] in contracts.json", name, chain))
+    let name: String = name.into();
+    let contract = contract(&name);
+    contract.address(chain).unwrap_or_else(|| {
+        panic!("Missing {:?} chain in {}.addresses in contracts.json", chain, name)
+    })
 }
 
 #[cfg(test)]
