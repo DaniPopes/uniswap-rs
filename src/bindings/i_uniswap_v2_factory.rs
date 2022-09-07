@@ -142,11 +142,11 @@ pub mod i_uniswap_v2_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "PairCreated", abi = "PairCreated(address,address,address,uint256)")]
     pub struct PairCreatedFilter {

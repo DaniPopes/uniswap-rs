@@ -321,11 +321,11 @@ pub mod i_uniswap_v2_pair {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Approval", abi = "Approval(address,address,uint256)")]
     pub struct ApprovalFilter {
@@ -338,11 +338,11 @@ pub mod i_uniswap_v2_pair {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Burn", abi = "Burn(address,uint256,uint256,address)")]
     pub struct BurnFilter {
@@ -356,11 +356,11 @@ pub mod i_uniswap_v2_pair {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Mint", abi = "Mint(address,uint256,uint256)")]
     pub struct MintFilter {
@@ -372,11 +372,11 @@ pub mod i_uniswap_v2_pair {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Swap", abi = "Swap(address,uint256,uint256,uint256,uint256,address)")]
     pub struct SwapFilter {
@@ -392,11 +392,11 @@ pub mod i_uniswap_v2_pair {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Sync", abi = "Sync(uint112,uint112)")]
     pub struct SyncFilter {
@@ -406,11 +406,11 @@ pub mod i_uniswap_v2_pair {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Transfer", abi = "Transfer(address,address,uint256)")]
     pub struct TransferFilter {

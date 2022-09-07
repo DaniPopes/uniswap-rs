@@ -378,11 +378,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Burn", abi = "Burn(address,int24,int24,uint128,uint256,uint256)")]
     pub struct BurnFilter {
@@ -399,11 +399,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Collect", abi = "Collect(address,address,int24,int24,uint128,uint128)")]
     pub struct CollectFilter {
@@ -420,11 +420,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "CollectProtocol", abi = "CollectProtocol(address,address,uint128,uint128)")]
     pub struct CollectProtocolFilter {
@@ -438,11 +438,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Flash", abi = "Flash(address,address,uint256,uint256,uint256,uint256)")]
     pub struct FlashFilter {
@@ -458,11 +458,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(
         name = "IncreaseObservationCardinalityNext",
@@ -475,11 +475,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Initialize", abi = "Initialize(uint160,int24)")]
     pub struct InitializeFilter {
@@ -489,11 +489,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Mint", abi = "Mint(address,address,int24,int24,uint128,uint256,uint256)")]
     pub struct MintFilter {
@@ -511,11 +511,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "SetFeeProtocol", abi = "SetFeeProtocol(uint8,uint8,uint8,uint8)")]
     pub struct SetFeeProtocolFilter {
@@ -527,11 +527,11 @@ pub mod i_uniswap_v3_pool {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Swap", abi = "Swap(address,address,int256,int256,uint160,uint128,int24)")]
     pub struct SwapFilter {

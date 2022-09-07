@@ -128,11 +128,11 @@ pub mod ierc20 {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Approval", abi = "Approval(address,address,uint256)")]
     pub struct ApprovalFilter {
@@ -145,11 +145,11 @@ pub mod ierc20 {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "Transfer", abi = "Transfer(address,address,uint256)")]
     pub struct TransferFilter {

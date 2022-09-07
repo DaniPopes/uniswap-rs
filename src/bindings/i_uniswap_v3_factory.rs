@@ -141,11 +141,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "FeeAmountEnabled", abi = "FeeAmountEnabled(uint24,int24)")]
     pub struct FeeAmountEnabledFilter {
@@ -157,11 +157,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "OwnerChanged", abi = "OwnerChanged(address,address)")]
     pub struct OwnerChangedFilter {
@@ -173,11 +173,11 @@ pub mod i_uniswap_v3_factory {
     #[derive(
         Clone,
         Debug,
-        Default,
         Eq,
         PartialEq,
         ethers :: contract :: EthEvent,
         ethers :: contract :: EthDisplay,
+        Default,
     )]
     #[ethevent(name = "PoolCreated", abi = "PoolCreated(address,address,uint24,int24,address)")]
     pub struct PoolCreatedFilter {
