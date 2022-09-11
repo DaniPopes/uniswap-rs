@@ -12,16 +12,23 @@ use std::sync::Arc;
 type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
+/// Errors thrown by [Pair].
 #[derive(Debug, thiserror::Error)]
 pub enum PairError<M: Middleware> {
+    /// Thrown when interacting with the smart contracts.
     #[error(transparent)]
     ContractError(#[from] ContractError<M>),
+
+    /// Thrown when using [UniswapV2Library].
     #[error(transparent)]
     UniswapV2LibraryError(#[from] UniswapV2LibraryError),
+
+    /// Thrown when interacting with [Multicall].
     #[error(transparent)]
     MulticallError(#[from] MulticallError<M>),
 }
 
+/// Type alias for Result<T, PairError<M>>.
 type Result<T, M> = std::result::Result<T, PairError<M>>;
 
 /// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
@@ -99,10 +106,12 @@ impl<M: Middleware> From<&mut Pair<M>> for IUniswapV2Pair<M> {
 }
 
 impl<M: Middleware> Pair<M> {
+    /// Creates a new Pair instance using the provided client and address.
     pub fn new(client: Arc<M>, address: Address) -> Self {
         Self { client, address, tokens: None, deployed: false, reserves: None }
     }
 
+    /// Creates a new Pair instance using the provided client, factory and tokens' addresses.
     pub fn new_with_tokens(
         client: Arc<M>,
         factory: Factory,
@@ -126,18 +135,23 @@ impl<M: Middleware> Pair<M> {
         self.address
     }
 
-    /// Returns whether the pair has been deployed. If it hasn't been synced yet, this will be equal
-    /// to false.
+    /// Returns whether the pair has been deployed.
+    ///
+    /// Note: this will always be false before syncing.
     pub fn deployed(&self) -> bool {
         self.deployed
     }
 
+    /// Returns the addresses of the tokens that make up this pair.
+    ///
+    /// Note: this will always be None before syncing.
     pub fn tokens(&self) -> Option<Tokens> {
         self.tokens
     }
 
-    /// Returns the reserves of the pair. If it hasn't been synced yet, this will be equal to (0, 0,
-    /// 0).
+    /// Returns the reserves of the pair.
+    ///
+    /// Note: this will always be None before syncing.
     pub fn reserves(&self) -> Option<Reserves> {
         self.reserves
     }
@@ -310,10 +324,9 @@ mod tests {
     }
 
     #[test]
-    #[allow(unused)]
     fn test_parsing() {
         let addresses = (Address::random(), Address::random());
-        let tokens = vec![Token::Address(addresses.0), Token::Address(addresses.1)];
+        // let tokens = vec![Token::Address(addresses.0), Token::Address(addresses.1)];
         let reserve_uints = (69u128, 420u128, 1337u32);
         let reserves = vec![
             Token::Uint(reserve_uints.0.into()),

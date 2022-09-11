@@ -2,37 +2,49 @@ use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory};
 use ethers::prelude::*;
 use std::sync::Arc;
 
+/// Errors thrown by [UniswapV2Library].
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum UniswapV2LibraryError {
+    /// Thrown when interacting with the smart contracts.
     #[error("{0}")]
     ContractError(String),
 
+    /// Thrown when providing identical addresses as parameters.
     #[error("Sorting identical addresses")]
     IdenticalAddresses,
 
+    /// Thrown when providing [address(0)][Address] as a parameter.
     #[error("Sorting Address::zero()")]
     ZeroAddress,
 
+    /// Thrown when providing an amount equal to zero.
     #[error("Amount is zero")]
     InsufficientAmount,
 
+    /// Thrown when providing an input amount equal to zero.
     #[error("Input amount is zero")]
     InsufficientInputAmount,
 
+    /// Thrown when providing an output amount equal to zero.
     #[error("Output amount is zero")]
     InsufficientOutputAmount,
 
+    /// Thrown when providing a liquidity amount equal to zero.
     #[error("Liquidity is zero")]
     InsufficientLiquidity,
 
+    /// Thrown when the provided path is empty or contains only one address.
     #[error("Path length must be greater than or equal to 2")]
     InvalidPath,
 }
 
+/// Type alias for Result<T, UniswapV2LibraryError>.
 type Result<T> = std::result::Result<T, UniswapV2LibraryError>;
 
-/// Refactored from [`@Uniswap/v2-periphery`](https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol).
+/// The UniswapV2 library refactored from the official [@Uniswap/v2-periphery].
+///
+/// [@Uniswap/v2-periphery]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol
 pub struct UniswapV2Library;
 
 impl UniswapV2Library {

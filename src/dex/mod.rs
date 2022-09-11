@@ -15,36 +15,45 @@ pub use protocol::Protocol;
 /// A helper enum that wraps a [U256] for determining a swap's input / output amount.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub enum Amount {
-    /// Swap X Token1 for any Token2
+    /// Swap exactly {0} Token1 for any amount of Token2.
     ExactIn(U256),
-    /// Swap any Token1 for X Token2
+    /// Swap any amount of Token1 for exactly {0} Token2.
     ExactOut(U256),
 }
 
+/// Errors thrown by [Dex].
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum DexError<M: Middleware> {
+    /// Thrown when using [UniswapV2Library].
     #[error(transparent)]
     UniswapV2LibraryError(#[from] UniswapV2LibraryError),
 
+    /// Thrown when interacting with the smart contracts.
     #[error(transparent)]
     ContractError(#[from] ContractError<M>),
 
+    /// Thrown when a provider call fails.
     #[error(transparent)]
     ProviderError(#[from] ProviderError),
 
+    /// Thrown when the provided slippage is invalid.
     #[error("Slippage must be in range: 0.0..=100.0")]
     InvalidSlippage,
 
+    /// Thrown when the start and finish token are the same.
     #[error("Cannot swap a token into itself")]
     SwapToSelf,
 
+    /// Thrown when trying to create a WETH deposit or withdrawal and WETH has not been set.
     #[error("WETH has yet to be set")]
     WethNotSet,
 }
 
-pub type Result<T, M> = std::result::Result<T, DexError<M>>;
+/// Type alias for Result<T, DexError<M>>.
+type Result<T, M> = std::result::Result<T, DexError<M>>;
 
+/// TODO
 #[derive(Clone, Debug)]
 pub struct Dex<M> {
     /// The node and signer.
@@ -64,10 +73,13 @@ pub struct Dex<M> {
     protocol: Protocol,
 }
 
-// TODO: UniV3. Separate as UniV2 and UniV3 Dex structs?
-// TODO: Common Dex trait?
-// TODO: Support for more chains
+// TODO: UniV3
 impl<M: Middleware> Dex<M> {
+    /// Creates a new instance of Dex using the provided client and protocol.
+    ///
+    /// # Panics
+    ///
+    /// When the protocol's addresses could not be found.
     pub fn new(client: Arc<M>, chain: Chain, protocol: Protocol) -> Self {
         let (router_address, factory_address) = protocol.addresses(chain);
         let factory = Factory::new(Some(factory_address), Some(chain), protocol);
@@ -75,6 +87,7 @@ impl<M: Middleware> Dex<M> {
         Self { client, router: router_address, factory, weth: weth_address, protocol }
     }
 
+    /// TODO
     pub fn new_with_factory(_factory: Factory) -> Self {
         todo!()
     }
@@ -291,6 +304,7 @@ impl<M: Middleware> Dex<M> {
         Ok(call)
     }
 
+    /// Returns a `weth.withdraw(uint256)` [ContractCall].
     pub fn weth_withdraw(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
         let address = match self.weth {
             Some(address) => address,

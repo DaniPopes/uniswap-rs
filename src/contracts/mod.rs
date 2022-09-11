@@ -1,5 +1,3 @@
-//! Contains all the relevant contract addresses. Modified from ethers/ethers-addressbook.
-
 use ethers::prelude::*;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -16,8 +14,8 @@ pub struct Contract {
 }
 
 impl Contract {
-    /// Returns the address of the contract on the specified chain. If the contract's address is
-    /// not found in the addressbook, the getter returns None.
+    /// Returns the address of the contract on the specified chain. Returns None if the contract's
+    /// address is not found in the addressbook.
     pub fn address(&self, chain: Chain) -> Option<Address> {
         self.addresses.get(&chain).cloned()
     }
