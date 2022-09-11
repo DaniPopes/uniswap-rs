@@ -29,19 +29,24 @@ const PANCAKESWAP_PAIR_CODE_HASH: H256 = H256([
 ]);
 
 // TODO: Support for more chains
-/// Represents a decentralized, on-chain ERC20 exchange protocol, like Uniswap.
+/// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
+/// swapping of ERC-20 tokens on the Ethereum blockchain.
 #[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
 pub enum Protocol {
     /// UniswapV2, deployed on Ethereum.
     #[default]
     UniswapV2,
+
     /// UniswapV3, deployed on Ethereum, Polygon and Celo.
     UniswapV3,
+
     /// Sushiswap, deployed on most chains.
     Sushiswap,
+
     /// Pancakeswap, deployed only on Binance Smart Chain.
     Pancakeswap,
+
     /// Custom protocol wrapping (router_address, factory_address). Not yet fully implemented.
     Custom(Address, Address),
 }
@@ -105,12 +110,12 @@ impl Protocol {
     }
 
     /// Returns whether the protocol is or is a fork of UniswapV2.
-    pub fn is_v2(&self) -> bool {
+    pub const fn is_v2(&self) -> bool {
         !self.is_v3()
     }
 
     /// Returns whether the protocol is or is a fork of UniswapV3.
-    pub fn is_v3(&self) -> bool {
+    pub const fn is_v3(&self) -> bool {
         matches!(self, Self::UniswapV3)
     }
 }
