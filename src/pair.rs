@@ -237,7 +237,8 @@ fn parse_errors(tokens: Vec<Token>) -> Vec<Option<String>> {
     msgs
 }
 
-/// Parses a multicall result from a vector of tokens, returning None if the call returned an error.
+/// Parses a multicall result from a vector of tokens, returning None if the call returned an
+/// error.
 fn parse_result<M: Middleware, D: Detokenize>(tokens: Vec<Token>) -> Result<Option<D>, M> {
     let res = D::from_tokens(tokens.clone());
     match res {
@@ -256,7 +257,8 @@ fn parse_result<M: Middleware, D: Detokenize>(tokens: Vec<Token>) -> Result<Opti
     }
 }
 
-/// Parses a multicall result of Pair::get_tokens(), returning None if the call returned an error.
+/// Parses a multicall result of Pair::get_tokens(), returning None if the call returned an
+/// error.
 fn parse_tokens_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Tokens>, M> {
     type TokensResult = ((bool, Address), (bool, Address));
     let res: Option<TokensResult> = parse_result(tokens)?;
@@ -273,7 +275,8 @@ fn parse_tokens_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Token
     }
 }
 
-/// Parses a multicall result of Pair::get_reserves(), returning None if the call returned an error.
+/// Parses a multicall result of Pair::get_reserves(), returning None if the call returned an
+/// error.
 fn parse_reserves_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Reserves>, M> {
     type ReservesResult = (bool, Reserves);
     let res: Option<ReservesResult> = parse_result(tokens)?;
@@ -329,52 +332,53 @@ mod tests {
         ];
         type FailureResult = ((bool, String), (bool, String), (bool, String));
         let failure_result: FailureResult = (
-            (true, error_message.clone()),
-            (true, error_message.clone()),
-            (true, error_message.clone()),
+            (false, error_message.clone()),
+            (false, error_message.clone()),
+            (false, error_message.clone()),
         );
         let failure_tokens = vec![
+            Token::Tuple(vec![Token::Bool(false), Token::String(error_message.clone())]),
             Token::Tuple(vec![Token::Bool(false), Token::String(error_message.clone())]),
             Token::Tuple(vec![Token::Bool(false), Token::String(error_message.clone())]),
         ];
 
         // parse_errors
 
-        let errors = parse_errors(success_tokens);
+        let errors = parse_errors(success_tokens.clone());
+        assert_eq!(errors.len(), 3);
         for e in errors {
             assert!(e.is_none());
         }
 
-        let errors = parse_errors(failure_tokens);
+        let errors = parse_errors(failure_tokens.clone());
+        assert_eq!(errors.len(), 3);
         for e in errors {
             assert_eq!(e.unwrap(), error_message.clone());
         }
 
-        // TODO: cannot infer M
+        // parse_result
 
-        // // parse_result
+        let result = parse_result::<Provider<Http>, SuccessResult>(success_tokens.clone()).unwrap();
+        assert_eq!(result.unwrap(), success_result);
 
-        // let result: Option<SuccessResult> = parse_result(tokens).unwrap();
-        // assert_eq!(result.unwrap(), success_result);
+        let result = parse_result::<Provider<Http>, FailureResult>(failure_tokens.clone()).unwrap();
+        assert_eq!(result.unwrap(), failure_result);
 
-        // let result: Option<FailureResult> = parse_result(tokens).unwrap();
-        // assert_eq!(result.unwrap(), failure_result);
+        // parse_tokens_result
 
-        // // parse_tokens_result
+        let result = parse_tokens_result::<Provider<Http>>(success_tokens[0..2].to_vec()).unwrap();
+        assert_eq!(result.unwrap(), addresses);
 
-        // let result = parse_tokens_result(success_tokens[0..2].to_vec()).unwrap().unwrap();
-        // assert_eq!(result, addresses);
+        let result = parse_tokens_result::<Provider<Http>>(failure_tokens.clone());
+        assert!(result.unwrap().is_none());
 
-        // let result = parse_tokens_result(failure_tokens).unwrap();
-        // assert!(result.is_none());
+        // parse_reserves_result
 
-        // // parse_reserves_result
+        let result = parse_reserves_result::<Provider<Http>>(success_tokens[2..].to_vec()).unwrap();
+        assert_eq!(result.unwrap(), reserve_uints);
 
-        // let result = parse_reserves_result(success_tokens[2..].to_vec()).unwrap().unwrap();
-        // assert_eq!(result, reserve_uints);
-
-        // let result = parse_reserves_result(failure_tokens).unwrap();
-        // assert!(result.is_none());
+        let result = parse_reserves_result::<Provider<Http>>(failure_tokens);
+        assert!(result.unwrap().is_none());
     }
 
     #[tokio::test]
