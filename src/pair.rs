@@ -319,7 +319,7 @@ mod tests {
         let provider = MAINNET.provider();
         let client = Arc::new(provider);
         let factory = Factory::new(None, Some(chain), Protocol::UniswapV2);
-        
+
         Pair::new_with_tokens(client, factory, weth, usdc).unwrap()
     }
 
