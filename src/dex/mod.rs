@@ -1,25 +1,18 @@
 use crate::{
     bindings::{i_uniswap_v2_router_02::IUniswapV2Router02, iweth::IWETH},
+    constants::*,
     contracts::try_address,
     factory::Factory,
+    utils::*,
     UniswapV2Library, UniswapV2LibraryError,
 };
 use ethers::prelude::{builders::ContractCall, *};
-use std::{sync::Arc, time::SystemTime};
+use std::sync::Arc;
 
 mod protocol;
 pub use protocol::Protocol;
 
-/// [0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE](https://etherscan.io/address/0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
-///
-/// A unique address to differentiate the native token from any other ERC20 token.
-pub const NATIVE_TOKEN_ADDRESS: Address = Address::repeat_byte(0xee);
-
-const MIN_DEADLINE_SECONDS: u64 = 30;
-const DEFAULT_DEADLINE_SECONDS: u64 = 1800;
-const BPS_U256: U256 = U256([10_000u64, 0, 0, 0]);
-
-/// A helper enum that wraps a [U256] for determining a swap's input / output.
+/// A helper enum that wraps a [U256] for determining a swap's input / output amount.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub enum Amount {
     /// Swap X Token1 for any Token2
@@ -86,6 +79,21 @@ impl<M: Middleware> Dex<M> {
         todo!()
     }
 
+    /// Sets the wrapped native token address by calling the WETH() method on the router.
+    pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
+        let router = IUniswapV2Router02::new(self.router, self.client.clone());
+        self.weth = Some(router.weth().call().await?);
+
+        Ok(self)
+    }
+
+    /// Sets the wrapped native token address.
+    pub fn set_weth_sync(&mut self, weth: Address) -> Result<&mut Self, M> {
+        self.weth = Some(weth);
+
+        Ok(self)
+    }
+
     /// Generalized swap function for the various [UniswapV2Router] `swap[Exact]XFor[Exact]Y`.
     /// Returns the contract call with the necessary parameters set (value, calldata).
     ///
@@ -136,26 +144,20 @@ impl<M: Middleware> Dex<M> {
             }
         };
 
-        let (from_native, to_native) =
-            (is_eth(path.first().unwrap()), is_eth(path.last().unwrap()));
-
         // map eth to weth
         for address in path.iter_mut() {
-            if is_eth(address) {
+            if is_native(address) {
                 *address = weth
             }
         }
 
-        // after map so it captures eth to weth, weth to eth
-        if path.first().unwrap() == path.last().unwrap() {
+        // after map so it counts both eth and weth as the same thing
+        if path.first().expect("path is empty") == path.last().expect("path is empty") {
             return Err(DexError::SwapToSelf)
         }
 
         let deadline = {
-            let now = SystemTime::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .expect("Time went backwards")
-                .as_secs();
+            let now = now().as_secs();
             let deadline = now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS);
             let min_deadline = now + MIN_DEADLINE_SECONDS;
             if deadline < min_deadline {
@@ -166,8 +168,30 @@ impl<M: Middleware> Dex<M> {
         }
         .into();
 
+        let mut call = match self.protocol {
+            p if p.is_v2() => self.swap_v2(amount, slippage_tolerance, path, to, deadline).await?,
+            p if p.is_v3() => todo!("UniswapV3 is not yet implemented"),
+            _ => unreachable!(),
+        };
+
+        if let Some(from) = sender {
+            call = call.from(from);
+        }
+
+        Ok(call)
+    }
+
+    async fn swap_v2(
+        &mut self,
+        amount: Amount,
+        slippage_tolerance: f32,
+        path: Vec<Address>,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, Vec<U256>>, M> {
         let router = IUniswapV2Router02::new(self.router, self.client.clone());
-        let mut call = match amount {
+        let (from_native, to_native) = is_native_path(&path);
+        let call = match amount {
             Amount::ExactIn(amount_in) => {
                 let amount_out_min = if slippage_tolerance == 100.0 {
                     U256::zero()
@@ -181,7 +205,7 @@ impl<M: Middleware> Dex<M> {
                     )
                     .await?
                     .last()
-                    .expect("path is empty, can not happen");
+                    .expect("path is empty");
                     if slippage_tolerance == 0.0 {
                         last_amount_out
                     } else {
@@ -220,7 +244,7 @@ impl<M: Middleware> Dex<M> {
                     )
                     .await?
                     .first()
-                    .expect("path is empty, can not happen");
+                    .expect("path is empty");
                     if slippage_tolerance == 0.0 {
                         first_amount_in
                     } else {
@@ -248,28 +272,10 @@ impl<M: Middleware> Dex<M> {
             }
         };
 
-        if let Some(from) = sender {
-            call = call.from(from);
-        }
-
         Ok(call)
     }
 
-    /// Sets the wrapped native token address by calling the WETH() method on the router.
-    pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
-        let router = IUniswapV2Router02::new(self.router, self.client.clone());
-        self.weth = Some(router.weth().call().await?);
-
-        Ok(self)
-    }
-
-    /// Sets the wrapped native token address.
-    pub fn set_weth_sync(&mut self, weth: Address) -> Result<&mut Self, M> {
-        self.weth = Some(weth);
-
-        Ok(self)
-    }
-
+    /// Calls a `weth.deposit()` [ContractCall].
     pub fn weth_deposit(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
         let address = match self.weth {
             Some(address) => address,
@@ -299,11 +305,6 @@ impl<M: Middleware> Dex<M> {
 
         Ok(call)
     }
-}
-
-#[inline]
-fn is_eth(address: &Address) -> bool {
-    address == &NATIVE_TOKEN_ADDRESS
 }
 
 #[cfg(test)]
