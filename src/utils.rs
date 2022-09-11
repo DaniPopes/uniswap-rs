@@ -12,6 +12,6 @@ pub(crate) fn is_native(address: &Address) -> bool {
 }
 
 /// Returns (from_native, to_native).
-pub(crate) fn is_native_path(path: &Vec<Address>) -> (bool, bool) {
+pub(crate) fn is_native_path(path: &[Address]) -> (bool, bool) {
     (is_native(path.first().unwrap()), is_native(path.last().unwrap()))
 }
