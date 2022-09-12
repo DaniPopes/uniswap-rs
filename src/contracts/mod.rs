@@ -1,3 +1,7 @@
+//! Contains all related smart contract addresses. Modified from [`addressbook`].
+//!
+//! [`addressbook`]: ethers::addressbook
+
 use ethers::prelude::*;
 use serde::Deserialize;
 use std::collections::HashMap;

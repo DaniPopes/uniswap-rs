@@ -1,3 +1,5 @@
+//! Utils
+
 use crate::constants::NATIVE_TOKEN_ADDRESS;
 use ethers::prelude::*;
 use std::time::{Duration, SystemTime};

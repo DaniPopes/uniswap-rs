@@ -3,19 +3,28 @@ use ethers::prelude::*;
 
 /// Represents a Uniswap factory.
 #[derive(Clone, Copy, Debug)]
-pub struct Factory {
+pub struct V2Factory {
     address: Address,
     protocol: Protocol,
 }
 
-impl From<Factory> for Address {
-    fn from(factory: Factory) -> Self {
+impl std::ops::Deref for V2Factory {
+    type Target = Address;
+
+    fn deref(&self) -> &Self::Target {
+        &self.address
+    }
+}
+
+impl From<V2Factory> for Address {
+    fn from(factory: V2Factory) -> Self {
         factory.address
     }
 }
 
-impl Factory {
+impl V2Factory {
     /// Creates a new instance of a Uniswap factory.
+    ///
     /// Note: either an address or a chain must be provided.
     pub fn new(address: Option<Address>, chain: Option<Chain>, protocol: Protocol) -> Self {
         let address = address.unwrap_or_else(|| {

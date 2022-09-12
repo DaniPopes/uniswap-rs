@@ -1,32 +1,10 @@
-use crate::{
-    bindings::i_uniswap_v2_pair::IUniswapV2Pair, factory::Factory, UniswapV2Library,
-    UniswapV2LibraryError,
-};
-use ethers::{
-    abi::Token,
-    core::abi::Detokenize,
-    prelude::{builders::ContractCall, *},
-};
+use super::{V2Factory, V2Library};
+use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairError};
+use ethers::{abi::Token, contract::builders::ContractCall, core::abi::Detokenize, prelude::*};
 use std::sync::Arc;
 
 type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
-
-/// Errors thrown by [Pair].
-#[derive(Debug, thiserror::Error)]
-pub enum PairError<M: Middleware> {
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
-
-    /// Thrown when using [UniswapV2Library].
-    #[error(transparent)]
-    UniswapV2LibraryError(#[from] UniswapV2LibraryError),
-
-    /// Thrown when interacting with [Multicall].
-    #[error(transparent)]
-    MulticallError(#[from] MulticallError<M>),
-}
 
 /// Type alias for Result<T, PairError<M>>.
 type Result<T, M> = std::result::Result<T, PairError<M>>;
@@ -57,6 +35,7 @@ type Result<T, M> = std::result::Result<T, PairError<M>>;
 /// assert!(pair.deployed());
 /// # Ok(())
 /// # }
+/// ```
 #[derive(Clone)]
 pub struct Pair<M> {
     /// The client.
@@ -114,12 +93,12 @@ impl<M: Middleware> Pair<M> {
     /// Creates a new Pair instance using the provided client, factory and tokens' addresses.
     pub fn new_with_tokens(
         client: Arc<M>,
-        factory: Factory,
+        factory: V2Factory,
         token0: Address,
         token1: Address,
     ) -> Result<Self, M> {
-        let (token0, token1) = UniswapV2Library::sort_tokens(token0, token1)?;
-        let address = UniswapV2Library::pair_for(factory, token0, token1)?;
+        let (token0, token1) = V2Library::sort_tokens(token0, token1)?;
+        let address = V2Library::pair_for(factory, token0, token1)?;
 
         Ok(Self {
             client,
@@ -318,7 +297,7 @@ mod tests {
         let usdc = address("USDC", chain);
         let provider = MAINNET.provider();
         let client = Arc::new(provider);
-        let factory = Factory::new(None, Some(chain), Protocol::UniswapV2);
+        let factory = V2Factory::new(None, Some(chain), Protocol::UniswapV2);
 
         Pair::new_with_tokens(client, factory, weth, usdc).unwrap()
     }

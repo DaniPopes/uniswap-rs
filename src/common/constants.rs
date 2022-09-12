@@ -1,3 +1,5 @@
+//! Constants
+
 use ethers::core::types::{Address, U256};
 
 /// [0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE](https://etherscan.io/address/0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)

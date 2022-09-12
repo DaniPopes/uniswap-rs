@@ -2,15 +2,13 @@ use crate::{
     bindings::{i_uniswap_v2_router_02::IUniswapV2Router02, iweth::IWETH},
     constants::*,
     contracts::try_address,
-    factory::Factory,
+    errors::{DexError, UniswapV2LibraryError},
     utils::*,
-    UniswapV2Library, UniswapV2LibraryError,
+    v2::{V2Factory, V2Library},
+    Protocol,
 };
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
-
-mod protocol;
-pub use protocol::Protocol;
 
 /// A helper enum that wraps a [U256] for determining a swap's input / output amount.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
@@ -19,35 +17,6 @@ pub enum Amount {
     ExactIn(U256),
     /// Swap any amount of Token1 for exactly {0} Token2.
     ExactOut(U256),
-}
-
-/// Errors thrown by [Dex].
-#[derive(Debug, thiserror::Error)]
-#[non_exhaustive]
-pub enum DexError<M: Middleware> {
-    /// Thrown when using [UniswapV2Library].
-    #[error(transparent)]
-    UniswapV2LibraryError(#[from] UniswapV2LibraryError),
-
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
-
-    /// Thrown when a provider call fails.
-    #[error(transparent)]
-    ProviderError(#[from] ProviderError),
-
-    /// Thrown when the provided slippage is invalid.
-    #[error("Slippage must be in range: 0.0..=100.0")]
-    InvalidSlippage,
-
-    /// Thrown when the start and finish token are the same.
-    #[error("Cannot swap a token into itself")]
-    SwapToSelf,
-
-    /// Thrown when trying to create a WETH deposit or withdrawal and WETH has not been set.
-    #[error("WETH has yet to be set")]
-    WethNotSet,
 }
 
 /// Type alias for Result<T, DexError<M>>.
@@ -63,13 +32,12 @@ pub struct Dex<M> {
     router: Address,
 
     /// The dex liquidity pair factory.
-    factory: Factory,
+    factory: V2Factory,
 
     /// The chain's wrapped native token.
     weth: Option<Address>,
 
     /// The protocol.
-    #[allow(dead_code)]
     protocol: Protocol,
 }
 
@@ -82,13 +50,13 @@ impl<M: Middleware> Dex<M> {
     /// When the protocol's addresses could not be found.
     pub fn new(client: Arc<M>, chain: Chain, protocol: Protocol) -> Self {
         let (router_address, factory_address) = protocol.addresses(chain);
-        let factory = Factory::new(Some(factory_address), Some(chain), protocol);
+        let factory = V2Factory::new(Some(factory_address), Some(chain), protocol);
         let weth_address = try_address("WETH", chain);
         Self { client, router: router_address, factory, weth: weth_address, protocol }
     }
 
     /// TODO
-    pub fn new_with_factory(_factory: Factory) -> Self {
+    pub fn new_with_factory(_factory: V2Factory) -> Self {
         todo!()
     }
 
@@ -210,7 +178,7 @@ impl<M: Middleware> Dex<M> {
                     U256::zero()
                 } else {
                     // TODO: Optimize external calls
-                    let last_amount_out = *UniswapV2Library::get_amounts_out(
+                    let last_amount_out = *V2Library::get_amounts_out(
                         self.factory,
                         amount_in,
                         path.clone(),
@@ -249,7 +217,7 @@ impl<M: Middleware> Dex<M> {
                     U256::max_value()
                 } else {
                     // TODO: Optimize external calls
-                    let first_amount_in = *UniswapV2Library::get_amounts_in(
+                    let first_amount_in = *V2Library::get_amounts_in(
                         self.factory,
                         amount_out,
                         path.clone(),
@@ -419,7 +387,7 @@ mod tests {
         let amount = Amount::ExactIn(amount_in_pre);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
-        let amounts_out = UniswapV2Library::get_amounts_out(
+        let amounts_out = V2Library::get_amounts_out(
             dex.factory,
             amount_in_pre,
             path_pre.clone(),
@@ -447,7 +415,7 @@ mod tests {
         let amount_in_pre = U256::exp10(18);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
-        let amounts_out = UniswapV2Library::get_amounts_out(
+        let amounts_out = V2Library::get_amounts_out(
             dex.factory,
             amount_in_pre,
             path_pre.clone(),

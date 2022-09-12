@@ -5,12 +5,12 @@
 #![warn(missing_docs, unreachable_pub)]
 #![deny(broken_intra_doc_links)]
 
-mod constants;
+mod common;
 mod dex;
-mod factory;
-mod library;
-mod pair;
-mod utils;
+mod protocol;
+
+pub mod v2;
+pub mod v3;
 
 /// Contains the bindings for related smart contracts. Generated programmatically using [`Abigen`].
 ///
@@ -18,13 +18,9 @@ mod utils;
 #[allow(missing_docs, unreachable_pub)]
 pub mod bindings;
 
-/// Contains all related smart contract addresses. Modified from [`addressbook`].
-///
-/// [`addressbook`]: ethers::addressbook
 pub mod contracts;
 
+pub use common::*;
 pub use constants::*;
 pub use dex::*;
-pub use factory::*;
-pub use library::*;
-pub use pair::*;
+pub use protocol::*;
