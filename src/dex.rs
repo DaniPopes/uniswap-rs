@@ -1,23 +1,14 @@
 use crate::{
-    bindings::{i_uniswap_v2_router_02::IUniswapV2Router02, iweth::IWETH},
+    bindings::iweth::IWETH,
     constants::*,
     contracts::try_address,
-    errors::{DexError, UniswapV2LibraryError},
+    errors::{DexError, LibraryError},
     utils::*,
-    v2::{V2Factory, V2Library},
-    Protocol,
+    v2::Factory,
+    Amount, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
-
-/// A helper enum that wraps a [U256] for determining a swap's input / output amount.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
-pub enum Amount {
-    /// Swap exactly {0} Token1 for any amount of Token2.
-    ExactIn(U256),
-    /// Swap any amount of Token1 for exactly {0} Token2.
-    ExactOut(U256),
-}
 
 /// Type alias for Result<T, DexError<M>>.
 type Result<T, M> = std::result::Result<T, DexError<M>>;
@@ -28,44 +19,42 @@ pub struct Dex<M> {
     /// The node and signer.
     client: Arc<M>,
 
-    /// The dex swap router.
-    router: Address,
-
-    /// The dex liquidity pair factory.
-    factory: V2Factory,
+    /// The protocol.
+    protocol: ProtocolType,
 
     /// The chain's wrapped native token.
     weth: Option<Address>,
-
-    /// The protocol.
-    protocol: Protocol,
 }
 
 // TODO: UniV3
 impl<M: Middleware> Dex<M> {
-    /// Creates a new instance of Dex using the provided client and protocol.
+    /// Creates a new instance of Dex from a chain.
     ///
     /// # Panics
     ///
     /// When the protocol's addresses could not be found.
-    pub fn new(client: Arc<M>, chain: Chain, protocol: Protocol) -> Self {
-        let (router_address, factory_address) = protocol.addresses(chain);
-        let factory = V2Factory::new(Some(factory_address), Some(chain), protocol);
-        let weth_address = try_address("WETH", chain);
-        Self { client, router: router_address, factory, weth: weth_address, protocol }
+    pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
+        let factory = Factory::new(client.clone(), factory, protocol);
+        Self { client, weth: None, protocol }
     }
 
-    /// TODO
-    pub fn new_with_factory(_factory: V2Factory) -> Self {
-        todo!()
+    /// Creates a new instance of Dex from a chain.
+    ///
+    /// # Panics
+    ///
+    /// When the protocol's addresses could not be found.
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
+        let (router, factory) = protocol.addresses(chain);
+        let weth = try_address("WETH", chain);
+        Self { client, weth, protocol }
     }
 
     /// Sets the wrapped native token address by calling the WETH() method on the router.
     pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
-        let router = IUniswapV2Router02::new(self.router, self.client.clone());
-        self.weth = Some(router.weth().call().await?);
+        // self.weth = Some(self.protocol.router.weth().call().await?);
 
-        Ok(self)
+        // Ok(self)
+        todo!()
     }
 
     /// Sets the wrapped native token address.
@@ -113,7 +102,7 @@ impl<M: Middleware> Dex<M> {
         });
 
         if path.len() < 2 {
-            return Err(UniswapV2LibraryError::InvalidPath.into())
+            return Err(LibraryError::InvalidPath.into())
         }
 
         // set weth
@@ -137,126 +126,28 @@ impl<M: Middleware> Dex<M> {
             return Err(DexError::SwapToSelf)
         }
 
-        let deadline = {
+        let deadline: U256 = {
             let now = now().as_secs();
             let deadline = now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS);
-            let min_deadline = now + MIN_DEADLINE_SECONDS;
-            if deadline < min_deadline {
-                min_deadline
-            } else {
-                deadline
-            }
+            deadline
         }
         .into();
 
-        let mut call = match self.protocol {
-            p if p.is_v2() => self.swap_v2(amount, slippage_tolerance, path, to, deadline).await?,
-            p if p.is_v3() => todo!("UniswapV3 is not yet implemented"),
-            _ => unreachable!(),
-        };
+        // let mut call = match self.protocol {
+        //     p if p.is_v2() => self.swap_v2(amount, slippage_tolerance, path, to,
+        // deadline).await?,     p if p.is_v3() => todo!("v3 is not yet implemented"),
+        //     p => unreachable!("protocol {:?} is neither v2 nor v3", p),
+        // };
 
-        if let Some(from) = sender {
-            call = call.from(from);
-        }
+        // if let Some(from) = sender {
+        //     call = call.from(from);
+        // }
 
-        Ok(call)
+        // Ok(call)
+        todo!()
     }
 
-    async fn swap_v2(
-        &mut self,
-        amount: Amount,
-        slippage_tolerance: f32,
-        path: Vec<Address>,
-        to: Address,
-        deadline: U256,
-    ) -> Result<ContractCall<M, Vec<U256>>, M> {
-        let router = IUniswapV2Router02::new(self.router, self.client.clone());
-        let (from_native, to_native) = is_native_path(&path);
-        let call = match amount {
-            Amount::ExactIn(amount_in) => {
-                let amount_out_min = if slippage_tolerance == 100.0 {
-                    U256::zero()
-                } else {
-                    // TODO: Optimize external calls
-                    let last_amount_out = *V2Library::get_amounts_out(
-                        self.factory,
-                        amount_in,
-                        path.clone(),
-                        self.client.clone(),
-                    )
-                    .await?
-                    .last()
-                    .expect("path is empty");
-                    if slippage_tolerance == 0.0 {
-                        last_amount_out
-                    } else {
-                        let mult = 100.0 - slippage_tolerance;
-                        let mult_bps = U256::from((mult * 100.0) as u32);
-                        (last_amount_out * mult_bps) / BPS_U256
-                    }
-                };
-
-                if from_native {
-                    router
-                        .swap_exact_eth_for_tokens(amount_out_min, path, to, deadline)
-                        .value(amount_in)
-                } else if to_native {
-                    router.swap_exact_tokens_for_eth(amount_in, amount_out_min, path, to, deadline)
-                } else {
-                    router.swap_exact_tokens_for_tokens(
-                        amount_in,
-                        amount_out_min,
-                        path,
-                        to,
-                        deadline,
-                    )
-                }
-            }
-            Amount::ExactOut(amount_out) => {
-                let amount_in_max = if slippage_tolerance == 100.0 {
-                    U256::max_value()
-                } else {
-                    // TODO: Optimize external calls
-                    let first_amount_in = *V2Library::get_amounts_in(
-                        self.factory,
-                        amount_out,
-                        path.clone(),
-                        self.client.clone(),
-                    )
-                    .await?
-                    .first()
-                    .expect("path is empty");
-                    if slippage_tolerance == 0.0 {
-                        first_amount_in
-                    } else {
-                        let mult = 1.0 / (100.0 - slippage_tolerance);
-                        let mult_bps = U256::from((mult * 100.0).round() as u32);
-                        (first_amount_in * mult_bps) / BPS_U256
-                    }
-                };
-
-                if from_native {
-                    router
-                        .swap_eth_for_exact_tokens(amount_out, path, to, deadline)
-                        .value(amount_out)
-                } else if to_native {
-                    router.swap_tokens_for_exact_eth(amount_out, amount_in_max, path, to, deadline)
-                } else {
-                    router.swap_tokens_for_exact_tokens(
-                        amount_out,
-                        amount_in_max,
-                        path,
-                        to,
-                        deadline,
-                    )
-                }
-            }
-        };
-
-        Ok(call)
-    }
-
-    /// Calls a `weth.deposit()` [ContractCall].
+    /// Returns a `weth.deposit()` [ContractCall].
     pub fn weth_deposit(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
         let address = match self.weth {
             Some(address) => address,
@@ -291,7 +182,7 @@ impl<M: Middleware> Dex<M> {
 
 #[cfg(test)]
 mod tests {
-    use crate::contracts::address;
+    use crate::{contracts::address, v2::Library as V2Library};
     use ethers::abi::{ParamType, Token, Tokenize};
 
     use super::*;
@@ -303,9 +194,9 @@ mod tests {
         let client = SignerMiddleware::new(provider, signer);
 
         let chain = Chain::Mainnet;
-        let dex_type = Protocol::UniswapV2;
+        let dex_type = ProtocolType::UniswapV2;
 
-        Dex::new(Arc::new(client), chain, dex_type)
+        Dex::new_with_chain(Arc::new(client), chain, dex_type)
     }
 
     fn decode_call(calldata: &Bytes) -> Vec<Token> {
@@ -387,14 +278,9 @@ mod tests {
         let amount = Amount::ExactIn(amount_in_pre);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
-        let amounts_out = V2Library::get_amounts_out(
-            dex.factory,
-            amount_in_pre,
-            path_pre.clone(),
-            dex.client.clone(),
-        )
-        .await
-        .unwrap();
+        let amounts_out: Vec<U256> = todo!();
+        // V2Library::get_amounts_out(dex.protocol.factory, amount_in_pre,
+        // path_pre.clone()).await.unwrap();
 
         let contract_call = dex.swap(amount, 0.0, path_pre.clone(), None, None).await.unwrap();
 
@@ -414,15 +300,11 @@ mod tests {
 
         let amount_in_pre = U256::exp10(18);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
+        let factory: Factory<Provider<Http>> = todo!();
+        // dex.protocol.factory;
 
-        let amounts_out = V2Library::get_amounts_out(
-            dex.factory,
-            amount_in_pre,
-            path_pre.clone(),
-            dex.client.clone(),
-        )
-        .await
-        .unwrap();
+        let amounts_out =
+            V2Library::get_amounts_out(factory, amount_in_pre, path_pre.clone()).await.unwrap();
 
         let amount = Amount::ExactIn(amount_in_pre);
         for i in 2..=10 {

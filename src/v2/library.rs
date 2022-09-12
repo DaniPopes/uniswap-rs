@@ -1,35 +1,34 @@
-use super::factory::V2Factory;
-use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::UniswapV2LibraryError};
+use super::factory::Factory;
+use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::LibraryError};
 use ethers::prelude::*;
-use std::sync::Arc;
 
 /// Type alias for Result<T, UniswapV2LibraryError>.
-type Result<T> = std::result::Result<T, UniswapV2LibraryError>;
+type Result<T> = std::result::Result<T, LibraryError>;
 
 /// The UniswapV2 library refactored from the official [@Uniswap/v2-periphery].
 ///
 /// [@Uniswap/v2-periphery]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol
-pub struct V2Library;
+pub struct Library;
 
-impl V2Library {
+impl Library {
     /// Returns sorted token addresses, used to handle return values from pairs sorted in this
     /// order.
     pub fn sort_tokens(a: Address, b: Address) -> Result<(Address, Address)> {
         if a == b {
-            return Err(UniswapV2LibraryError::IdenticalAddresses)
+            return Err(LibraryError::IdenticalAddresses)
         }
 
         let (a, b) = if a < b { (a, b) } else { (b, a) };
 
         if a.is_zero() {
-            return Err(UniswapV2LibraryError::ZeroAddress)
+            return Err(LibraryError::ZeroAddress)
         }
 
         Ok((a, b))
     }
 
     /// Calculates the CREATE2 address for a pair without making any external calls.
-    pub fn pair_for(factory: V2Factory, a: Address, b: Address) -> Result<Address> {
+    pub fn pair_for<M: Middleware>(factory: Factory<M>, a: Address, b: Address) -> Result<Address> {
         let (a, b) = Self::sort_tokens(a, b)?;
         Ok(ethers::utils::get_create2_address_from_hash(
             factory.address(),
@@ -40,18 +39,17 @@ impl V2Library {
 
     /// Fetches and sorts the reserves for a pair.
     pub async fn get_reserves<M: Middleware>(
-        factory: V2Factory,
+        factory: Factory<M>,
         a: Address,
         b: Address,
-        client: Arc<M>,
     ) -> Result<(U256, U256)> {
         let (address_0, _) = Self::sort_tokens(a, b)?;
-        let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, client);
+        let pair = IUniswapV2Pair::new(Self::pair_for(factory.clone(), a, b)?, factory.client());
         let (reserve_a, reserve_b, _) = pair
             .get_reserves()
             .call()
             .await
-            .map_err(|e| UniswapV2LibraryError::ContractError(e.to_string()))?;
+            .map_err(|e| LibraryError::ContractError(e.to_string()))?;
         let (reserve_a, reserve_b) = (reserve_a.into(), reserve_b.into());
         if a == address_0 {
             Ok((reserve_a, reserve_b))
@@ -64,9 +62,9 @@ impl V2Library {
     /// asset.
     pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> Result<U256> {
         if amount_a.is_zero() {
-            Err(UniswapV2LibraryError::InsufficientAmount)
+            Err(LibraryError::InsufficientAmount)
         } else if reserve_a.is_zero() || reserve_b.is_zero() {
-            Err(UniswapV2LibraryError::InsufficientLiquidity)
+            Err(LibraryError::InsufficientLiquidity)
         } else {
             Ok((amount_a * reserve_b) / reserve_a)
         }
@@ -76,10 +74,10 @@ impl V2Library {
     /// the other asset.
     pub fn get_amount_out(amount_in: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if amount_in.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientInputAmount)
+            return Err(LibraryError::InsufficientInputAmount)
         }
         if reserve_in.is_zero() || reserve_out.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientLiquidity)
+            return Err(LibraryError::InsufficientLiquidity)
         }
         let amount_in_with_fee: U256 = amount_in * 997;
         let numerator: U256 = amount_in_with_fee * reserve_out;
@@ -91,10 +89,10 @@ impl V2Library {
     /// other asset.
     pub fn get_amount_in(amount_out: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if amount_out.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientOutputAmount)
+            return Err(LibraryError::InsufficientOutputAmount)
         }
         if reserve_in.is_zero() || reserve_out.is_zero() {
-            return Err(UniswapV2LibraryError::InsufficientLiquidity)
+            return Err(LibraryError::InsufficientLiquidity)
         }
         let numerator: U256 = (reserve_in * amount_out) * 1000;
         let denominator: U256 = (reserve_out - amount_out) * 997;
@@ -103,20 +101,19 @@ impl V2Library {
 
     /// Performs chained get_amount_out calculations on any number of pairs.
     pub async fn get_amounts_out<M: Middleware>(
-        factory: V2Factory,
+        factory: Factory<M>,
         amount_in: U256,
         path: Vec<Address>,
-        client: Arc<M>,
     ) -> Result<Vec<U256>> {
         let l = path.len();
         if l < 2 {
-            return Err(UniswapV2LibraryError::InvalidPath)
+            return Err(LibraryError::InvalidPath)
         }
         let mut amounts = vec![U256::zero(); l];
         amounts[0] = amount_in;
         for i in 0..l - 1 {
             let (reserve_in, reserve_out) =
-                Self::get_reserves(factory, path[i], path[i + 1], client.clone()).await?;
+                Self::get_reserves(factory.clone(), path[i], path[i + 1]).await?;
             amounts[i + 1] = Self::get_amount_out(amounts[i], reserve_in, reserve_out)?;
         }
         Ok(amounts)
@@ -124,20 +121,19 @@ impl V2Library {
 
     /// Performs chained get_amount_in calculations on any number of pairs.
     pub async fn get_amounts_in<M: Middleware>(
-        factory: V2Factory,
+        factory: Factory<M>,
         amount_out: U256,
         path: Vec<Address>,
-        client: Arc<M>,
     ) -> Result<Vec<U256>> {
         let l = path.len();
         if l < 2 {
-            return Err(UniswapV2LibraryError::InvalidPath)
+            return Err(LibraryError::InvalidPath)
         }
         let mut amounts = vec![U256::zero(); l];
         amounts[l - 1] = amount_out;
         for i in (1..l).rev() {
             let (reserve_in, reserve_out) =
-                Self::get_reserves(factory, path[i - 1], path[i], client.clone()).await?;
+                Self::get_reserves(factory.clone(), path[i - 1], path[i]).await?;
             amounts[i - 1] = Self::get_amount_in(amounts[i], reserve_in, reserve_out)?;
         }
         Ok(amounts)
@@ -147,12 +143,9 @@ impl V2Library {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Protocol;
+    use crate::ProtocolType;
+    use std::sync::Arc;
 
-    static UNIV2_FACTORY: Lazy<V2Factory> = Lazy::new(|| {
-        let address: Address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f".parse().unwrap();
-        V2Factory::new(Some(address), None, Protocol::UniswapV2)
-    });
     static WETH: Lazy<Address> =
         Lazy::new(|| "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2".parse().unwrap());
     static USDC: Lazy<Address> =
@@ -160,21 +153,26 @@ mod tests {
     static WETH_USDC: Lazy<Address> =
         Lazy::new(|| "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap());
 
+    fn default_factory() -> Factory<Provider<Http>> {
+        let client = Arc::new(MAINNET.provider());
+        Factory::new_with_chain(client, Chain::Mainnet, ProtocolType::UniswapV2).unwrap()
+    }
+
     #[test]
     fn can_sort_tokens() {
         let addr = Address::repeat_byte(0x69);
         let (a, b) = (addr, addr);
-        let res = V2Library::sort_tokens(a, b);
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::IdenticalAddresses));
+        let res = Library::sort_tokens(a, b);
+        assert!(matches!(res.unwrap_err(), LibraryError::IdenticalAddresses));
 
-        let res = V2Library::sort_tokens(Address::zero(), b);
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::ZeroAddress));
+        let res = Library::sort_tokens(Address::zero(), b);
+        assert!(matches!(res.unwrap_err(), LibraryError::ZeroAddress));
 
-        let res = V2Library::sort_tokens(a, Address::zero());
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::ZeroAddress));
+        let res = Library::sort_tokens(a, Address::zero());
+        assert!(matches!(res.unwrap_err(), LibraryError::ZeroAddress));
 
         let (a, b) = (Address::random(), Address::random());
-        V2Library::sort_tokens(a, b).unwrap();
+        Library::sort_tokens(a, b).unwrap();
     }
 
     #[test]
@@ -184,11 +182,11 @@ mod tests {
         // let usdc: Address = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".parse().unwrap();
         // let weth_usdc: Address = "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap();
 
-        assert_eq!(V2Library::pair_for(*UNIV2_FACTORY, *WETH, *USDC).unwrap(), *WETH_USDC);
+        assert_eq!(Library::pair_for(default_factory(), *WETH, *USDC).unwrap(), *WETH_USDC);
     }
 
     async fn get_weth_usdc_reserves<M: Middleware>(provider: Arc<M>) -> (U256, U256) {
-        V2Library::get_reserves(*UNIV2_FACTORY, *WETH, *USDC, provider).await.unwrap()
+        Library::get_reserves(default_factory(), *WETH, *USDC).await.unwrap()
     }
 
     #[tokio::test]
@@ -207,19 +205,19 @@ mod tests {
         let reserve_a = U256::from(1000) * base;
         let reserve_b = U256::from(5000) * base;
 
-        let res = V2Library::quote(U256::zero(), reserve_a, reserve_b);
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientAmount));
+        let res = Library::quote(U256::zero(), reserve_a, reserve_b);
+        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientAmount));
 
-        let res = V2Library::quote(amount_a, U256::zero(), reserve_b);
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientLiquidity));
+        let res = Library::quote(amount_a, U256::zero(), reserve_b);
+        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientLiquidity));
 
-        let res = V2Library::quote(amount_a, U256::zero(), U256::zero());
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientLiquidity));
+        let res = Library::quote(amount_a, U256::zero(), U256::zero());
+        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientLiquidity));
 
-        let res = V2Library::quote(amount_a, reserve_a, U256::zero());
-        assert!(matches!(res.unwrap_err(), UniswapV2LibraryError::InsufficientLiquidity));
+        let res = Library::quote(amount_a, reserve_a, U256::zero());
+        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientLiquidity));
 
-        let amount_b = V2Library::quote(amount_a, reserve_a, reserve_b).unwrap();
+        let amount_b = Library::quote(amount_a, reserve_a, reserve_b).unwrap();
 
         assert_eq!(amount_b, (amount_a * reserve_b) / reserve_a);
     }
@@ -230,7 +228,7 @@ mod tests {
 
         let weth_amount = U256::exp10(18);
         let (weth_reserve, usdc_reserve) = get_weth_usdc_reserves(provider.clone()).await;
-        V2Library::quote(weth_amount, weth_reserve, usdc_reserve).unwrap();
+        Library::quote(weth_amount, weth_reserve, usdc_reserve).unwrap();
     }
 
     #[tokio::test]
@@ -239,9 +237,8 @@ mod tests {
 
         let weth_amount = U256::exp10(18);
         let (weth_reserve, usdc_reserve) = get_weth_usdc_reserves(provider.clone()).await;
-        let usdc_amount =
-            V2Library::get_amount_out(weth_amount, weth_reserve, usdc_reserve).unwrap();
-        V2Library::get_amount_in(usdc_amount, usdc_reserve, weth_reserve).unwrap();
+        let usdc_amount = Library::get_amount_out(weth_amount, weth_reserve, usdc_reserve).unwrap();
+        Library::get_amount_in(usdc_amount, usdc_reserve, weth_reserve).unwrap();
     }
 
     #[tokio::test]
@@ -252,11 +249,7 @@ mod tests {
         let path_1 = vec![*WETH, *USDC];
         let path_2 = vec![*USDC, *WETH];
         let usdc_amount =
-            V2Library::get_amounts_out(*UNIV2_FACTORY, weth_amount, path_1, provider.clone())
-                .await
-                .unwrap();
-        V2Library::get_amounts_in(*UNIV2_FACTORY, usdc_amount[0], path_2, provider.clone())
-            .await
-            .unwrap();
+            Library::get_amounts_out(default_factory(), weth_amount, path_1).await.unwrap();
+        Library::get_amounts_in(default_factory(), usdc_amount[0], path_2).await.unwrap();
     }
 }

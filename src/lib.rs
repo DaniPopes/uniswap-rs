@@ -2,6 +2,7 @@
 //!
 //! Simple library for interacting with Uniswap v2 and v3 smart contracts.
 
+#![allow(unused, unreachable_code)]
 #![warn(missing_docs, unreachable_pub)]
 #![deny(broken_intra_doc_links)]
 
@@ -15,12 +16,11 @@ pub mod v3;
 /// Contains the bindings for related smart contracts. Generated programmatically using [`Abigen`].
 ///
 /// [`Abigen`]: ethers::contract::Abigen
-#[allow(missing_docs, unreachable_pub)]
+#[allow(missing_docs)]
 pub mod bindings;
 
 pub mod contracts;
 
 pub use common::*;
-pub use constants::*;
 pub use dex::*;
 pub use protocol::*;

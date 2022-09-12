@@ -1,41 +1,43 @@
-use crate::Protocol;
+use crate::ProtocolType;
 use ethers::prelude::*;
+use std::sync::Arc;
 
 /// Represents a Uniswap factory.
-#[derive(Clone, Copy, Debug)]
-pub struct V2Factory {
+#[derive(Debug)]
+pub struct Factory<M> {
+    client: Arc<M>,
+
     address: Address,
-    protocol: Protocol,
+
+    protocol: ProtocolType,
 }
 
-impl std::ops::Deref for V2Factory {
-    type Target = Address;
-
-    fn deref(&self) -> &Self::Target {
-        &self.address
+impl<M> Clone for Factory<M> {
+    fn clone(&self) -> Self {
+        Self { client: self.client.clone(), address: self.address, protocol: self.protocol }
     }
 }
 
-impl From<V2Factory> for Address {
-    fn from(factory: V2Factory) -> Self {
+impl<M> From<Factory<M>> for Address {
+    fn from(factory: Factory<M>) -> Self {
         factory.address
     }
 }
 
-impl V2Factory {
-    /// Creates a new instance of a Uniswap factory.
-    ///
-    /// Note: either an address or a chain must be provided.
-    pub fn new(address: Option<Address>, chain: Option<Chain>, protocol: Protocol) -> Self {
-        let address = address.unwrap_or_else(|| {
-            protocol
-                .addresses(
-                    chain.expect("Factory::new: Must provide at least one of: address or chain"),
-                )
-                .1
-        });
+impl<M: Middleware> Factory<M> {
+    /// Creates a new instance of Factory from an address.
+    pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
+        Self { client, address, protocol }
+    }
 
-        Self { address, protocol }
+    /// Creates a new instance of Factory from an address.
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
+        protocol.try_addresses(chain).0.and_then(|address| Some(Self { client, address, protocol }))
+    }
+
+    /// Returns the client.
+    pub fn client(&self) -> Arc<M> {
+        self.client.clone()
     }
 
     /// Returns the contract address of the factory.
@@ -44,7 +46,7 @@ impl V2Factory {
     }
 
     /// Returns the protocol of the factory.
-    pub fn protocol(&self) -> Protocol {
+    pub fn protocol(&self) -> ProtocolType {
         self.protocol
     }
 

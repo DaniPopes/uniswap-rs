@@ -1,5 +1,12 @@
-use crate::contracts::{address, try_address};
-use ethers::prelude::*;
+use crate::{
+    contracts::{address, try_address},
+    v2::V2Protocol,
+};
+use ethers::{
+    core::types::{Address, Chain, H256},
+    providers::Middleware,
+};
+use std::fmt;
 
 /// [0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f](https://github.com/Uniswap/v2-periphery/blob/0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f/contracts/libraries/UniswapV2Library.sol#L24)
 const UNISWAP_V2_PAIR_CODE_HASH: H256 = H256([
@@ -33,7 +40,7 @@ const PANCAKESWAP_PAIR_CODE_HASH: H256 = H256([
 /// swapping of ERC-20 tokens on the Ethereum blockchain.
 #[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
-pub enum Protocol {
+pub enum ProtocolType {
     /// UniswapV2, deployed on Ethereum.
     #[default]
     UniswapV2,
@@ -47,49 +54,49 @@ pub enum Protocol {
     /// Pancakeswap, deployed only on Binance Smart Chain.
     Pancakeswap,
 
-    /// Custom protocol wrapping (router_address, factory_address). Not yet fully implemented.
-    Custom(Address, Address),
+    /// Custom protocol. Not yet fully implemented.
+    Custom,
 }
 
-impl std::fmt::Display for Protocol {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Debug::fmt(self, f)
+impl fmt::Display for ProtocolType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
     }
 }
 
-impl Protocol {
-    /// Returns (router_address, factory_address), returning None on any error.
+impl ProtocolType {
+    /// Returns (factory_address, router_address), returning None if not found.
     pub fn try_addresses(&self, chain: Chain) -> (Option<Address>, Option<Address>) {
-        if let Self::Custom(router_address, factory_address) = self {
-            (Some(*router_address), Some(*factory_address))
+        if let Self::Custom = self {
+            (None, None)
         } else {
-            let (router_name, factory_name) = self.contract_names();
-            (try_address(router_name, chain), try_address(factory_name, chain))
+            let (factory_name, router_name) = self.contract_names();
+            (try_address(factory_name, chain), try_address(router_name, chain))
         }
     }
 
-    /// Returns (router_address, factory_address), panicking on any error.
+    /// Returns (factory_address, router_address), panicking if not found.
     pub fn addresses(&self, chain: Chain) -> (Address, Address) {
-        if let Self::Custom(router_address, factory_address) = self {
-            (*router_address, *factory_address)
+        if let Self::Custom = self {
+            panic!("Cannot get addresses for a Custom protocol.")
         } else {
-            let (router_name, factory_name) = self.contract_names();
-            (address(router_name, chain), address(factory_name, chain))
+            let (factory_name, router_name) = self.contract_names();
+            (address(factory_name, chain), address(router_name, chain))
         }
     }
 
-    /// Returns (router_name, factory_name).
+    /// Returns (factory_name, router_name).
     ///
     /// # Panics
     ///
     /// When called with the Custom variant.
     pub const fn contract_names(&self) -> (&str, &str) {
         match self {
-            Self::UniswapV2 => ("UniswapV2Router02", "UniswapV2Factory"),
-            Self::UniswapV3 => ("UniswapV3Router02", "UniswapV3Factory"),
-            Self::Sushiswap => ("SushiswapV2Router02", "SushiswapV2Factory"),
-            Self::Pancakeswap => ("PancakeRouter", "PancakeFactory"),
-            Self::Custom(_, _) => panic!("not implemented for Protocol::Custom"),
+            Self::UniswapV2 => ("UniswapV2Factory", "UniswapV2Router02"),
+            Self::UniswapV3 => ("UniswapV3Factory", "UniswapV3Router02"),
+            Self::Sushiswap => ("SushiswapV2Factory", "SushiswapV2Router02"),
+            Self::Pancakeswap => ("PancakeFactory", "PancakeRouter"),
+            Self::Custom => panic!("not implemented for Protocol::Custom"),
         }
     }
 
@@ -104,8 +111,7 @@ impl Protocol {
             Self::UniswapV3 => UNISWAP_V3_POOL_CODE_HASH,
             Self::Sushiswap => SUSHISWAP_PAIR_CODE_HASH,
             Self::Pancakeswap => PANCAKESWAP_PAIR_CODE_HASH,
-            // TODO
-            Self::Custom(_, _) => panic!("not implemented for Protocol::Custom"),
+            Self::Custom => panic!("not implemented for Protocol::Custom"),
         }
     }
 
@@ -120,10 +126,22 @@ impl Protocol {
     }
 }
 
+/// TODO
+#[derive(Debug, Clone)]
+pub enum Protocol<M> {
+    /// TODO
+    V2(V2Protocol<M>),
+
+    /// TODO
+    V3,
+}
+
+impl<M: Middleware> Protocol<M> {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use Protocol::*;
+    use ProtocolType::*;
 
     #[test]
     fn test_versions() {

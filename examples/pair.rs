@@ -1,11 +1,15 @@
 use ethers::{prelude::*, utils::format_units};
 use std::sync::Arc;
-use uniswap::{contracts::address, Factory, Pair, Protocol};
+use uniswap::{
+    contracts::address,
+    v2::{Factory, Pair},
+    ProtocolType,
+};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     let chain = Chain::Mainnet;
-    let protocol = Protocol::UniswapV2;
+    let protocol = ProtocolType::UniswapV2;
     let client = Arc::new({
         let provider = MAINNET.provider();
         let wallet = "725fd1619b2653b7ff1806bf29ae11d0568606d83777afd5b1f2e649bd5132a9"
@@ -22,8 +26,8 @@ async fn main() -> eyre::Result<()> {
     let usdc = address("USDC", chain);
 
     println!("Getting ETH/USDC pair info:");
-    let factory = Factory::new(None, Some(chain), protocol);
-    let mut pair = Pair::new_with_tokens(client.clone(), factory, weth, usdc)?;
+    let factory = Factory::new_with_chain(client.clone(), chain, protocol).unwrap();
+    let mut pair = Pair::new_with_factory(factory, weth, usdc)?;
 
     pair.sync(true, true).await?;
 

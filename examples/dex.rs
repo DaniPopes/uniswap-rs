@@ -1,11 +1,11 @@
 use ethers::{prelude::*, types::transaction::eip2718::TypedTransaction};
 use std::sync::Arc;
-use uniswap::{contracts::address, Amount, Dex, Protocol, NATIVE_TOKEN_ADDRESS};
+use uniswap::{constants::NATIVE_TOKEN_ADDRESS, contracts::address, Amount, Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     let chain = Chain::Mainnet;
-    let protocol = Protocol::UniswapV2;
+    let protocol = ProtocolType::UniswapV2;
     let client = Arc::new({
         let provider = MAINNET.provider();
         let wallet = "725fd1619b2653b7ff1806bf29ae11d0568606d83777afd5b1f2e649bd5132a9"
@@ -20,7 +20,7 @@ async fn main() -> eyre::Result<()> {
     // get contract addresses from address book
     let usdc = address("USDC", chain);
 
-    let mut dex = Dex::new(client.clone(), chain, protocol);
+    let mut dex = Dex::new_with_chain(client.clone(), chain, protocol);
 
     // swap amount
     let raw_amount = U256::exp10(18);

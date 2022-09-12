@@ -1,4 +1,4 @@
-use super::{V2Factory, V2Library};
+use super::{Factory, Library};
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairError};
 use ethers::{abi::Token, contract::builders::ContractCall, core::abi::Detokenize, prelude::*};
 use std::sync::Arc;
@@ -78,12 +78,6 @@ impl<M: Middleware> From<&Pair<M>> for IUniswapV2Pair<M> {
     }
 }
 
-impl<M: Middleware> From<&mut Pair<M>> for IUniswapV2Pair<M> {
-    fn from(pair: &mut Pair<M>) -> Self {
-        Self::new(pair.address, pair.client.clone())
-    }
-}
-
 impl<M: Middleware> Pair<M> {
     /// Creates a new Pair instance using the provided client and address.
     pub fn new(client: Arc<M>, address: Address) -> Self {
@@ -91,17 +85,16 @@ impl<M: Middleware> Pair<M> {
     }
 
     /// Creates a new Pair instance using the provided client, factory and tokens' addresses.
-    pub fn new_with_tokens(
-        client: Arc<M>,
-        factory: V2Factory,
+    pub fn new_with_factory(
+        factory: Factory<M>,
         token0: Address,
         token1: Address,
     ) -> Result<Self, M> {
-        let (token0, token1) = V2Library::sort_tokens(token0, token1)?;
-        let address = V2Library::pair_for(factory, token0, token1)?;
+        let (token0, token1) = Library::sort_tokens(token0, token1)?;
+        let address = Library::pair_for(factory.clone(), token0, token1)?;
 
         Ok(Self {
-            client,
+            client: factory.client(),
             address,
             tokens: Some((token0, token1)),
             deployed: false,
@@ -289,7 +282,7 @@ fn parse_reserves_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Res
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{contracts::address, Protocol};
+    use crate::{contracts::address, ProtocolType};
 
     fn default_pair() -> Pair<Provider<Http>> {
         let chain = Chain::Mainnet;
@@ -297,9 +290,9 @@ mod tests {
         let usdc = address("USDC", chain);
         let provider = MAINNET.provider();
         let client = Arc::new(provider);
-        let factory = V2Factory::new(None, Some(chain), Protocol::UniswapV2);
+        let factory = Factory::new_with_chain(client, chain, ProtocolType::UniswapV2).unwrap();
 
-        Pair::new_with_tokens(client, factory, weth, usdc).unwrap()
+        Pair::new_with_factory(factory, weth, usdc).unwrap()
     }
 
     #[test]
