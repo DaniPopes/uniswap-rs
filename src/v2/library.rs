@@ -47,7 +47,7 @@ impl Library {
         b: Address,
     ) -> Result<(U256, U256)> {
         let (address_0, _) = Self::sort_tokens(a, b)?;
-        let pair = IUniswapV2Pair::new(Self::pair_for(factory.clone(), a, b)?, client);
+        let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, client);
         let (reserve_a, reserve_b, _) = pair
             .get_reserves()
             .call()

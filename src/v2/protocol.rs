@@ -21,11 +21,7 @@ pub struct V2Protocol<M> {
 
 impl<M> Clone for V2Protocol<M> {
     fn clone(&self) -> Self {
-        Self {
-            client: self.client.clone(),
-            factory: self.factory.clone(),
-            router: self.router.clone(),
-        }
+        Self { client: self.client.clone(), factory: self.factory, router: self.router }
     }
 }
 

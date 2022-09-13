@@ -28,7 +28,7 @@ impl Router {
     /// Creates a new instance of Router from an address.
     pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        protocol.try_addresses(chain).0.and_then(|address| Some(Self { address, protocol }))
+        protocol.try_addresses(chain).0.map(|address| Self { address, protocol })
     }
 
     /// TODO

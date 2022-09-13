@@ -151,8 +151,8 @@ impl<M: Middleware> Dex<M> {
 
         let deadline: U256 = {
             let now = now().as_secs();
-            let deadline = now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS);
-            deadline
+
+            now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS)
         }
         .into();
 
