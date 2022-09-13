@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use super::factory::Factory;
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::LibraryError};
 use ethers::prelude::*;
@@ -28,7 +30,7 @@ impl Library {
     }
 
     /// Calculates the CREATE2 address for a pair without making any external calls.
-    pub fn pair_for<M: Middleware>(factory: Factory<M>, a: Address, b: Address) -> Result<Address> {
+    pub fn pair_for(factory: Factory, a: Address, b: Address) -> Result<Address> {
         let (a, b) = Self::sort_tokens(a, b)?;
         Ok(ethers::utils::get_create2_address_from_hash(
             factory.address(),
@@ -39,12 +41,13 @@ impl Library {
 
     /// Fetches and sorts the reserves for a pair.
     pub async fn get_reserves<M: Middleware>(
-        factory: Factory<M>,
+        client: Arc<M>,
+        factory: Factory,
         a: Address,
         b: Address,
     ) -> Result<(U256, U256)> {
         let (address_0, _) = Self::sort_tokens(a, b)?;
-        let pair = IUniswapV2Pair::new(Self::pair_for(factory.clone(), a, b)?, factory.client());
+        let pair = IUniswapV2Pair::new(Self::pair_for(factory.clone(), a, b)?, client);
         let (reserve_a, reserve_b, _) = pair
             .get_reserves()
             .call()
@@ -101,7 +104,8 @@ impl Library {
 
     /// Performs chained get_amount_out calculations on any number of pairs.
     pub async fn get_amounts_out<M: Middleware>(
-        factory: Factory<M>,
+        client: Arc<M>,
+        factory: Factory,
         amount_in: U256,
         path: Vec<Address>,
     ) -> Result<Vec<U256>> {
@@ -113,7 +117,7 @@ impl Library {
         amounts[0] = amount_in;
         for i in 0..l - 1 {
             let (reserve_in, reserve_out) =
-                Self::get_reserves(factory.clone(), path[i], path[i + 1]).await?;
+                Self::get_reserves(client.clone(), factory, path[i], path[i + 1]).await?;
             amounts[i + 1] = Self::get_amount_out(amounts[i], reserve_in, reserve_out)?;
         }
         Ok(amounts)
@@ -121,7 +125,8 @@ impl Library {
 
     /// Performs chained get_amount_in calculations on any number of pairs.
     pub async fn get_amounts_in<M: Middleware>(
-        factory: Factory<M>,
+        client: Arc<M>,
+        factory: Factory,
         amount_out: U256,
         path: Vec<Address>,
     ) -> Result<Vec<U256>> {
@@ -133,7 +138,7 @@ impl Library {
         amounts[l - 1] = amount_out;
         for i in (1..l).rev() {
             let (reserve_in, reserve_out) =
-                Self::get_reserves(factory.clone(), path[i - 1], path[i]).await?;
+                Self::get_reserves(client.clone(), factory, path[i - 1], path[i]).await?;
             amounts[i - 1] = Self::get_amount_in(amounts[i], reserve_in, reserve_out)?;
         }
         Ok(amounts)
@@ -146,17 +151,14 @@ mod tests {
     use crate::ProtocolType;
     use std::sync::Arc;
 
+    static FACTORY: Lazy<Factory> =
+        Lazy::new(|| Factory::new_with_chain(Chain::Mainnet, ProtocolType::UniswapV2).unwrap());
     static WETH: Lazy<Address> =
         Lazy::new(|| "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2".parse().unwrap());
     static USDC: Lazy<Address> =
         Lazy::new(|| "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".parse().unwrap());
     static WETH_USDC: Lazy<Address> =
         Lazy::new(|| "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap());
-
-    fn default_factory() -> Factory<Provider<Http>> {
-        let client = Arc::new(MAINNET.provider());
-        Factory::new_with_chain(client, Chain::Mainnet, ProtocolType::UniswapV2).unwrap()
-    }
 
     #[test]
     fn can_sort_tokens() {
@@ -182,11 +184,11 @@ mod tests {
         // let usdc: Address = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".parse().unwrap();
         // let weth_usdc: Address = "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap();
 
-        assert_eq!(Library::pair_for(default_factory(), *WETH, *USDC).unwrap(), *WETH_USDC);
+        assert_eq!(Library::pair_for(*FACTORY, *WETH, *USDC).unwrap(), *WETH_USDC);
     }
 
-    async fn get_weth_usdc_reserves<M: Middleware>(provider: Arc<M>) -> (U256, U256) {
-        Library::get_reserves(default_factory(), *WETH, *USDC).await.unwrap()
+    async fn get_weth_usdc_reserves<M: Middleware>(client: Arc<M>) -> (U256, U256) {
+        Library::get_reserves(client, *FACTORY, *WETH, *USDC).await.unwrap()
     }
 
     #[tokio::test]
@@ -243,13 +245,13 @@ mod tests {
 
     #[tokio::test]
     async fn can_get_amounts() {
-        let provider = Arc::new(MAINNET.provider());
+        let client = Arc::new(MAINNET.provider());
 
         let weth_amount = U256::exp10(18);
         let path_1 = vec![*WETH, *USDC];
         let path_2 = vec![*USDC, *WETH];
         let usdc_amount =
-            Library::get_amounts_out(default_factory(), weth_amount, path_1).await.unwrap();
-        Library::get_amounts_in(default_factory(), usdc_amount[0], path_2).await.unwrap();
+            Library::get_amounts_out(client.clone(), *FACTORY, weth_amount, path_1).await.unwrap();
+        Library::get_amounts_in(client, *FACTORY, usdc_amount[0], path_2).await.unwrap();
     }
 }

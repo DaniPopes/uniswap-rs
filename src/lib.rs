@@ -4,7 +4,7 @@
 
 #![allow(unused, unreachable_code)]
 #![warn(missing_docs, unreachable_pub)]
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 mod common;
 mod dex;

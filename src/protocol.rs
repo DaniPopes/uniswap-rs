@@ -1,6 +1,6 @@
 use crate::{
     contracts::{address, try_address},
-    v2::V2Protocol,
+    v2::{Factory, Router, V2Protocol},
 };
 use ethers::{
     core::types::{Address, Chain, H256},
@@ -136,7 +136,23 @@ pub enum Protocol<M> {
     V3,
 }
 
-impl<M: Middleware> Protocol<M> {}
+impl<M: Middleware> Protocol<M> {
+    /// Returns the factory.
+    pub fn factory(&self) -> Factory {
+        match self {
+            Self::V2(p) => p.factory(),
+            Self::V3 => todo!(),
+        }
+    }
+
+    /// Returns the router.
+    pub fn router(&self) -> Router {
+        match self {
+            Self::V2(p) => p.router(),
+            Self::V3 => todo!(),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

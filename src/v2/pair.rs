@@ -15,7 +15,7 @@ type Result<T, M> = std::result::Result<T, PairError<M>>;
 ///
 /// ```no_run
 /// use ethers::prelude::*;
-/// use uniswap::Pair;
+/// use uniswap::v2::Pair;
 /// use std::{convert::TryFrom, sync::Arc};
 ///
 /// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
@@ -86,15 +86,16 @@ impl<M: Middleware> Pair<M> {
 
     /// Creates a new Pair instance using the provided client, factory and tokens' addresses.
     pub fn new_with_factory(
-        factory: Factory<M>,
+        client: Arc<M>,
+        factory: Factory,
         token0: Address,
         token1: Address,
     ) -> Result<Self, M> {
         let (token0, token1) = Library::sort_tokens(token0, token1)?;
-        let address = Library::pair_for(factory.clone(), token0, token1)?;
+        let address = Library::pair_for(factory, token0, token1)?;
 
         Ok(Self {
-            client: factory.client(),
+            client,
             address,
             tokens: Some((token0, token1)),
             deployed: false,
@@ -290,9 +291,9 @@ mod tests {
         let usdc = address("USDC", chain);
         let provider = MAINNET.provider();
         let client = Arc::new(provider);
-        let factory = Factory::new_with_chain(client, chain, ProtocolType::UniswapV2).unwrap();
+        let factory = Factory::new_with_chain(chain, ProtocolType::UniswapV2).unwrap();
 
-        Pair::new_with_factory(factory, weth, usdc).unwrap()
+        Pair::new_with_factory(client, factory, weth, usdc).unwrap()
     }
 
     #[test]

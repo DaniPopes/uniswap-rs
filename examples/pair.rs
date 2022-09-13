@@ -26,8 +26,8 @@ async fn main() -> eyre::Result<()> {
     let usdc = address("USDC", chain);
 
     println!("Getting ETH/USDC pair info:");
-    let factory = Factory::new_with_chain(client.clone(), chain, protocol).unwrap();
-    let mut pair = Pair::new_with_factory(factory, weth, usdc)?;
+    let factory = Factory::new_with_chain(chain, protocol).unwrap();
+    let mut pair = Pair::new_with_factory(client, factory, weth, usdc)?;
 
     pair.sync(true, true).await?;
 

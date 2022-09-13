@@ -21,6 +21,18 @@ pub enum DexError<M: Middleware> {
     #[error(transparent)]
     ProviderError(#[from] ProviderError),
 
+    /// Thrown by the router.
+    #[error(transparent)]
+    RouterError(#[from] RouterError<M>),
+
+    /// Thrown by the factory.
+    #[error(transparent)]
+    FactoryError(#[from] FactoryError<M>),
+
+    /// Thrown by a pair.
+    #[error(transparent)]
+    PairError(#[from] PairError<M>),
+
     /// Thrown when the provided slippage is invalid.
     #[error("Slippage must be in range: 0.0..=100.0")]
     InvalidSlippage,
@@ -48,6 +60,32 @@ pub enum PairError<M: Middleware> {
     /// Thrown when interacting with [Multicall].
     #[error(transparent)]
     MulticallError(#[from] MulticallError<M>),
+}
+
+/// Errors thrown by a router.
+#[derive(Debug, Error)]
+#[non_exhaustive]
+pub enum RouterError<M: Middleware> {
+    /// Thrown when interacting with the smart contracts.
+    #[error(transparent)]
+    ContractError(#[from] ContractError<M>),
+
+    /// Thrown when using a library.
+    #[error(transparent)]
+    LibraryError(#[from] LibraryError),
+}
+
+/// Errors thrown by a factory.
+#[derive(Debug, Error)]
+#[non_exhaustive]
+pub enum FactoryError<M: Middleware> {
+    /// Thrown when interacting with the smart contracts.
+    #[error(transparent)]
+    ContractError(#[from] ContractError<M>),
+
+    /// Thrown when using a library.
+    #[error(transparent)]
+    LibraryError(#[from] LibraryError),
 }
 
 /// Errors thrown by a library.
@@ -85,17 +123,4 @@ pub enum LibraryError {
     /// Thrown when the provided path is empty or contains only one address.
     #[error("Path length must be greater than or equal to 2")]
     InvalidPath,
-}
-
-/// Errors thrown by a router.
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum RouterError<M: Middleware> {
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
-
-    /// Thrown when using a library.
-    #[error(transparent)]
-    LibraryError(#[from] LibraryError),
 }

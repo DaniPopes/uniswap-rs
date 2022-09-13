@@ -4,8 +4,8 @@ use crate::{
     contracts::try_address,
     errors::{DexError, LibraryError},
     utils::*,
-    v2::Factory,
-    Amount, ProtocolType,
+    v2::{Factory, Router, V2Protocol},
+    Amount, Protocol, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
@@ -20,7 +20,7 @@ pub struct Dex<M> {
     client: Arc<M>,
 
     /// The protocol.
-    protocol: ProtocolType,
+    protocol: Protocol<M>,
 
     /// The chain's wrapped native token.
     weth: Option<Address>,
@@ -34,7 +34,11 @@ impl<M: Middleware> Dex<M> {
     ///
     /// When the protocol's addresses could not be found.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
-        let factory = Factory::new(client.clone(), factory, protocol);
+        let protocol = match protocol {
+            p if p.is_v2() => Protocol::V2(V2Protocol::new(client.clone(), factory, router, p)),
+            p if p.is_v3() => todo!("v3 is not yet implemented"),
+            p => unreachable!("protocol {:?} is neither v2 nor v3", p),
+        };
         Self { client, weth: None, protocol }
     }
 
@@ -44,9 +48,28 @@ impl<M: Middleware> Dex<M> {
     ///
     /// When the protocol's addresses could not be found.
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
-        let (router, factory) = protocol.addresses(chain);
+        let protocol = match protocol {
+            p if p.is_v2() => Protocol::V2(V2Protocol::new_with_chain(client.clone(), chain, p)),
+            p if p.is_v3() => todo!("v3 is not yet implemented"),
+            p => unreachable!("protocol {:?} is neither v2 nor v3", p),
+        };
         let weth = try_address("WETH", chain);
         Self { client, weth, protocol }
+    }
+
+    /// Returns the client.
+    pub fn client(&self) -> Arc<M> {
+        self.client.clone()
+    }
+
+    /// Returns the factory.
+    pub fn factory(&self) -> Factory {
+        self.protocol.factory()
+    }
+
+    /// Returns the router.
+    pub fn router(&self) -> Router {
+        self.protocol.router()
     }
 
     /// Sets the wrapped native token address by calling the WETH() method on the router.
@@ -133,18 +156,18 @@ impl<M: Middleware> Dex<M> {
         }
         .into();
 
-        // let mut call = match self.protocol {
-        //     p if p.is_v2() => self.swap_v2(amount, slippage_tolerance, path, to,
-        // deadline).await?,     p if p.is_v3() => todo!("v3 is not yet implemented"),
-        //     p => unreachable!("protocol {:?} is neither v2 nor v3", p),
-        // };
+        let mut call = match self.protocol {
+            Protocol::V2(ref protocol) => {
+                protocol.swap(amount, slippage_tolerance, path, to, deadline).await?
+            }
+            Protocol::V3 => todo!("v3 is not yet implemented"),
+        };
 
-        // if let Some(from) = sender {
-        //     call = call.from(from);
-        // }
+        if let Some(from) = sender {
+            call = call.from(from);
+        }
 
-        // Ok(call)
-        todo!()
+        Ok(call)
     }
 
     /// Returns a `weth.deposit()` [ContractCall].
@@ -278,9 +301,14 @@ mod tests {
         let amount = Amount::ExactIn(amount_in_pre);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
-        let amounts_out: Vec<U256> = todo!();
-        // V2Library::get_amounts_out(dex.protocol.factory, amount_in_pre,
-        // path_pre.clone()).await.unwrap();
+        let amounts_out: Vec<U256> = V2Library::get_amounts_out(
+            dex.client(),
+            dex.factory(),
+            amount_in_pre,
+            path_pre.clone(),
+        )
+        .await
+        .unwrap();
 
         let contract_call = dex.swap(amount, 0.0, path_pre.clone(), None, None).await.unwrap();
 
@@ -300,11 +328,15 @@ mod tests {
 
         let amount_in_pre = U256::exp10(18);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
-        let factory: Factory<Provider<Http>> = todo!();
-        // dex.protocol.factory;
 
-        let amounts_out =
-            V2Library::get_amounts_out(factory, amount_in_pre, path_pre.clone()).await.unwrap();
+        let amounts_out = V2Library::get_amounts_out(
+            dex.client(),
+            dex.factory(),
+            amount_in_pre,
+            path_pre.clone(),
+        )
+        .await
+        .unwrap();
 
         let amount = Amount::ExactIn(amount_in_pre);
         for i in 2..=10 {
