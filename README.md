@@ -2,11 +2,12 @@
 
 Simple library for interacting with Uniswap v2 and v3 smart contracts.
 
-## Quick start
+## Getting started
 
-In your cargo.toml:
+Add this to your cargo.toml:
 
 ```toml
+[dependencies]
 uniswap = { git = "https://github.com/danipopes/uniswap-rs" }
 ```
 

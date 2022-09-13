@@ -2,7 +2,7 @@
 //!
 //! Simple library for interacting with Uniswap v2 and v3 smart contracts.
 
-#![allow(unused, unreachable_code)]
+#![allow(unreachable_code)]
 #![warn(missing_docs, unreachable_pub)]
 #![deny(rustdoc::broken_intra_doc_links)]
 

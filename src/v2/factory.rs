@@ -45,6 +45,6 @@ impl Factory {
         &self,
         _client: Arc<M>,
     ) -> Result<ContractCall<M, ()>, M> {
-        todo!()
+        todo!("create_pair is not yet implemented")
     }
 }

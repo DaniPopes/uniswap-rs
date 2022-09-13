@@ -62,6 +62,11 @@ impl<M: Middleware> Dex<M> {
         self.client.clone()
     }
 
+    /// Returns the protocol.
+    pub fn protocol(&self) -> Protocol<M> {
+        self.protocol.clone()
+    }
+
     /// Returns the factory.
     pub fn factory(&self) -> Factory {
         self.protocol.factory()
@@ -74,10 +79,9 @@ impl<M: Middleware> Dex<M> {
 
     /// Sets the wrapped native token address by calling the WETH() method on the router.
     pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
-        // self.weth = Some(self.protocol.router.weth().call().await?);
+        self.weth = Some(self.protocol.router().contract(self.client.clone()).weth().call().await?);
 
-        // Ok(self)
-        todo!()
+        Ok(self)
     }
 
     /// Sets the wrapped native token address.
@@ -156,18 +160,19 @@ impl<M: Middleware> Dex<M> {
         }
         .into();
 
-        let mut call = match self.protocol {
+        match self.protocol {
             Protocol::V2(ref protocol) => {
-                protocol.swap(amount, slippage_tolerance, path, to, deadline).await?
+                let mut call =
+                    protocol.swap(amount, slippage_tolerance, path, to, deadline).await?;
+
+                if let Some(from) = sender {
+                    call = call.from(from);
+                }
+
+                Ok(call)
             }
             Protocol::V3 => todo!("v3 is not yet implemented"),
-        };
-
-        if let Some(from) = sender {
-            call = call.from(from);
         }
-
-        Ok(call)
     }
 
     /// Returns a `weth.deposit()` [ContractCall].

@@ -15,20 +15,25 @@ pub struct Router {
     address: Address,
 
     /// The router protocol.
-    protocol: ProtocolType,
+    _protocol: ProtocolType,
 }
 
 impl Router {
     /// Creates a new instance of Router from an address.
     pub fn new(address: Address, protocol: ProtocolType) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        Self { address, protocol }
+        Self { address, _protocol: protocol }
     }
 
     /// Creates a new instance of Router from an address.
     pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        protocol.try_addresses(chain).0.map(|address| Self { address, protocol })
+        protocol.try_addresses(chain).0.map(|address| Self { address, _protocol: protocol })
+    }
+
+    /// Returns the router contract.
+    pub fn contract<M: Middleware>(&self, client: Arc<M>) -> IUniswapV2Router02<M> {
+        IUniswapV2Router02::new(self.address, client)
     }
 
     /// TODO
@@ -36,10 +41,11 @@ impl Router {
         &self,
         _client: Arc<M>,
     ) -> Result<ContractCall<M, Vec<U256>>, M> {
-        todo!()
+        todo!("add_liquidity is not yet implemented")
     }
 
     /// TODO
+    #[allow(clippy::too_many_arguments)]
     pub async fn swap<M: Middleware>(
         &self,
         client: Arc<M>,

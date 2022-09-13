@@ -12,7 +12,3 @@ pub enum Amount {
     /// Swap any amount of Token1 for exactly {0} Token2.
     ExactOut(U256),
 }
-
-// /// Protocol
-// pub trait Protocol {
-// }

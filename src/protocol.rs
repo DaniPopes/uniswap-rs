@@ -127,7 +127,7 @@ impl ProtocolType {
 }
 
 /// TODO
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Protocol<M> {
     /// TODO
     V2(V2Protocol<M>),
@@ -136,20 +136,31 @@ pub enum Protocol<M> {
     V3,
 }
 
+impl<M> Clone for Protocol<M> {
+    fn clone(&self) -> Self {
+        match self {
+            Self::V2(ref p) => Self::V2(p.clone()),
+            Self::V3 => Self::V3,
+        }
+    }
+}
+
 impl<M: Middleware> Protocol<M> {
     /// Returns the factory.
+    #[inline(always)]
     pub fn factory(&self) -> Factory {
         match self {
             Self::V2(p) => p.factory(),
-            Self::V3 => todo!(),
+            Self::V3 => todo!("v3 is not yet implemented"),
         }
     }
 
     /// Returns the router.
+    #[inline(always)]
     pub fn router(&self) -> Router {
         match self {
             Self::V2(p) => p.router(),
-            Self::V3 => todo!(),
+            Self::V3 => todo!("v3 is not yet implemented"),
         }
     }
 }

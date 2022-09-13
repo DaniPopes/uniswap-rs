@@ -41,6 +41,11 @@ impl<M: Middleware> V2Protocol<M> {
         Self { client, factory, router }
     }
 
+    /// Returns the client.
+    pub fn client(&self) -> Arc<M> {
+        self.client.clone()
+    }
+
     /// Returns the factory.
     pub fn factory(&self) -> Factory {
         self.factory
@@ -62,7 +67,7 @@ impl<M: Middleware> V2Protocol<M> {
     /// TODO
     #[inline(always)]
     pub async fn create_pair(&self) -> Result<ContractCall<M, ()>, FactoryError<M>> {
-        todo!()
+        todo!("create_pair is not yet implemented")
     }
 
     /* ----------------------------------------- Router ----------------------------------------- */
@@ -70,7 +75,7 @@ impl<M: Middleware> V2Protocol<M> {
     /// TODO
     #[inline(always)]
     pub async fn add_liquidity(&self) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
-        todo!()
+        todo!("add_liquidity is not yet implemented")
     }
 
     /// TODO
