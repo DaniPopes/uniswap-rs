@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use super::factory::Factory;
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::LibraryError};
-use ethers::prelude::*;
+use ethers::{core::abi::Detokenize, prelude::*};
 
 /// Type alias for Result<T, UniswapV2LibraryError>.
 type Result<T> = std::result::Result<T, LibraryError>;
@@ -61,6 +61,54 @@ impl Library {
         }
     }
 
+    /// Fetches and sorts the reserves for multiple pairs. Makes only 1 call to the client by using
+    /// [Multicall].
+    pub async fn get_reserves_multi<M: Middleware>(
+        client: Arc<M>,
+        factory: Factory,
+        path: Vec<Address>,
+    ) -> Result<Vec<(U256, U256)>> {
+        let l = match path.len() {
+            l if l < 2 => return Err(LibraryError::InvalidPath),
+            l if l == 2 => {
+                // avoid multicall for only 1 call
+                let (a, b) = (path[0], path[1]);
+                let res = Self::get_reserves(client, factory, a, b).await?;
+                return Ok(vec![res])
+            }
+            l => l - 1,
+        };
+
+        let mut multicall = Multicall::new(client.clone(), None)
+            .await
+            .map_err(|e| LibraryError::MulticallError(e.to_string()))?
+            .version(MulticallVersion::Multicall);
+        // whether to sort the reserves later
+        let mut sorted = vec![false; l];
+
+        for (i, sl) in path.windows(2).enumerate() {
+            let (a, b) = (sl[0], sl[1]);
+            let (address_0, _) = Self::sort_tokens(a, b)?;
+            sorted[i] = address_0 == b;
+            let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, client.clone());
+            let call = pair.get_reserves();
+            multicall.add_call(call, false);
+        }
+
+        let tokens =
+            multicall.call_raw().await.map_err(|e| LibraryError::MulticallError(e.to_string()))?;
+        let mut reserves = vec![(U256::zero(), U256::zero()); l];
+
+        for ((i, token), sort) in tokens.into_iter().enumerate().zip(sorted) {
+            type ReservesResult = (u128, u128, u32);
+            let (a, b, _) = ReservesResult::from_tokens(vec![token])
+                .map_err(|e| LibraryError::ContractError(e.to_string()))?;
+            reserves[i] = if sort { (b.into(), a.into()) } else { (a.into(), b.into()) };
+        }
+
+        Ok(reserves)
+    }
+
     /// Given some amount of an asset and pair reserves, returns an equivalent amount of the other
     /// asset.
     pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> Result<U256> {
@@ -115,9 +163,9 @@ impl Library {
         }
         let mut amounts = vec![U256::zero(); l];
         amounts[0] = amount_in;
-        for i in 0..l - 1 {
-            let (reserve_in, reserve_out) =
-                Self::get_reserves(client.clone(), factory, path[i], path[i + 1]).await?;
+
+        let reserves = Self::get_reserves_multi(client, factory, path).await?;
+        for (i, (reserve_in, reserve_out)) in reserves.into_iter().enumerate() {
             amounts[i + 1] = Self::get_amount_out(amounts[i], reserve_in, reserve_out)?;
         }
         Ok(amounts)
@@ -136,10 +184,10 @@ impl Library {
         }
         let mut amounts = vec![U256::zero(); l];
         amounts[l - 1] = amount_out;
-        for i in (1..l).rev() {
-            let (reserve_in, reserve_out) =
-                Self::get_reserves(client.clone(), factory, path[i - 1], path[i]).await?;
-            amounts[i - 1] = Self::get_amount_in(amounts[i], reserve_in, reserve_out)?;
+
+        let reserves = Self::get_reserves_multi(client, factory, path).await?;
+        for (i, (reserve_in, reserve_out)) in reserves.into_iter().enumerate().rev() {
+            amounts[i] = Self::get_amount_in(amounts[i + 1], reserve_in, reserve_out)?;
         }
         Ok(amounts)
     }
@@ -200,6 +248,13 @@ mod tests {
         get_weth_usdc_reserves(provider).await;
     }
 
+    #[tokio::test]
+    async fn can_get_reserves_multi() {
+        let client = Arc::new(MAINNET.provider());
+        let path = vec![*WETH, *USDC, *WETH, *USDC];
+        Library::get_reserves_multi(client, *FACTORY, path).await.unwrap();
+    }
+
     #[test]
     fn can_quote() {
         let base = U256::exp10(18);
@@ -248,8 +303,8 @@ mod tests {
         let client = Arc::new(MAINNET.provider());
 
         let weth_amount = U256::exp10(18);
-        let path_1 = vec![*WETH, *USDC];
-        let path_2 = vec![*USDC, *WETH];
+        let path_1 = vec![*WETH, *USDC, *WETH, *USDC];
+        let path_2 = vec![*USDC, *WETH, *USDC, *WETH];
         let usdc_amount =
             Library::get_amounts_out(client.clone(), *FACTORY, weth_amount, path_1).await.unwrap();
         Library::get_amounts_in(client, *FACTORY, usdc_amount[0], path_2).await.unwrap();

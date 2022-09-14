@@ -96,6 +96,10 @@ pub enum LibraryError {
     #[error("{0}")]
     ContractError(String),
 
+    /// Thrown when interacting with [Multicall].
+    #[error("{0}")]
+    MulticallError(String),
+
     /// Thrown when providing identical addresses as parameters.
     #[error("Sorting identical addresses")]
     IdenticalAddresses,

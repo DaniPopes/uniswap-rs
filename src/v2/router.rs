@@ -63,7 +63,6 @@ impl Router {
                 let amount_out_min = if slippage_tolerance == 100.0 {
                     U256::zero()
                 } else {
-                    // TODO: Optimize external calls
                     let last_amount_out =
                         *Library::get_amounts_out(client, factory, amount_in, path.clone())
                             .await?
@@ -98,7 +97,6 @@ impl Router {
                 let amount_in_max = if slippage_tolerance == 100.0 {
                     U256::max_value()
                 } else {
-                    // TODO: Optimize external calls
                     let first_amount_in =
                         *Library::get_amounts_in(client, factory, amount_out, path.clone())
                             .await?
