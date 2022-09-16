@@ -32,10 +32,10 @@ async fn main() -> eyre::Result<()> {
     pair.sync(true, true).await?;
 
     let address = pair.address();
-    let tokens = pair.tokens().unwrap();
+    let tokens = pair.tokens().expect("could not sync tokens");
+    let reserves = pair.reserves().expect("could not sync reserves");
 
     // usdc is token0 with 6 decimals, eth is token1 with 18 decimals
-    let reserves = pair.reserves().expect("could not sync reserves");
     let usdc_reserve: f64 = format_units(U256::from(reserves.0), 6)?.parse()?;
     let eth_reserve: f64 = format_units(U256::from(reserves.1), 18)?.parse()?;
 
