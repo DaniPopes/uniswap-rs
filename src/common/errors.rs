@@ -106,7 +106,7 @@ pub enum LibraryError {
 
     /// Thrown when providing [address(0)][Address] as a parameter.
     #[error("Sorting Address::zero()")]
-    ZeroAddress,
+    AddressZero,
 
     /// Thrown when providing an amount equal to zero.
     #[error("Amount is zero")]

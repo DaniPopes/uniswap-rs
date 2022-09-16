@@ -181,8 +181,8 @@ mod tests {
         }
 
         for v3 in v3s {
-            assert!(v3.is_v3());
             assert!(!v3.is_v2());
+            assert!(v3.is_v3());
         }
     }
 }

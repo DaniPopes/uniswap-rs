@@ -1,8 +1,7 @@
-use std::sync::Arc;
-
 use super::factory::Factory;
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::LibraryError};
 use ethers::{core::abi::Detokenize, prelude::*};
+use std::sync::Arc;
 
 /// Type alias for Result<T, UniswapV2LibraryError>.
 type Result<T> = std::result::Result<T, LibraryError>;
@@ -16,14 +15,14 @@ impl Library {
     /// Returns sorted token addresses, used to handle return values from pairs sorted in this
     /// order.
     pub fn sort_tokens(a: Address, b: Address) -> Result<(Address, Address)> {
-        if a == b {
-            return Err(LibraryError::IdenticalAddresses)
-        }
-
-        let (a, b) = if a < b { (a, b) } else { (b, a) };
+        let (a, b) = match a.cmp(&b) {
+            std::cmp::Ordering::Less => (a, b),
+            std::cmp::Ordering::Equal => return Err(LibraryError::IdenticalAddresses),
+            std::cmp::Ordering::Greater => (b, a),
+        };
 
         if a.is_zero() {
-            return Err(LibraryError::ZeroAddress)
+            return Err(LibraryError::AddressZero)
         }
 
         Ok((a, b))
@@ -216,10 +215,10 @@ mod tests {
         assert!(matches!(res.unwrap_err(), LibraryError::IdenticalAddresses));
 
         let res = Library::sort_tokens(Address::zero(), b);
-        assert!(matches!(res.unwrap_err(), LibraryError::ZeroAddress));
+        assert!(matches!(res.unwrap_err(), LibraryError::AddressZero));
 
         let res = Library::sort_tokens(a, Address::zero());
-        assert!(matches!(res.unwrap_err(), LibraryError::ZeroAddress));
+        assert!(matches!(res.unwrap_err(), LibraryError::AddressZero));
 
         let (a, b) = (Address::random(), Address::random());
         Library::sort_tokens(a, b).unwrap();

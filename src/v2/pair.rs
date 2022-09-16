@@ -1,7 +1,7 @@
 use super::{Factory, Library};
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairError};
 use ethers::{abi::Token, contract::builders::ContractCall, core::abi::Detokenize, prelude::*};
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
@@ -55,8 +55,8 @@ pub struct Pair<M> {
 }
 
 // Skip client in formatting
-impl<M> std::fmt::Debug for Pair<M> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl<M> fmt::Debug for Pair<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Pair")
             .field("address", &self.address)
             .field("tokens", &self.tokens)
@@ -127,6 +127,17 @@ impl<M: Middleware> Pair<M> {
     /// Note: this will always be None before syncing.
     pub fn reserves(&self) -> Option<Reserves> {
         self.reserves
+    }
+
+    // TODO: either store protocol or factory which it was deployed with
+    /// Returns the hash of the pair's deployment code. This can be used to determinalistically
+    /// calculate the address of the pair given the addresses of 2 (sorted) tokens.
+    ///
+    /// Note: not implemented yet, use [Factory::pair_codehash] instead.
+    ///
+    /// [Factory::pair_codehash]: Factory
+    pub fn codehash(&self) -> H256 {
+        todo!()
     }
 
     /// Returns the contract calls for getting the addresses of the pair's tokens.

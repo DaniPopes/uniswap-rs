@@ -25,36 +25,28 @@ impl Contract {
     }
 }
 
-/// Fetch the addressbook for a contract by its name. If the contract name is not a part of
-/// [contracts.json] we return None.
-///
-/// [contracts.json]: CONTRACTS_JSON
+/// Fetch the addressbook for a contract by its name. If the contract name is not a part of the
+/// address book we return None.
 pub fn try_contract<S: Into<String>>(name: S) -> Option<Contract> {
     CONTRACTS_ADDRESS_BOOK.get(&name.into()).cloned()
 }
 
 /// Fetch the address for a contract by its name and chain. If the contract name is not a part of
-/// [contracts.json] we return None.
-///
-/// [contracts.json]: CONTRACTS_JSON
+/// the address book we return None.
 pub fn try_address<S: Into<String>>(name: S, chain: Chain) -> Option<Address> {
     let c = try_contract(&name.into());
     c.and_then(|c| c.address(chain))
 }
 
-/// Fetch the addressbook for a contract by its name. If the contract name is not a part of
-/// [contracts.json] we panic.
-///
-/// [contracts.json]: CONTRACTS_JSON
+/// Fetch the addressbook for a contract by its name. If the contract name is not a part of the
+/// address book we panic.
 pub fn contract<S: Into<String>>(name: S) -> Contract {
     let name: String = name.into();
     try_contract(&name).unwrap_or_else(|| panic!("Missing {} in contracts.json", name))
 }
 
 /// Fetch the address for a contract by its name and chain. If the contract name is not a part of
-/// [contracts.json] we panic.
-///
-/// [contracts.json]: CONTRACTS_JSON
+/// the address book we panic.
 pub fn address<S: Into<String>>(name: S, chain: Chain) -> Address {
     let name: String = name.into();
     let contract = contract(&name);
