@@ -60,8 +60,8 @@ impl<M: Middleware> V2Protocol<M> {
 
     /// The factory's pair_codehash function. See documentation of [Factory] for more details.
     #[inline(always)]
-    pub const fn pair_codehash(&self) -> H256 {
-        self.factory.pair_codehash()
+    pub const fn pair_codehash(&self) -> Option<H256> {
+        self.factory.pair_code_hash()
     }
 
     /// The factory's create_pair function. See documentation of [Factory] for more details.

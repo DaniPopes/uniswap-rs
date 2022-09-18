@@ -54,8 +54,20 @@ pub enum ProtocolType {
     /// Pancakeswap, deployed only on Binance Smart Chain.
     Pancakeswap,
 
-    /// Custom protocol. Not yet fully implemented.
-    Custom,
+    /// Custom protocol.
+    Custom {
+        /// The protocol's factory address.
+        factory: Address,
+
+        /// The protocol's router address.
+        router: Address,
+
+        /// Whether the protocol is Uniswap v2 or v3.
+        is_v2: bool,
+
+        /// The codehash of the pair that the factory creates.
+        pair_code_hash: Option<H256>,
+    },
 }
 
 impl fmt::Display for ProtocolType {
@@ -65,10 +77,20 @@ impl fmt::Display for ProtocolType {
 }
 
 impl ProtocolType {
+    /// Instantiates a new custom protocol type.
+    pub fn new(
+        factory: Address,
+        router: Address,
+        is_v2: bool,
+        pair_code_hash: Option<H256>,
+    ) -> Self {
+        Self::Custom { factory, router, is_v2, pair_code_hash }
+    }
+
     /// Returns (factory_address, router_address), returning None if not found.
     pub fn try_addresses(&self, chain: Chain) -> (Option<Address>, Option<Address>) {
-        if let Self::Custom = self {
-            (None, None)
+        if let Self::Custom { factory, router, .. } = self {
+            (Some(*factory), Some(*router))
         } else {
             let (factory_name, router_name) = self.contract_names();
             (try_address(factory_name, chain), try_address(router_name, chain))
@@ -77,8 +99,8 @@ impl ProtocolType {
 
     /// Returns (factory_address, router_address), panicking if not found.
     pub fn addresses(&self, chain: Chain) -> (Address, Address) {
-        if let Self::Custom = self {
-            panic!("Cannot get addresses for a Custom protocol.")
+        if let Self::Custom { factory, router, .. } = self {
+            (*factory, *router)
         } else {
             let (factory_name, router_name) = self.contract_names();
             (address(factory_name, chain), address(router_name, chain))
@@ -86,43 +108,41 @@ impl ProtocolType {
     }
 
     /// Returns (factory_name, router_name).
-    ///
-    /// # Panics
-    ///
-    /// When called with the Custom variant.
     pub const fn contract_names(&self) -> (&str, &str) {
         match self {
             Self::UniswapV2 => ("UniswapV2Factory", "UniswapV2Router02"),
             Self::UniswapV3 => ("UniswapV3Factory", "UniswapV3Router02"),
             Self::Sushiswap => ("SushiswapV2Factory", "SushiswapV2Router02"),
             Self::Pancakeswap => ("PancakeFactory", "PancakeRouter"),
-            Self::Custom => panic!("not implemented for Protocol::Custom"),
+            Self::Custom { .. } => ("CustomFactory", "CustomRouter"),
         }
     }
 
     /// Returns the code hash of the pair created by the factory of the protocol.
     ///
-    /// # Panics
-    ///
-    /// When called with the Custom variant.
-    pub const fn get_pair_codehash(&self) -> H256 {
+    /// Returns None only when the variant is Custom and the pair_code_hash field is None.
+    pub const fn pair_code_hash(&self) -> Option<H256> {
         match self {
-            Self::UniswapV2 => UNISWAP_V2_PAIR_CODE_HASH,
-            Self::UniswapV3 => UNISWAP_V3_POOL_CODE_HASH,
-            Self::Sushiswap => SUSHISWAP_PAIR_CODE_HASH,
-            Self::Pancakeswap => PANCAKESWAP_PAIR_CODE_HASH,
-            Self::Custom => panic!("not implemented for Protocol::Custom"),
+            Self::UniswapV2 => Some(UNISWAP_V2_PAIR_CODE_HASH),
+            Self::UniswapV3 => Some(UNISWAP_V3_POOL_CODE_HASH),
+            Self::Sushiswap => Some(SUSHISWAP_PAIR_CODE_HASH),
+            Self::Pancakeswap => Some(PANCAKESWAP_PAIR_CODE_HASH),
+            Self::Custom { pair_code_hash, .. } => *pair_code_hash,
         }
     }
 
     /// Returns whether the protocol is, or is a fork of, UniswapV2.
     pub const fn is_v2(&self) -> bool {
-        !self.is_v3()
+        match self {
+            Self::Pancakeswap | Self::Sushiswap | Self::UniswapV2 => true,
+            Self::UniswapV3 => false,
+            Self::Custom { is_v2, .. } => *is_v2,
+        }
     }
 
     /// Returns whether the protocol is, or is a fork of, UniswapV3.
     pub const fn is_v3(&self) -> bool {
-        matches!(self, Self::UniswapV3)
+        !self.is_v2()
     }
 }
 
@@ -133,7 +153,7 @@ pub enum Protocol<M> {
     /// The UniswapV2 protocol.
     V2(V2Protocol<M>),
 
-    /// The UniswapV3 protocol.
+    /// The UniswapV3 protocol. WIP.
     V3,
 }
 

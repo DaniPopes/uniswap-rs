@@ -31,11 +31,14 @@ impl Library {
     /// Calculates the CREATE2 address for a pair without making any external calls.
     pub fn pair_for(factory: Factory, a: Address, b: Address) -> Result<Address> {
         let (a, b) = Self::sort_tokens(a, b)?;
-        Ok(ethers::utils::get_create2_address_from_hash(
-            factory.address(),
-            ethers::utils::keccak256([a.0, b.0].concat()), // keccak256(abi.encodePacked(a, b))
-            factory.pair_codehash().0,
-        ))
+
+        let from = factory.address();
+        // keccak256(abi.encodePacked(a, b))
+        let salt = ethers::utils::keccak256([a.0, b.0].concat());
+        let init_code_hash = factory.pair_code_hash().ok_or(LibraryError::NoPairCodeHash)?.0;
+        let address = ethers::utils::get_create2_address_from_hash(from, salt, init_code_hash);
+
+        Ok(address)
     }
 
     /// Fetches and sorts the reserves for a pair.

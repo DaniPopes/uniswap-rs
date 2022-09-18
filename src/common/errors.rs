@@ -127,4 +127,8 @@ pub enum LibraryError {
     /// Thrown when the provided path is empty or contains only one address.
     #[error("Path length must be greater than or equal to 2")]
     InvalidPath,
+
+    /// Thrown when the factory provided returns none for pair_code_hash
+    #[error("Custom protocol is missing pair_code_hash.")]
+    NoPairCodeHash,
 }

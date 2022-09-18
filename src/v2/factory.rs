@@ -36,8 +36,8 @@ impl Factory {
     }
 
     /// Returns the codehash of the pair that this factory deploys.
-    pub const fn pair_codehash(&self) -> H256 {
-        self.protocol.get_pair_codehash()
+    pub const fn pair_code_hash(&self) -> Option<H256> {
+        self.protocol.pair_code_hash()
     }
 
     /// TODO
