@@ -17,7 +17,7 @@ jobs:
                   toolchain: stable
                   override: true
             - uses: Swatinem/rust-cache@v1
-            - name: "cargo test --all"
+            - name: test --all
               run: cargo test --all --all-features
 
     clippy:
@@ -33,7 +33,7 @@ jobs:
                   components: clippy
             - uses: Swatinem/rust-cache@v1
             # Run clippy
-            - name: "clippy --all"
+            - name: clippy --all
               run: cargo clippy --all --tests --all-features
 
     fmt:
@@ -49,5 +49,5 @@ jobs:
                   components: rustfmt
             - uses: Swatinem/rust-cache@v1
             # Check fmt
-            - name: "rustfmt --check"
+            - name: rustfmt --check
               run: rustfmt --check
