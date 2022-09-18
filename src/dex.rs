@@ -324,8 +324,10 @@ mod tests {
 
         let amount_out_min = args[1].clone().into_uint().unwrap();
 
-        // TODO: Approx eq
-        assert_eq!(amounts_out[1].clone(), amount_out_min);
+        // A block may get mined between the start of the test and now, skewing the reserves
+        let a = I256::from_raw(amounts_out[1].clone());
+        let b = I256::from_raw(amount_out_min);
+        assert!((a - b).abs() < I256::from(1_000_000u64));
     }
 
     #[tokio::test]
