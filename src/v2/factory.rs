@@ -2,7 +2,7 @@ use crate::ProtocolType;
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
-/// Represents a Uniswap factory.
+/// Represents a UniswapV2 factory.
 #[derive(Clone, Copy, Debug)]
 pub struct Factory {
     /// The factory address.
@@ -13,13 +13,13 @@ pub struct Factory {
 }
 
 impl Factory {
-    /// Creates a new instance of Factory from an address.
+    /// Creates a new instance using the provided address.
     pub fn new(address: Address, protocol: ProtocolType) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
         Self { address, protocol }
     }
 
-    /// Creates a new instance of Factory from an address.
+    /// Creates a new instance using the provided chain.
     pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
         protocol.try_addresses(chain).0.map(|address| Self { address, protocol })

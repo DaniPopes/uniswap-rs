@@ -13,7 +13,7 @@ use std::sync::Arc;
 /// Type alias for Result<T, DexError<M>>.
 type Result<T, M> = std::result::Result<T, DexError<M>>;
 
-/// TODO
+/// Aggregates common methods to interact with the Uniswap v2 or v3 protocols and other utilities.
 #[derive(Clone, Debug)]
 pub struct Dex<M> {
     /// The node and signer.
@@ -85,31 +85,32 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Sets the wrapped native token address.
-    pub fn set_weth_sync(&mut self, weth: Address) -> Result<&mut Self, M> {
+    pub fn set_weth_sync(&mut self, weth: Address) -> &mut Self {
         self.weth = Some(weth);
 
-        Ok(self)
+        self
     }
 
-    /// Generalized swap function for the various [UniswapV2Router] `swap[Exact]XFor[Exact]Y`.
-    /// Returns the contract call with the necessary parameters set (value, calldata).
+    /// Swaps an amount of tokens for another token, within the provided deadline.
     ///
-    /// `slippage_tolerance` is the maximum price change, in percentage points, which may occur
-    /// while the transaction is pending, that you are willing to tolerate before the
-    /// transaction reverts. `0.0` means no price change tolerated, while `100.0` means any price
-    /// change is tolerated.
+    /// # Arguments
     ///
-    /// Using a `path[0]` or `path[path.length - 1]` == [`NATIVE_TOKEN_ADDRESS`] indicates intention
-    /// to swap from or to the native token respectively.
+    /// * `amount` - The amount to swap, wrapped in a [helper Enum][Amount].
     ///
-    /// `to` is the address that will receive the swap output. If [`None`], it will default to
-    /// [`self.client.default_address()`].
+    /// * `slippage_tolerance` - The maximum price change, in percentage points, which may occur
+    ///   while the transaction is pending, that you are willing to tolerate before it reverts.
+    ///   `0.0` means no price change tolerated, while `100.0` means any price change is tolerated.
     ///
-    /// The transaction will revert if it is pending for more than `deadline` seconds. If [`None`],
-    /// it will default to [`DEFAULT_DEADLINE_SECONDS`].
+    /// * `path` - The path to take. `path.first()` or `path.last()` == [`NATIVE_TOKEN_ADDRESS`]
+    ///   indicates intention to swap from or to the native token respectively.
     ///
-    /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
-    /// [`self.client.default_address()`]: Middleware
+    /// * `to` - The address that will receive the swap output. If `None`, it will default to the
+    ///   default address of the client.
+    ///
+    /// * `deadline` - The number of seconds after which the transaction will revert. If `None`, it
+    ///   will default to 1800 seconds.
+    ///
+    /// [`NATIVE_TOKEN_ADDRESS`]: crate::constants::NATIVE_TOKEN_ADDRESS
     pub async fn swap(
         &mut self,
         amount: Amount,

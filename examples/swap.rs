@@ -8,6 +8,7 @@ async fn main() -> eyre::Result<()> {
     let protocol = ProtocolType::UniswapV2;
     let client = Arc::new({
         let provider = MAINNET.provider();
+        // FIXME: Replace with own private key / wallet.
         let wallet = "725fd1619b2653b7ff1806bf29ae11d0568606d83777afd5b1f2e649bd5132a9"
             .parse::<LocalWallet>()?
             .with_chain_id(chain);

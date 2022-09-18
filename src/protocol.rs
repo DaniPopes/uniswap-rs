@@ -8,6 +8,8 @@ use ethers::{
 };
 use std::fmt;
 
+// TODO: Support for more chains
+
 /// [0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f](https://github.com/Uniswap/v2-periphery/blob/0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f/contracts/libraries/UniswapV2Library.sol#L24)
 const UNISWAP_V2_PAIR_CODE_HASH: H256 = H256([
     0x96, 0xe8, 0xac, 0x42, 0x77, 0x19, 0x8f, 0xf8, 0xb6, 0xf7, 0x85, 0x47, 0x8a, 0xa9, 0xa3, 0x9f,
@@ -35,9 +37,7 @@ const PANCAKESWAP_PAIR_CODE_HASH: H256 = H256([
     0x06, 0x8e, 0x8f, 0xf6, 0x7d, 0x07, 0x81, 0x48, 0xa3, 0xfa, 0x3f, 0x4a, 0x84, 0xf6, 0x9b, 0xd5,
 ]);
 
-// TODO: Support for more chains
-/// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
-/// swapping of ERC-20 tokens on the Ethereum blockchain.
+/// Represents a type of protocol that is, or is a fork of, Uniswap v2 or v3.
 #[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
 pub enum ProtocolType {
@@ -115,24 +115,25 @@ impl ProtocolType {
         }
     }
 
-    /// Returns whether the protocol is or is a fork of UniswapV2.
+    /// Returns whether the protocol is, or is a fork of, UniswapV2.
     pub const fn is_v2(&self) -> bool {
         !self.is_v3()
     }
 
-    /// Returns whether the protocol is or is a fork of UniswapV3.
+    /// Returns whether the protocol is, or is a fork of, UniswapV3.
     pub const fn is_v3(&self) -> bool {
         matches!(self, Self::UniswapV3)
     }
 }
 
-/// TODO
+/// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
+/// swapping of ERC-20 tokens on the Ethereum blockchain.
 #[derive(Debug)]
 pub enum Protocol<M> {
-    /// TODO
+    /// The UniswapV2 protocol.
     V2(V2Protocol<M>),
 
-    /// TODO
+    /// The UniswapV3 protocol.
     V3,
 }
 

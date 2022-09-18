@@ -8,7 +8,7 @@ use std::sync::Arc;
 
 type Result<T, M> = std::result::Result<T, RouterError<M>>;
 
-/// TODO
+/// Represents a UniswapV2 router.
 #[derive(Clone, Copy, Debug)]
 pub struct Router {
     /// The router address.
@@ -44,7 +44,13 @@ impl Router {
         todo!("add_liquidity is not yet implemented")
     }
 
-    /// TODO
+    /// Generalized swap function for the various [UniswapV2Router] `swap[Exact]XFor[Exact]Y`.
+    /// Returns the contract call with the necessary parameters set (value, calldata).
+    ///
+    /// See documentation of [Dex] for more details on arguments.
+    ///
+    /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
+    /// [Dex]: crate::Dex
     #[allow(clippy::too_many_arguments)]
     pub async fn swap<M: Middleware>(
         &self,

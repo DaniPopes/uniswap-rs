@@ -6,7 +6,7 @@ use crate::{
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
-/// TODO
+/// Represents the UniswapV2 protocol.
 #[derive(Debug)]
 pub struct V2Protocol<M> {
     /// The client.
@@ -26,14 +26,14 @@ impl<M> Clone for V2Protocol<M> {
 }
 
 impl<M: Middleware> V2Protocol<M> {
-    /// TODO
+    /// Creates a new instance using the provided client, factory and tokens' addresses.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         let factory = Factory::new(factory, protocol);
         let router = Router::new(router, protocol);
         Self { client, factory, router }
     }
 
-    /// TODO
+    /// Creates a new instance using the provided client and chain.
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
         let (factory, router) = protocol.addresses(chain);
         let factory = Factory::new(factory, protocol);
@@ -58,13 +58,13 @@ impl<M: Middleware> V2Protocol<M> {
 
     /* ----------------------------------------- Factory ---------------------------------------- */
 
-    /// TODO
+    /// The factory's pair_codehash function. See documentation of [Factory] for more details.
     #[inline(always)]
     pub const fn pair_codehash(&self) -> H256 {
         self.factory.pair_codehash()
     }
 
-    /// TODO
+    /// The factory's create_pair function. See documentation of [Factory] for more details.
     #[inline(always)]
     pub async fn create_pair(&self) -> Result<ContractCall<M, ()>, FactoryError<M>> {
         todo!("create_pair is not yet implemented")
@@ -72,13 +72,13 @@ impl<M: Middleware> V2Protocol<M> {
 
     /* ----------------------------------------- Router ----------------------------------------- */
 
-    /// TODO
+    /// The router's add_liquidity function. See documentation of [Router] for more details.
     #[inline(always)]
     pub async fn add_liquidity(&self) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
         todo!("add_liquidity is not yet implemented")
     }
 
-    /// TODO
+    /// The router's swap function. See documentation of [Router] for more details.
     #[inline(always)]
     pub async fn swap(
         &self,
