@@ -1,4 +1,4 @@
-use crate::ProtocolType;
+use crate::{bindings::i_uniswap_v2_factory::IUniswapV2Factory, ProtocolType};
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
@@ -23,6 +23,11 @@ impl Factory {
     pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
         protocol.try_addresses(chain).0.map(|address| Self { address, protocol })
+    }
+
+    /// Returns the pair contract.
+    pub fn contract<M: Middleware>(&self, client: Arc<M>) -> IUniswapV2Factory<M> {
+        IUniswapV2Factory::new(self.address, client)
     }
 
     /// Returns the contract address of the factory.

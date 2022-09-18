@@ -1,5 +1,5 @@
 use super::{Factory, Library};
-use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairError};
+use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairError, ProtocolType};
 use ethers::{abi::Token, contract::builders::ContractCall, core::abi::Detokenize, prelude::*};
 use std::{fmt, sync::Arc};
 
@@ -52,6 +52,9 @@ pub struct Pair<M> {
 
     /// The token reserves of the pair.
     reserves: Option<Reserves>,
+
+    /// The protocol of the pair.
+    protocol: ProtocolType,
 }
 
 // Skip client in formatting
@@ -66,22 +69,10 @@ impl<M> fmt::Debug for Pair<M> {
     }
 }
 
-impl<M: Middleware> From<Pair<M>> for IUniswapV2Pair<M> {
-    fn from(pair: Pair<M>) -> Self {
-        Self::new(pair.address, pair.client)
-    }
-}
-
-impl<M: Middleware> From<&Pair<M>> for IUniswapV2Pair<M> {
-    fn from(pair: &Pair<M>) -> Self {
-        Self::new(pair.address, pair.client.clone())
-    }
-}
-
 impl<M: Middleware> Pair<M> {
     /// Creates a new Pair instance using the provided client and address.
-    pub fn new(client: Arc<M>, address: Address) -> Self {
-        Self { client, address, tokens: None, deployed: false, reserves: None }
+    pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
+        Self { client, address, tokens: None, deployed: false, reserves: None, protocol }
     }
 
     /// Creates a new Pair instance using the provided client, factory and tokens' addresses.
@@ -100,7 +91,13 @@ impl<M: Middleware> Pair<M> {
             tokens: Some((token0, token1)),
             deployed: false,
             reserves: None,
+            protocol: factory.protocol(),
         })
+    }
+
+    /// Returns the pair contract.
+    pub fn contract(&self) -> IUniswapV2Pair<M> {
+        IUniswapV2Pair::new(self.address, self.client.clone())
     }
 
     /// Returns the address of the pair.
@@ -129,26 +126,21 @@ impl<M: Middleware> Pair<M> {
         self.reserves
     }
 
-    // TODO: either store protocol or factory which it was deployed with
     /// Returns the hash of the pair's deployment code. This can be used to determinalistically
     /// calculate the address of the pair given the addresses of 2 (sorted) tokens.
-    ///
-    /// Note: not implemented yet, use [Factory::pair_codehash] instead.
-    ///
-    /// [Factory::pair_codehash]: Factory
-    pub fn codehash(&self) -> H256 {
-        todo!()
+    pub const fn code_hash(&self) -> Option<H256> {
+        self.protocol.pair_code_hash()
     }
 
     /// Returns the contract calls for getting the addresses of the pair's tokens.
     pub fn get_tokens(&self) -> (ContractCall<M, Address>, ContractCall<M, Address>) {
-        let pair = IUniswapV2Pair::from(self);
+        let pair = self.contract();
         (pair.token_0(), pair.token_1())
     }
 
     /// Returns the contract call for getting the reserves of the pair.
     pub fn get_reserves(&self) -> ContractCall<M, Reserves> {
-        IUniswapV2Pair::from(self).get_reserves()
+        self.contract().get_reserves()
     }
 
     /// Syncs the tokens and reserves of the pair by querying the blockchain.
