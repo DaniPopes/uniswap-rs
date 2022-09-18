@@ -1,8 +1,19 @@
 # uniswap-rs
 
-Simple library for interacting with Uniswap v2 and v3 smart contracts.
+[![Crates.io][crates-badge]][crates-url]
+[![MIT License][mit-badge]][mit-url]
+[![CI Status][actions-badge]][actions-url]
 
-## Getting started
+[crates-badge]: https://img.shields.io/crates/v/uniswap.svg
+[crates-url]: https://crates.io/crates/uniswap
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-url]: https://github.com/danipopes/uniswap-rs/blob/master/LICENSE
+[actions-badge]: https://github.com/danipopes/uniswap-rs/workflows/CI/badge.svg
+[actions-url]: https://github.com/danipopes/uniswap-rs/actions?query=workflow%3ACI+branch%3Amaster
+
+Unofficial Rust SDK library for Uniswap smart contracts.
+
+## Quickstart
 
 Add this to your cargo.toml:
 
@@ -11,12 +22,16 @@ Add this to your cargo.toml:
 uniswap = { git = "https://github.com/danipopes/uniswap-rs" }
 ```
 
-Check out the examples for implementation details.
+## Examples
+
+Examples can be found [here][examples].
+
+[examples]: https://github.com/danipopes/uniswap-rs/tree/master/examples
 
 ## Roadmap
 
 -   [ ] UniswapV2 protocol
-    -   [x] Implementation
+    -   [ ] Implementation
     -   [ ] Documentation
     -   [ ] Tests
 -   [ ] UniswapV3 protocol
@@ -30,3 +45,7 @@ Check out the examples for implementation details.
     -   [ ] Quickswap
     -   [ ] Spookyswap
     -   [ ] Traderjoe
+
+## License
+
+This project is licensed under the [MIT license](https://github.com/danipopes/uniswap-rs/blob/master/LICENSE).
