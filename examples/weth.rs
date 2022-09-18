@@ -25,6 +25,8 @@ async fn main() -> eyre::Result<()> {
     // instantiate a new dex
     let dex = Dex::new_with_chain(client, chain, protocol);
 
+    println!("WETH address: {:?}", dex.weth().expect("Mainnet WETH not set (should not happen)"));
+
     let amount = U256::exp10(18);
     println!("Amount: {:?} ETH", ethers::utils::format_units(amount, 18)?);
 

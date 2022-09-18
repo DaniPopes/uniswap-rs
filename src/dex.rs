@@ -22,7 +22,7 @@ pub struct Dex<M> {
     /// The protocol.
     protocol: Protocol<M>,
 
-    /// The chain's wrapped native token.
+    /// The address of the chain's wrapped native token.
     weth: Option<Address>,
 }
 
@@ -75,6 +75,11 @@ impl<M: Middleware> Dex<M> {
     /// Returns the router.
     pub fn router(&self) -> Router {
         self.protocol.router()
+    }
+
+    /// Returns the address of the wrapped native token.
+    pub fn weth(&self) -> Option<Address> {
+        self.weth
     }
 
     /// Sets the wrapped native token address by calling the WETH() method on the router.

@@ -33,5 +33,7 @@ async fn main() -> eyre::Result<()> {
     let my_weth: Address = "0x8888888888888888888888888888888888888888".parse()?;
     dex.set_weth_sync(my_weth);
 
+    println!("Set WETH to: {:?}", dex.weth());
+
     Ok(())
 }
