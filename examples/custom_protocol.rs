@@ -1,6 +1,6 @@
 use ethers::prelude::*;
 use std::sync::Arc;
-use uniswap::{Dex, ProtocolType};
+use uniswap_rs::{Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {

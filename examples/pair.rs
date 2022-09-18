@@ -1,6 +1,6 @@
 use ethers::{prelude::*, utils::format_units};
 use std::sync::Arc;
-use uniswap::{
+use uniswap_rs::{
     contracts::address,
     v2::{Factory, Pair},
     ProtocolType,

@@ -1,13 +1,13 @@
 [package]
-name = "uniswap"
+name = "uniswap-rs"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.62"
 authors = ["DaniPopes <danipopes1@proton.me>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/danipopes/uniswap"
-homepage = "https://docs.rs/uniswap"
+repository = "https://github.com/danipopes/uniswap-rs"
+homepage = "https://docs.rs/uniswap-rs"
 description = "Unofficial Rust SDK library for Uniswap smart contracts."
 keywords = ["dex", "uniswap", "sdk", "ethereum", "eth"]
 

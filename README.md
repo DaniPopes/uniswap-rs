@@ -4,8 +4,8 @@
 [![MIT License][mit-badge]][mit-url]
 [![CI Status][actions-badge]][actions-url]
 
-[crates-badge]: https://img.shields.io/crates/v/uniswap.svg
-[crates-url]: https://crates.io/crates/uniswap
+[crates-badge]: https://img.shields.io/crates/v/uniswap-rs.svg
+[crates-url]: https://crates.io/crates/uniswap-rs
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [mit-url]: https://github.com/danipopes/uniswap-rs/blob/master/LICENSE
 [actions-badge]: https://github.com/danipopes/uniswap-rs/workflows/CI/badge.svg
@@ -19,7 +19,7 @@ Add this to your cargo.toml:
 
 ```toml
 [dependencies]
-uniswap = { git = "https://github.com/danipopes/uniswap-rs" }
+uniswap_rs = { git = "https://github.com/danipopes/uniswap-rs" }
 ```
 
 ## Examples

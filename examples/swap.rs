@@ -1,6 +1,6 @@
 use ethers::prelude::*;
 use std::sync::Arc;
-use uniswap::{constants::NATIVE_TOKEN_ADDRESS, contracts::address, Amount, Dex, ProtocolType};
+use uniswap_rs::{constants::NATIVE_TOKEN_ADDRESS, contracts::address, Amount, Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
