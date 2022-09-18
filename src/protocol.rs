@@ -226,9 +226,54 @@ impl<M: Middleware> Protocol<M> {
 
     /// The router's add_liquidity method.
     #[inline(always)]
-    pub async fn add_liquidity(&self) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
+    pub async fn add_liquidity(
+        &self,
+        token_a: Address,
+        token_b: Address,
+        amount_a_desired: U256,
+        amount_b_desired: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, (U256, U256, U256)>, RouterError<M>> {
         match self {
-            Self::V2(p) => p.add_liquidity().await,
+            Self::V2(p) => p.add_liquidity(
+                token_a,
+                token_b,
+                amount_a_desired,
+                amount_b_desired,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            ),
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
+    /// The router's remove_liquidity method.
+    #[inline(always)]
+    pub async fn remove_liquidity(
+        &self,
+        token_a: Address,
+        token_b: Address,
+        liquidity: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, (U256, U256)>, RouterError<M>> {
+        match self {
+            Self::V2(p) => p.remove_liquidity(
+                token_a,
+                token_b,
+                liquidity,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            ),
             Self::V3 => todo!("v3 is not yet implemented"),
         }
     }

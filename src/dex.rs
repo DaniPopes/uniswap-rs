@@ -86,7 +86,77 @@ impl<M: Middleware> Dex<M> {
         self.protocol.router()
     }
 
-    /// Returns the contract call for swapping tokens.
+    /// Returns the contract call for adding liquidity from a pair.
+    pub async fn add_liquidity(
+        &self,
+        token_a: Address,
+        token_b: Address,
+        amount_a_desired: U256,
+        amount_b_desired: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Option<Address>,
+        deadline: Option<u64>,
+    ) -> Result<ContractCall<M, (U256, U256, U256)>, M> {
+        let sender = self.client.default_sender();
+        let to = self.get_to(to);
+
+        let deadline = unwrap_deadline(deadline);
+
+        // TODO: Maths
+
+        let mut call = self
+            .protocol
+            .add_liquidity(
+                token_a,
+                token_b,
+                amount_a_desired,
+                amount_b_desired,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            )
+            .await?;
+
+        if let Some(from) = sender {
+            call = call.from(from);
+        }
+
+        Ok(call)
+    }
+
+    /// Returns the contract call for removing liquidity from a pair.
+    pub async fn remove_liquidity(
+        &self,
+        token_a: Address,
+        token_b: Address,
+        liquidity: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Option<Address>,
+        deadline: Option<u64>,
+    ) -> Result<ContractCall<M, (U256, U256)>, M> {
+        let deadline = unwrap_deadline(deadline);
+
+        let sender = self.client.default_sender();
+        let to = self.get_to(to);
+
+        // TODO: Maths
+
+        let mut call = self
+            .protocol
+            .remove_liquidity(token_a, token_b, liquidity, amount_a_min, amount_b_min, to, deadline)
+            .await?;
+
+        if let Some(from) = sender {
+            call = call.from(from);
+        }
+
+        Ok(call)
+    }
+
+    /// Returns the contract call for swapping two or more tokens.
     ///
     /// # Arguments
     ///
@@ -119,10 +189,7 @@ impl<M: Middleware> Dex<M> {
         }
 
         let sender = self.client.default_sender();
-        let to = to.unwrap_or_else(|| {
-            sender
-                .expect("Must specify a `to` address if the client does not have a default sender")
-        });
+        let to = self.get_to(to);
 
         if path.len() < 2 {
             return Err(LibraryError::InvalidPath.into())
@@ -141,10 +208,7 @@ impl<M: Middleware> Dex<M> {
             return Err(DexError::SwapToSelf)
         }
 
-        let deadline = U256::from({
-            let now = now().as_secs();
-            now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS)
-        });
+        let deadline = unwrap_deadline(deadline);
 
         let mut call =
             self.protocol.swap(amount, slippage_tolerance, path, to, deadline, weth).await?;
@@ -208,8 +272,19 @@ impl<M: Middleware> Dex<M> {
 
         Ok(call)
     }
+
+    /// `to` -> client.default_sender() -> panic
+    fn get_to(&self, to: Option<Address>) -> Address {
+        let sender = self.client.default_sender();
+        // TODO: Not panic?
+        to.unwrap_or_else(|| {
+            sender
+                .expect("Must specify a `to` address if the client does not have a default sender")
+        })
+    }
 }
 
+/// first === last
 fn path_eq(path: &[Address], weth: &Address) -> bool {
     let first = path.first().expect("path is empty");
     let last = path.last().expect("path is empty");
@@ -224,6 +299,13 @@ fn path_eq(path: &[Address], weth: &Address) -> bool {
     let liw = last == weth;
 
     (fin && liw) || (lin && fiw)
+}
+
+/// now() + deadline -> DEFAULT_DEADLINE_SECONDS
+fn unwrap_deadline(deadline: Option<u64>) -> U256 {
+    let now = now().as_secs();
+    let deadline = now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS);
+    U256::from(deadline)
 }
 
 #[cfg(test)]

@@ -71,8 +71,52 @@ impl<M: Middleware> V2Protocol<M> {
 
     /// The router's add_liquidity method. See documentation of [Router] for more details.
     #[inline(always)]
-    pub async fn add_liquidity(&self) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
-        todo!("add_liquidity is not yet implemented")
+    pub fn add_liquidity(
+        &self,
+        token_a: Address,
+        token_b: Address,
+        amount_a_desired: U256,
+        amount_b_desired: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, (U256, U256, U256)>, RouterError<M>> {
+        self.router.add_liquidity(
+            self.client.clone(),
+            token_a,
+            token_b,
+            amount_a_desired,
+            amount_b_desired,
+            amount_a_min,
+            amount_b_min,
+            to,
+            deadline,
+        )
+    }
+
+    /// The router's remove_liquidity method. See documentation of [Router] for more details.
+    #[inline(always)]
+    pub fn remove_liquidity(
+        &self,
+        token_a: Address,
+        token_b: Address,
+        liquidity: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, (U256, U256)>, RouterError<M>> {
+        self.router.remove_liquidity(
+            self.client.clone(),
+            token_a,
+            token_b,
+            liquidity,
+            amount_a_min,
+            amount_b_min,
+            to,
+            deadline,
+        )
     }
 
     /// The router's swap method. See documentation of [Router] for more details.

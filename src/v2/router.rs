@@ -39,12 +39,121 @@ impl Router {
         IUniswapV2Router02::new(self.address, client)
     }
 
-    /// TODO
-    pub async fn add_liquidity<M: Middleware>(
+    /// Generalized add_liquidity function for the various [UniswapV2Router] methods.
+    /// Returns the contract call with the necessary parameters set (value, calldata).
+    ///
+    /// See documentation of [Dex] for more details on arguments.
+    ///
+    /// Note: this function does not perform many sanity checks and it should becalled by using the
+    /// [Dex] struct.
+    ///
+    /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
+    /// [Dex]: crate::Dex
+    #[allow(clippy::too_many_arguments)]
+    pub fn add_liquidity<M: Middleware>(
         &self,
-        _client: Arc<M>,
-    ) -> Result<ContractCall<M, Vec<U256>>, M> {
-        todo!("add_liquidity is not yet implemented")
+        client: Arc<M>,
+        token_a: Address,
+        token_b: Address,
+        amount_a_desired: U256,
+        amount_b_desired: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, (U256, U256, U256)>, M> {
+        let router = self.contract(client);
+        let (native_a, native_b) = is_native_path(&[token_a, token_b]);
+
+        let call = if native_a ^ native_b {
+            router.add_liquidity(
+                token_a,
+                token_b,
+                amount_a_desired,
+                amount_b_desired,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            )
+        } else {
+            let (token, amount_token_min, amount_token_desired, amount_eth_desired, amount_eth_min) =
+                if native_a {
+                    // token_a is ETH
+                    (token_b, amount_b_min, amount_b_desired, amount_a_desired, amount_a_min)
+                } else {
+                    // token_b is ETH
+                    (token_a, amount_a_min, amount_a_desired, amount_b_desired, amount_b_min)
+                };
+            router
+                .add_liquidity_eth(
+                    token,
+                    amount_token_desired,
+                    amount_token_min,
+                    amount_eth_min,
+                    to,
+                    deadline,
+                )
+                .value(amount_eth_desired)
+        };
+
+        Ok(call)
+    }
+
+    /// Generalized remove_liquidity function for the various [UniswapV2Router] methods.
+    /// Returns the contract call with the necessary parameters set (value, calldata).
+    ///
+    /// See documentation of [Dex] for more details on arguments.
+    ///
+    /// Note: this function does not perform many sanity checks and it should becalled by using the
+    /// [Dex] struct.
+    ///
+    /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
+    /// [Dex]: crate::Dex
+    #[allow(clippy::too_many_arguments)]
+    pub fn remove_liquidity<M: Middleware>(
+        &self,
+        client: Arc<M>,
+        token_a: Address,
+        token_b: Address,
+        liquidity: U256,
+        amount_a_min: U256,
+        amount_b_min: U256,
+        to: Address,
+        deadline: U256,
+    ) -> Result<ContractCall<M, (U256, U256)>, M> {
+        let router = self.contract(client);
+        let (native_a, native_b) = is_native_path(&[token_a, token_b]);
+
+        let call = if native_a ^ native_b {
+            router.remove_liquidity(
+                token_a,
+                token_b,
+                liquidity,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            )
+        } else {
+            let (token, amount_token_min, amount_eth_min) = if native_a {
+                // token_a is ETH
+                (token_b, amount_b_min, amount_a_min)
+            } else {
+                // token_b is ETH
+                (token_a, amount_a_min, amount_b_min)
+            };
+            router.remove_liquidity_eth(
+                token,
+                liquidity,
+                amount_token_min,
+                amount_eth_min,
+                to,
+                deadline,
+            )
+        };
+
+        Ok(call)
     }
 
     /// Generalized swap function for the various [UniswapV2Router] `swap[Exact]XFor[Exact]Y`.
@@ -69,7 +178,7 @@ impl Router {
         deadline: U256,
         weth: Address,
     ) -> Result<ContractCall<M, Vec<U256>>, M> {
-        let router = IUniswapV2Router02::new(self.address, client.clone());
+        let router = self.contract(client.clone());
         let (from_native, to_native) = is_native_path(&path);
         map_native(&mut path, weth);
         let call = match amount {
