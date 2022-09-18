@@ -37,7 +37,7 @@ impl<M: Middleware> Dex<M> {
         let protocol = match protocol {
             p if p.is_v2() => Protocol::V2(V2Protocol::new(client.clone(), factory, router, p)),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol {:?} is neither v2 nor v3", p),
+            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
         };
         Self { client, weth: None, protocol }
     }
@@ -51,7 +51,7 @@ impl<M: Middleware> Dex<M> {
         let protocol = match protocol {
             p if p.is_v2() => Protocol::V2(V2Protocol::new_with_chain(client.clone(), chain, p)),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol {:?} is neither v2 nor v3", p),
+            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
         };
         let weth = try_address("WETH", chain);
         Self { client, weth, protocol }
@@ -67,36 +67,26 @@ impl<M: Middleware> Dex<M> {
         self.protocol.clone()
     }
 
+    /* ----------------------------------------- Factory ---------------------------------------- */
+
     /// Returns the factory.
     pub fn factory(&self) -> Factory {
         self.protocol.factory()
     }
+
+    /// Returns the contract call for creating a liquidity pair between two tokens.
+    pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
+        self.protocol.create_pair(token_a, token_b)
+    }
+
+    /* ----------------------------------------- Router ----------------------------------------- */
 
     /// Returns the router.
     pub fn router(&self) -> Router {
         self.protocol.router()
     }
 
-    /// Returns the address of the wrapped native token.
-    pub fn weth(&self) -> Option<Address> {
-        self.weth
-    }
-
-    /// Sets the wrapped native token address by calling the WETH() method on the router.
-    pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
-        self.weth = Some(self.protocol.router().contract(self.client.clone()).weth().call().await?);
-
-        Ok(self)
-    }
-
-    /// Sets the wrapped native token address.
-    pub fn set_weth_sync(&mut self, weth: Address) -> &mut Self {
-        self.weth = Some(weth);
-
-        self
-    }
-
-    /// Swaps an amount of tokens for another token, within the provided deadline.
+    /// Returns the contract call for swapping tokens.
     ///
     /// # Arguments
     ///
@@ -120,7 +110,7 @@ impl<M: Middleware> Dex<M> {
         &mut self,
         amount: Amount,
         slippage_tolerance: f32,
-        mut path: Vec<Address>,
+        path: Vec<Address>,
         to: Option<Address>,
         deadline: Option<u64>,
     ) -> Result<ContractCall<M, Vec<U256>>, M> {
@@ -147,41 +137,47 @@ impl<M: Middleware> Dex<M> {
             }
         };
 
-        // map eth to weth
-        for address in path.iter_mut() {
-            if is_native(address) {
-                *address = weth
-            }
-        }
-
-        // after map so it counts both eth and weth as the same thing
-        if path.first().expect("path is empty") == path.last().expect("path is empty") {
+        if path_eq(&path, &weth) {
             return Err(DexError::SwapToSelf)
         }
 
-        let deadline: U256 = {
+        let deadline = U256::from({
             let now = now().as_secs();
-
             now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS)
+        });
+
+        let mut call =
+            self.protocol.swap(amount, slippage_tolerance, path, to, deadline, weth).await?;
+
+        if let Some(from) = sender {
+            call = call.from(from);
         }
-        .into();
 
-        match self.protocol {
-            Protocol::V2(ref protocol) => {
-                let mut call =
-                    protocol.swap(amount, slippage_tolerance, path, to, deadline).await?;
-
-                if let Some(from) = sender {
-                    call = call.from(from);
-                }
-
-                Ok(call)
-            }
-            Protocol::V3 => todo!("v3 is not yet implemented"),
-        }
+        Ok(call)
     }
 
-    /// Returns a `weth.deposit()` [ContractCall].
+    /* ------------------------------------------ WETH ------------------------------------------ */
+
+    /// Returns the address of the wrapped native token.
+    pub fn weth(&self) -> Option<Address> {
+        self.weth
+    }
+
+    /// Sets the wrapped native token address by calling the WETH() method on the router.
+    pub async fn set_weth(&mut self) -> Result<&mut Self, M> {
+        self.weth = Some(self.protocol.router().contract(self.client.clone()).weth().call().await?);
+
+        Ok(self)
+    }
+
+    /// Sets the wrapped native token address.
+    pub fn set_weth_sync(&mut self, weth: Address) -> &mut Self {
+        self.weth = Some(weth);
+
+        self
+    }
+
+    /// Returns the contract call for `weth.deposit{ value: amount }()`.
     pub fn weth_deposit(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
         let address = match self.weth {
             Some(address) => address,
@@ -197,7 +193,7 @@ impl<M: Middleware> Dex<M> {
         Ok(call)
     }
 
-    /// Returns a `weth.withdraw(uint256)` [ContractCall].
+    /// Returns the contract call for `weth.withdraw(amount)`.
     pub fn weth_withdraw(&self, amount: U256) -> Result<ContractCall<M, ()>, M> {
         let address = match self.weth {
             Some(address) => address,
@@ -212,6 +208,22 @@ impl<M: Middleware> Dex<M> {
 
         Ok(call)
     }
+}
+
+fn path_eq(path: &[Address], weth: &Address) -> bool {
+    let first = path.first().expect("path is empty");
+    let last = path.last().expect("path is empty");
+
+    if first == last {
+        return true
+    }
+
+    let fin = is_native(first);
+    let lin = is_native(last);
+    let fiw = first == weth;
+    let liw = last == weth;
+
+    (fin && liw) || (lin && fiw)
 }
 
 #[cfg(test)]
@@ -259,6 +271,28 @@ mod tests {
             &calldata[4..],
         )
         .unwrap()
+    }
+
+    #[test]
+    fn test_path_eq() {
+        let weth = Address::repeat_byte(0xaa);
+
+        // ne
+        let path = vec![Address::random(), Address::random()];
+        assert!(!path_eq(&path, &weth));
+
+        let path = vec![weth, Address::random()];
+        assert!(!path_eq(&path, &weth));
+
+        let path = vec![Address::random(), weth];
+        assert!(!path_eq(&path, &weth));
+
+        // eq
+        let path = vec![NATIVE_TOKEN_ADDRESS, weth];
+        assert!(path_eq(&path, &weth));
+
+        let path = vec![weth, NATIVE_TOKEN_ADDRESS];
+        assert!(path_eq(&path, &weth));
     }
 
     #[tokio::test]

@@ -1,8 +1,5 @@
 use super::{Factory, Router};
-use crate::{
-    errors::{FactoryError, RouterError},
-    Amount, ProtocolType,
-};
+use crate::{errors::RouterError, Amount, ProtocolType};
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
@@ -46,39 +43,39 @@ impl<M: Middleware> V2Protocol<M> {
         self.client.clone()
     }
 
+    /* ----------------------------------------- Factory ---------------------------------------- */
+
     /// Returns the factory.
     pub fn factory(&self) -> Factory {
         self.factory
     }
+
+    /// The factory's pair_codehash method. See documentation of [Factory] for more details.
+    #[inline(always)]
+    pub const fn pair_codehash(&self) -> Option<H256> {
+        self.factory.pair_code_hash()
+    }
+
+    /// The factory's create_pair method. See documentation of [Factory] for more details.
+    #[inline(always)]
+    pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
+        self.factory.create_pair(self.client.clone(), token_a, token_b)
+    }
+
+    /* ----------------------------------------- Router ----------------------------------------- */
 
     /// Returns the router.
     pub fn router(&self) -> Router {
         self.router
     }
 
-    /* ----------------------------------------- Factory ---------------------------------------- */
-
-    /// The factory's pair_codehash function. See documentation of [Factory] for more details.
-    #[inline(always)]
-    pub const fn pair_codehash(&self) -> Option<H256> {
-        self.factory.pair_code_hash()
-    }
-
-    /// The factory's create_pair function. See documentation of [Factory] for more details.
-    #[inline(always)]
-    pub async fn create_pair(&self) -> Result<ContractCall<M, ()>, FactoryError<M>> {
-        todo!("create_pair is not yet implemented")
-    }
-
-    /* ----------------------------------------- Router ----------------------------------------- */
-
-    /// The router's add_liquidity function. See documentation of [Router] for more details.
+    /// The router's add_liquidity method. See documentation of [Router] for more details.
     #[inline(always)]
     pub async fn add_liquidity(&self) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
         todo!("add_liquidity is not yet implemented")
     }
 
-    /// The router's swap function. See documentation of [Router] for more details.
+    /// The router's swap method. See documentation of [Router] for more details.
     #[inline(always)]
     pub async fn swap(
         &self,
@@ -87,9 +84,19 @@ impl<M: Middleware> V2Protocol<M> {
         path: Vec<Address>,
         to: Address,
         deadline: U256,
+        weth: Address,
     ) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
         self.router
-            .swap(self.client.clone(), self.factory, amount, slippage_tolerance, path, to, deadline)
+            .swap(
+                self.client.clone(),
+                self.factory,
+                amount,
+                slippage_tolerance,
+                path,
+                to,
+                deadline,
+                weth,
+            )
             .await
     }
 }

@@ -11,6 +11,7 @@ type Result<T> = std::result::Result<T, LibraryError>;
 /// [@Uniswap/v2-periphery]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol
 pub struct Library;
 
+// TODO: make Path a slice
 impl Library {
     /// Returns sorted token addresses, used to handle return values from pairs sorted in this
     /// order.

@@ -1,7 +1,10 @@
 use super::{Factory, Library};
 use crate::{
-    bindings::i_uniswap_v2_router_02::IUniswapV2Router02, constants::BPS_U256, errors::RouterError,
-    utils::is_native_path, Amount, ProtocolType,
+    bindings::i_uniswap_v2_router_02::IUniswapV2Router02,
+    constants::BPS_U256,
+    errors::RouterError,
+    utils::{is_native_path, map_native},
+    Amount, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
@@ -19,13 +22,13 @@ pub struct Router {
 }
 
 impl Router {
-    /// Creates a new instance of Router from an address.
+    /// Creates a new instance from using the provided address.
     pub fn new(address: Address, protocol: ProtocolType) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
         Self { address, _protocol: protocol }
     }
 
-    /// Creates a new instance of Router from an address.
+    /// Creates a new instance using the provided chain.
     pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
         protocol.try_addresses(chain).0.map(|address| Self { address, _protocol: protocol })
@@ -49,6 +52,9 @@ impl Router {
     ///
     /// See documentation of [Dex] for more details on arguments.
     ///
+    /// Note: this function does not perform many sanity checks and it should becalled by using the
+    /// [Dex] struct.
+    ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
     #[allow(clippy::too_many_arguments)]
@@ -58,12 +64,14 @@ impl Router {
         factory: Factory,
         amount: Amount,
         slippage_tolerance: f32,
-        path: Vec<Address>,
+        mut path: Vec<Address>,
         to: Address,
         deadline: U256,
+        weth: Address,
     ) -> Result<ContractCall<M, Vec<U256>>, M> {
         let router = IUniswapV2Router02::new(self.address, client.clone());
         let (from_native, to_native) = is_native_path(&path);
+        map_native(&mut path, weth);
         let call = match amount {
             Amount::ExactIn(amount_in) => {
                 let amount_out_min = if slippage_tolerance == 100.0 {

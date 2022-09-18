@@ -1,12 +1,11 @@
 use crate::{
     contracts::{address, try_address},
+    errors::RouterError,
     v2::{Factory, Router, V2Protocol},
+    Amount,
 };
-use ethers::{
-    core::types::{Address, Chain, H256},
-    providers::Middleware,
-};
-use std::fmt;
+use ethers::prelude::{builders::ContractCall, *};
+use std::{fmt, sync::Arc};
 
 // TODO: Support for more chains
 
@@ -167,6 +166,26 @@ impl<M> Clone for Protocol<M> {
 }
 
 impl<M: Middleware> Protocol<M> {
+    /// Creates a new instance using the provided client, factory and tokens' addresses.
+    pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
+        match protocol {
+            p if p.is_v2() => Self::V2(V2Protocol::new(client, factory, router, protocol)),
+            p if p.is_v3() => todo!("v3 is not yet implemented"),
+            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
+        }
+    }
+
+    /// Creates a new instance using the provided chain.
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
+        match protocol {
+            p if p.is_v2() => Self::V2(V2Protocol::new_with_chain(client, chain, protocol)),
+            p if p.is_v3() => todo!("v3 is not yet implemented"),
+            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
+        }
+    }
+
+    /* ----------------------------------------- Factory ---------------------------------------- */
+
     /// Returns the factory.
     #[inline(always)]
     pub fn factory(&self) -> Factory {
@@ -176,11 +195,57 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
+    /// The factory's pair_codehash method.
+    #[inline(always)]
+    pub fn pair_codehash(&self) -> Option<H256> {
+        match self {
+            Self::V2(p) => p.pair_codehash(),
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
+    /// The factory's create_pair method.
+    #[inline(always)]
+    pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
+        match self {
+            Self::V2(p) => p.create_pair(token_a, token_b),
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
+    /* ----------------------------------------- Router ----------------------------------------- */
+
     /// Returns the router.
     #[inline(always)]
     pub fn router(&self) -> Router {
         match self {
             Self::V2(p) => p.router(),
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
+    /// The router's add_liquidity method.
+    #[inline(always)]
+    pub async fn add_liquidity(&self) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
+        match self {
+            Self::V2(p) => p.add_liquidity().await,
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
+    /// The router's swap method.
+    #[inline(always)]
+    pub async fn swap(
+        &self,
+        amount: Amount,
+        slippage_tolerance: f32,
+        path: Vec<Address>,
+        to: Address,
+        deadline: U256,
+        weth: Address,
+    ) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
+        match self {
+            Self::V2(p) => p.swap(amount, slippage_tolerance, path, to, deadline, weth).await,
             Self::V3 => todo!("v3 is not yet implemented"),
         }
     }

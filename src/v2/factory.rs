@@ -40,16 +40,19 @@ impl Factory {
         self.protocol
     }
 
-    /// Returns the codehash of the pair that this factory deploys.
+    /// Returns the deployment code's hash of the pair that this factory deploys.
     pub const fn pair_code_hash(&self) -> Option<H256> {
         self.protocol.pair_code_hash()
     }
 
-    /// TODO
-    pub async fn create_pair<M: Middleware>(
+    /// Returns the contract call for creating a pair.
+    pub fn create_pair<M: Middleware>(
         &self,
-        _client: Arc<M>,
-    ) -> Result<ContractCall<M, ()>, M> {
-        todo!("create_pair is not yet implemented")
+        client: Arc<M>,
+        token_a: Address,
+        token_b: Address,
+    ) -> ContractCall<M, Address> {
+        let factory = self.contract(client);
+        factory.create_pair(token_a, token_b)
     }
 }

@@ -10,32 +10,6 @@ type Reserves = (u128, u128, u32);
 type Result<T, M> = std::result::Result<T, PairError<M>>;
 
 /// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
-///
-/// # Example
-///
-/// ```no_run
-/// use ethers::prelude::*;
-/// use uniswap::v2::Pair;
-/// use std::{convert::TryFrom, sync::Arc};
-///
-/// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
-/// // Example UniswapV2 liquidity pair on mainnet
-/// let weth_usdc_address: Address = "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc".parse().unwrap();
-/// let client = Provider::<Http>::try_from("http://localhost:8545").unwrap();
-/// let client = Arc::new(client);
-/// let mut pair = Pair::new(client, weth_usdc_address);
-///
-/// pair.sync(true, true).await?;
-///
-/// let reserves = pair.reserves().unwrap();
-/// assert!(reserves.0 > 0);
-/// assert!(reserves.1 > 0);
-/// assert!(reserves.2 > 0);
-///
-/// assert!(pair.deployed());
-/// # Ok(())
-/// # }
-/// ```
 #[derive(Clone)]
 pub struct Pair<M> {
     /// The client.
@@ -70,12 +44,12 @@ impl<M> fmt::Debug for Pair<M> {
 }
 
 impl<M: Middleware> Pair<M> {
-    /// Creates a new Pair instance using the provided client and address.
+    /// Creates a new instance using the provided client and address.
     pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
         Self { client, address, tokens: None, deployed: false, reserves: None, protocol }
     }
 
-    /// Creates a new Pair instance using the provided client, factory and tokens' addresses.
+    /// Creates a new instance using the provided client, factory and tokens' addresses.
     pub fn new_with_factory(
         client: Arc<M>,
         factory: Factory,
