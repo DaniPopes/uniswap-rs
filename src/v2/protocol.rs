@@ -1,10 +1,12 @@
-use super::{Factory, Router};
-use crate::{errors::RouterError, Amount, ProtocolType};
+use super::{Factory, Pair, Router};
+use crate::{
+    errors::{FactoryResult, RouterError},
+    Amount, ProtocolType,
+};
 use ethers::prelude::{builders::ContractCall, *};
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 /// Represents the UniswapV2 protocol.
-#[derive(Debug)]
 pub struct V2Protocol<M> {
     /// The client.
     client: Arc<M>,
@@ -14,6 +16,16 @@ pub struct V2Protocol<M> {
 
     /// The router.
     router: Router,
+}
+
+// Skip client in formatting
+impl<M> fmt::Debug for V2Protocol<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("V2Protocol")
+            .field("factory", &self.factory)
+            .field("router", &self.router)
+            .finish()
+    }
 }
 
 impl<M> Clone for V2Protocol<M> {
@@ -52,7 +64,7 @@ impl<M: Middleware> V2Protocol<M> {
 
     /// The factory's pair_codehash method. See documentation of [Factory] for more details.
     #[inline(always)]
-    pub const fn pair_codehash(&self) -> Option<H256> {
+    pub const fn pair_codehash(&self) -> H256 {
         self.factory.pair_code_hash()
     }
 
@@ -60,6 +72,12 @@ impl<M: Middleware> V2Protocol<M> {
     #[inline(always)]
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
         self.factory.create_pair(self.client.clone(), token_a, token_b)
+    }
+
+    /// The factory's pair_for method. See documentation of [Factory] for more details.
+    #[inline(always)]
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<Pair<M>, M> {
+        self.factory.pair_for(self.client.clone(), token_a, token_b)
     }
 
     /* ----------------------------------------- Router ----------------------------------------- */

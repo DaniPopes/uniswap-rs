@@ -1,7 +1,7 @@
 use crate::{
     contracts::{address, try_address},
-    errors::RouterError,
-    v2::{Factory, Router, V2Protocol},
+    errors::{FactoryResult, RouterError},
+    v2::{Factory, Pair, Router, V2Protocol},
     Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
@@ -64,8 +64,8 @@ pub enum ProtocolType {
         /// Whether the protocol is Uniswap v2 or v3.
         is_v2: bool,
 
-        /// The codehash of the pair that the factory creates.
-        pair_code_hash: Option<H256>,
+        /// The hash of the deployment code of the pair that the factory creates.
+        pair_code_hash: H256,
     },
 }
 
@@ -77,12 +77,7 @@ impl fmt::Display for ProtocolType {
 
 impl ProtocolType {
     /// Instantiates a new custom protocol type.
-    pub fn new(
-        factory: Address,
-        router: Address,
-        is_v2: bool,
-        pair_code_hash: Option<H256>,
-    ) -> Self {
+    pub fn new(factory: Address, router: Address, is_v2: bool, pair_code_hash: H256) -> Self {
         Self::Custom { factory, router, is_v2, pair_code_hash }
     }
 
@@ -120,12 +115,12 @@ impl ProtocolType {
     /// Returns the code hash of the pair created by the factory of the protocol.
     ///
     /// Returns None only when the variant is Custom and the pair_code_hash field is None.
-    pub const fn pair_code_hash(&self) -> Option<H256> {
+    pub const fn pair_code_hash(&self) -> H256 {
         match self {
-            Self::UniswapV2 => Some(UNISWAP_V2_PAIR_CODE_HASH),
-            Self::UniswapV3 => Some(UNISWAP_V3_POOL_CODE_HASH),
-            Self::Sushiswap => Some(SUSHISWAP_PAIR_CODE_HASH),
-            Self::Pancakeswap => Some(PANCAKESWAP_PAIR_CODE_HASH),
+            Self::UniswapV2 => UNISWAP_V2_PAIR_CODE_HASH,
+            Self::UniswapV3 => UNISWAP_V3_POOL_CODE_HASH,
+            Self::Sushiswap => SUSHISWAP_PAIR_CODE_HASH,
+            Self::Pancakeswap => PANCAKESWAP_PAIR_CODE_HASH,
             Self::Custom { pair_code_hash, .. } => *pair_code_hash,
         }
     }
@@ -197,7 +192,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// The factory's pair_codehash method.
     #[inline(always)]
-    pub fn pair_codehash(&self) -> Option<H256> {
+    pub fn pair_codehash(&self) -> H256 {
         match self {
             Self::V2(p) => p.pair_codehash(),
             Self::V3 => todo!("v3 is not yet implemented"),
@@ -209,6 +204,15 @@ impl<M: Middleware> Protocol<M> {
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
         match self {
             Self::V2(p) => p.create_pair(token_a, token_b),
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
+    /// The factory's pair_for method.
+    #[inline(always)]
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<Pair<M>, M> {
+        match self {
+            Self::V2(p) => p.pair_for(token_a, token_b),
             Self::V3 => todo!("v3 is not yet implemented"),
         }
     }

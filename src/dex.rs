@@ -4,7 +4,7 @@ use crate::{
     contracts::try_address,
     errors::{DexError, DexResult, LibraryError},
     utils::*,
-    v2::{Factory, Router, V2Protocol},
+    v2::{Factory, Pair, Router, V2Protocol},
     Amount, Protocol, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
@@ -74,6 +74,11 @@ impl<M: Middleware> Dex<M> {
     /// Returns the contract call for creating a liquidity pair between two tokens.
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
         self.protocol.create_pair(token_a, token_b)
+    }
+
+    /// Returns the pair for two token addresses.
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> DexResult<Pair<M>, M> {
+        Ok(self.protocol.pair_for(token_a, token_b)?)
     }
 
     /* ----------------------------------------- Router ----------------------------------------- */

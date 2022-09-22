@@ -1,21 +1,19 @@
-use ethers::{
-    abi::Detokenize,
-    prelude::{builders::ContractCall, *},
-};
+use ethers::prelude::*;
 use eyre::ContextCompat;
 use std::sync::Arc;
 use uniswap_rs::{Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
-    let chain = Chain::Mainnet;
+    let chain = Chain::Goerli;
     let protocol = ProtocolType::UniswapV2;
     let client = Arc::new({
-        let provider = MAINNET.provider();
+        let provider = GOERLI.provider();
         // FIXME: Replace with own private key / wallet.
-        let wallet = "725fd1619b2653b7ff1806bf29ae11d0568606d83777afd5b1f2e649bd5132a9"
+        let wallet = "1aeda1fc24f9ea6809619040f1d3374255e17a0a3d9c75d85e0ba676ea42ccbd"
             .parse::<LocalWallet>()?
             .with_chain_id(chain);
+        println!("Wallet: {:?}", wallet.address());
 
         SignerMiddleware::new(provider, wallet)
     });
@@ -33,26 +31,12 @@ async fn main() -> eyre::Result<()> {
     // create deposit call
     let deposit_call = dex.weth_deposit(amount)?;
 
-    // create withdrawal call
-    let withdraw_call = dex.weth_withdraw(amount)?;
-
-    println!("Created transactions");
-
+    // send the transaction and await inclusion in a block
     println!("Sending deposit...");
-    let receipt = send_tx(deposit_call).await?;
+    let pending_tx = deposit_call.send().await?;
+    println!("Transaction sent successfully, awaiting inclusion...");
+    let receipt = pending_tx.await?.wrap_err("deposit transaction was dropped from mempool")?;
     println!("Successfully deposited {} ETH to WETH. Receipt: {:?}", amount, receipt);
 
-    println!("Sending withdrawal...");
-    let receipt = send_tx(withdraw_call).await?;
-    println!("Successfully withdrew {} ETH from WETH. Receipt: {:?}", amount, receipt);
-
     Ok(())
-}
-
-async fn send_tx<M: Middleware + 'static, D: Detokenize>(
-    call: ContractCall<M, D>,
-) -> eyre::Result<TransactionReceipt> {
-    let pending_tx = call.send().await?;
-    let receipt = pending_tx.await?.wrap_err("tx was dropped from mempool")?;
-    Ok(receipt)
 }

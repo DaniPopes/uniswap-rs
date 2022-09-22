@@ -1,6 +1,10 @@
-use crate::{bindings::i_uniswap_v2_factory::IUniswapV2Factory, ProtocolType};
+use crate::{
+    bindings::i_uniswap_v2_factory::IUniswapV2Factory, errors::FactoryResult, ProtocolType,
+};
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
+
+use super::{Library, Pair};
 
 /// Represents a UniswapV2 factory.
 #[derive(Clone, Copy, Debug)]
@@ -41,7 +45,7 @@ impl Factory {
     }
 
     /// Returns the deployment code's hash of the pair that this factory deploys.
-    pub const fn pair_code_hash(&self) -> Option<H256> {
+    pub const fn pair_code_hash(&self) -> H256 {
         self.protocol.pair_code_hash()
     }
 
@@ -54,5 +58,16 @@ impl Factory {
     ) -> ContractCall<M, Address> {
         let factory = self.contract(client);
         factory.create_pair(token_a, token_b)
+    }
+
+    /// Returns the pair for two token addresses.
+    pub fn pair_for<M: Middleware>(
+        &self,
+        client: Arc<M>,
+        token_a: Address,
+        token_b: Address,
+    ) -> FactoryResult<Pair<M>, M> {
+        let address = Library::pair_for(*self, token_a, token_b)?;
+        Ok(Pair::new(client, address, self.protocol))
     }
 }

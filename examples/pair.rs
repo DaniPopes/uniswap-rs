@@ -1,9 +1,10 @@
 use ethers::{prelude::*, utils::format_units};
+use eyre::ContextCompat;
 use std::sync::Arc;
 use uniswap_rs::{
     contracts::address,
     v2::{Factory, Pair},
-    ProtocolType,
+    Dex, ProtocolType,
 };
 
 #[tokio::main]
@@ -12,7 +13,7 @@ async fn main() -> eyre::Result<()> {
     let protocol = ProtocolType::UniswapV2;
     let client = Arc::new({
         let provider = MAINNET.provider();
-        let wallet = "725fd1619b2653b7ff1806bf29ae11d0568606d83777afd5b1f2e649bd5132a9"
+        let wallet = "1aeda1fc24f9ea6809619040f1d3374255e17a0a3d9c75d85e0ba676ea42ccbd"
             .parse::<LocalWallet>()?
             .with_chain_id(chain as u64);
 
@@ -26,14 +27,17 @@ async fn main() -> eyre::Result<()> {
     let usdc = address("USDC", chain);
 
     println!("Getting ETH/USDC pair info:");
-    let factory = Factory::new_with_chain(chain, protocol).unwrap();
-    let mut pair = Pair::new_with_factory(client, factory, weth, usdc)?;
+    let factory = Factory::new_with_chain(chain, protocol).wrap_err("chain not supported")?;
+    let _pair = Pair::new_with_factory(client.clone(), factory, weth, usdc)?;
+    // or
+    let dex = Dex::new_with_chain(client, chain, protocol);
+    let mut pair = dex.pair_for(weth, usdc)?;
 
     pair.sync(true, true).await?;
 
-    let address = pair.address();
-    let tokens = pair.tokens().expect("could not sync tokens");
-    let reserves = pair.reserves().expect("could not sync reserves");
+    let _address = pair.address();
+    let _tokens = pair.tokens().wrap_err("could not sync tokens")?;
+    let reserves = pair.reserves().wrap_err("could not sync reserves")?;
 
     // usdc is token0 with 6 decimals, eth is token1 with 18 decimals
     let usdc_reserve: f64 = format_units(U256::from(reserves.0), 6)?.parse()?;
@@ -41,11 +45,8 @@ async fn main() -> eyre::Result<()> {
 
     let price = usdc_reserve / eth_reserve;
 
-    println!("Address:  {:?}", address);
-    println!("USDC:     {:?}", tokens.0);
-    println!("ETH:      {:?}", tokens.1);
-    println!("Reserves: {:.2} USDC, {:.2} ETH", usdc_reserve, eth_reserve);
-    println!("Price:    ${:.2}", price);
+    println!("{}", pair);
+    println!("Price: ${:.2}", price);
 
     Ok(())
 }

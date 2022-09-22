@@ -36,7 +36,7 @@ impl Library {
         let from = factory.address();
         // keccak256(abi.encodePacked(a, b))
         let salt = ethers::utils::keccak256([a.0, b.0].concat());
-        let init_code_hash = factory.pair_code_hash().ok_or(LibraryError::NoPairCodeHash)?.0;
+        let init_code_hash = factory.pair_code_hash().0;
         let address = ethers::utils::get_create2_address_from_hash(from, salt, init_code_hash);
 
         Ok(address)

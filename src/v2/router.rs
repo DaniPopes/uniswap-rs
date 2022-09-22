@@ -16,25 +16,35 @@ pub struct Router {
     address: Address,
 
     /// The router protocol.
-    _protocol: ProtocolType,
+    protocol: ProtocolType,
 }
 
 impl Router {
     /// Creates a new instance from using the provided address.
     pub fn new(address: Address, protocol: ProtocolType) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        Self { address, _protocol: protocol }
+        Self { address, protocol }
     }
 
     /// Creates a new instance using the provided chain.
     pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        protocol.try_addresses(chain).0.map(|address| Self { address, _protocol: protocol })
+        protocol.try_addresses(chain).0.map(|address| Self { address, protocol })
     }
 
     /// Returns the router contract.
     pub fn contract<M: Middleware>(&self, client: Arc<M>) -> IUniswapV2Router02<M> {
         IUniswapV2Router02::new(self.address, client)
+    }
+
+    /// Returns the router address.
+    pub fn address(&self) -> Address {
+        self.address
+    }
+
+    /// Returns the router protocol.
+    pub fn protocol(&self) -> ProtocolType {
+        self.protocol
     }
 
     /// Generalized add_liquidity function for the various [UniswapV2Router] methods.

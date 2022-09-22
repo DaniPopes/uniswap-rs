@@ -40,6 +40,28 @@ impl<M> fmt::Debug for Pair<M> {
     }
 }
 
+impl<M> fmt::Display for Pair<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if self.tokens.is_some() {
+            writeln!(f, "Pair:     {:?}", self.address)?;
+        } else {
+            writeln!(f, "Pair: {:?}", self.address)?;
+        }
+        if let Some((a, b)) = self.tokens {
+            writeln!(f, "Token0:   {:?}", a)?;
+            write!(f, "Token1:   {:?}", b)?;
+            if self.reserves.is_some() {
+                writeln!(f)?
+            };
+        }
+        if let Some((a, b, _)) = self.reserves {
+            writeln!(f, "Reserve0: {:?}", a)?;
+            write!(f, "Reserve1: {:?}", b)?;
+        }
+        Ok(())
+    }
+}
+
 impl<M: Middleware> Pair<M> {
     /// Creates a new instance using the provided client and address.
     pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
@@ -99,7 +121,7 @@ impl<M: Middleware> Pair<M> {
 
     /// Returns the hash of the pair's deployment code. This can be used to determinalistically
     /// calculate the address of the pair given the addresses of 2 (sorted) tokens.
-    pub const fn code_hash(&self) -> Option<H256> {
+    pub const fn code_hash(&self) -> H256 {
         self.protocol.pair_code_hash()
     }
 
