@@ -2,14 +2,12 @@ use super::{Factory, Library};
 use crate::{
     bindings::i_uniswap_v2_router_02::IUniswapV2Router02,
     constants::BPS_U256,
-    errors::RouterError,
+    errors::RouterResult,
     utils::{is_native_path, map_native},
     Amount, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
-
-type Result<T, M> = std::result::Result<T, RouterError<M>>;
 
 /// Represents a UniswapV2 router.
 #[derive(Clone, Copy, Debug)]
@@ -61,7 +59,7 @@ impl Router {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> Result<ContractCall<M, (U256, U256, U256)>, M> {
+    ) -> RouterResult<ContractCall<M, (U256, U256, U256)>, M> {
         let router = self.contract(client);
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
@@ -121,7 +119,7 @@ impl Router {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> Result<ContractCall<M, (U256, U256)>, M> {
+    ) -> RouterResult<ContractCall<M, (U256, U256)>, M> {
         let router = self.contract(client);
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
@@ -177,7 +175,7 @@ impl Router {
         to: Address,
         deadline: U256,
         weth: Address,
-    ) -> Result<ContractCall<M, Vec<U256>>, M> {
+    ) -> RouterResult<ContractCall<M, Vec<U256>>, M> {
         let router = self.contract(client.clone());
         let (from_native, to_native) = is_native_path(&path);
         map_native(&mut path, weth);

@@ -1,13 +1,10 @@
 use super::{Factory, Library};
-use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairError, ProtocolType};
+use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::PairResult, ProtocolType};
 use ethers::{abi::Token, contract::builders::ContractCall, core::abi::Detokenize, prelude::*};
 use std::{fmt, sync::Arc};
 
 type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
-
-/// Type alias for Result<T, PairError<M>>.
-type Result<T, M> = std::result::Result<T, PairError<M>>;
 
 /// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
 #[derive(Clone)]
@@ -55,7 +52,7 @@ impl<M: Middleware> Pair<M> {
         factory: Factory,
         token0: Address,
         token1: Address,
-    ) -> Result<Self, M> {
+    ) -> PairResult<Self, M> {
         let (token0, token1) = Library::sort_tokens(token0, token1)?;
         let address = Library::pair_for(factory, token0, token1)?;
 
@@ -120,7 +117,11 @@ impl<M: Middleware> Pair<M> {
     /// Syncs the tokens and reserves of the pair by querying the blockchain.
     ///
     /// Assumes that any call failure means the pair has not been deployed yet.
-    pub async fn sync(&mut self, sync_tokens: bool, sync_reserves: bool) -> Result<&mut Self, M> {
+    pub async fn sync(
+        &mut self,
+        sync_tokens: bool,
+        sync_reserves: bool,
+    ) -> PairResult<&mut Self, M> {
         // let sync_tokens = sync_tokens || self.tokens.is_none() || !self.deployed;
         // let sync_reserves = sync_reserves || self.reserves.is_none();
 
@@ -203,7 +204,7 @@ fn parse_errors(tokens: Vec<Token>) -> Vec<Option<String>> {
 
 /// Parses a multicall result from a vector of tokens, returning None if the call returned an
 /// error.
-fn parse_result<M: Middleware, D: Detokenize>(tokens: Vec<Token>) -> Result<Option<D>, M> {
+fn parse_result<M: Middleware, D: Detokenize>(tokens: Vec<Token>) -> PairResult<Option<D>, M> {
     let res = D::from_tokens(tokens.clone());
     match res {
         Err(e) => {
@@ -223,7 +224,7 @@ fn parse_result<M: Middleware, D: Detokenize>(tokens: Vec<Token>) -> Result<Opti
 
 /// Parses a multicall result of Pair::get_tokens(), returning None if the call returned an
 /// error.
-fn parse_tokens_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Tokens>, M> {
+fn parse_tokens_result<M: Middleware>(tokens: Vec<Token>) -> PairResult<Option<Tokens>, M> {
     type TokensResult = ((bool, Address), (bool, Address));
     let res: Option<TokensResult> = parse_result(tokens)?;
 
@@ -241,7 +242,7 @@ fn parse_tokens_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Token
 
 /// Parses a multicall result of Pair::get_reserves(), returning None if the call returned an
 /// error.
-fn parse_reserves_result<M: Middleware>(tokens: Vec<Token>) -> Result<Option<Reserves>, M> {
+fn parse_reserves_result<M: Middleware>(tokens: Vec<Token>) -> PairResult<Option<Reserves>, M> {
     type ReservesResult = (bool, Reserves);
     let res: Option<ReservesResult> = parse_result(tokens)?;
 

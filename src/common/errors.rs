@@ -3,6 +3,11 @@
 use ethers::prelude::*;
 use thiserror::Error;
 
+/// Type alias for the results of [Dex].
+///
+/// [Dex]: crate::dex::Dex
+pub type DexResult<T, M> = Result<T, DexError<M>>;
+
 /// Errors thrown by [Dex].
 ///
 /// [Dex]: crate::dex::Dex
@@ -46,6 +51,9 @@ pub enum DexError<M: Middleware> {
     WethNotSet,
 }
 
+/// Type alias for the results of a pair.
+pub type PairResult<T, M> = Result<T, PairError<M>>;
+
 /// Errors thrown by a pair.
 #[derive(Debug, Error)]
 pub enum PairError<M: Middleware> {
@@ -62,6 +70,9 @@ pub enum PairError<M: Middleware> {
     MulticallError(#[from] MulticallError<M>),
 }
 
+/// Type alias for the results of a router.
+pub type RouterResult<T, M> = Result<T, RouterError<M>>;
+
 /// Errors thrown by a router.
 #[derive(Debug, Error)]
 #[non_exhaustive]
@@ -75,6 +86,9 @@ pub enum RouterError<M: Middleware> {
     LibraryError(#[from] LibraryError),
 }
 
+/// Type alias for the results of a factory.
+pub type FactoryResult<T, M> = Result<T, FactoryError<M>>;
+
 /// Errors thrown by a factory.
 #[derive(Debug, Error)]
 #[non_exhaustive]
@@ -87,6 +101,9 @@ pub enum FactoryError<M: Middleware> {
     #[error(transparent)]
     LibraryError(#[from] LibraryError),
 }
+
+/// Type alias for the results of a factory.
+pub type LibraryResult<T> = Result<T, LibraryError>;
 
 /// Errors thrown by a library.
 #[derive(Debug, Error)]

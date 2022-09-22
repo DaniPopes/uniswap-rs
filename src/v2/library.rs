@@ -1,10 +1,10 @@
 use super::factory::Factory;
-use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::LibraryError};
+use crate::{
+    bindings::i_uniswap_v2_pair::IUniswapV2Pair,
+    errors::{LibraryError, LibraryResult},
+};
 use ethers::{core::abi::Detokenize, prelude::*};
 use std::sync::Arc;
-
-/// Type alias for Result<T, UniswapV2LibraryError>.
-type Result<T> = std::result::Result<T, LibraryError>;
 
 /// The UniswapV2 library refactored from the official [@Uniswap/v2-periphery].
 ///
@@ -15,7 +15,7 @@ pub struct Library;
 impl Library {
     /// Returns sorted token addresses, used to handle return values from pairs sorted in this
     /// order.
-    pub fn sort_tokens(a: Address, b: Address) -> Result<(Address, Address)> {
+    pub fn sort_tokens(a: Address, b: Address) -> LibraryResult<(Address, Address)> {
         let (a, b) = match a.cmp(&b) {
             std::cmp::Ordering::Less => (a, b),
             std::cmp::Ordering::Equal => return Err(LibraryError::IdenticalAddresses),
@@ -30,7 +30,7 @@ impl Library {
     }
 
     /// Calculates the CREATE2 address for a pair without making any external calls.
-    pub fn pair_for(factory: Factory, a: Address, b: Address) -> Result<Address> {
+    pub fn pair_for(factory: Factory, a: Address, b: Address) -> LibraryResult<Address> {
         let (a, b) = Self::sort_tokens(a, b)?;
 
         let from = factory.address();
@@ -48,7 +48,7 @@ impl Library {
         factory: Factory,
         a: Address,
         b: Address,
-    ) -> Result<(U256, U256)> {
+    ) -> LibraryResult<(U256, U256)> {
         let (address_0, _) = Self::sort_tokens(a, b)?;
         let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, client);
         let (reserve_a, reserve_b, _) = pair
@@ -70,7 +70,7 @@ impl Library {
         client: Arc<M>,
         factory: Factory,
         path: Vec<Address>,
-    ) -> Result<Vec<(U256, U256)>> {
+    ) -> LibraryResult<Vec<(U256, U256)>> {
         let l = match path.len() {
             l if l < 2 => return Err(LibraryError::InvalidPath),
             l if l == 2 => {
@@ -114,7 +114,7 @@ impl Library {
 
     /// Given some amount of an asset and pair reserves, returns an equivalent amount of the other
     /// asset.
-    pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> Result<U256> {
+    pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> LibraryResult<U256> {
         if amount_a.is_zero() {
             Err(LibraryError::InsufficientAmount)
         } else if reserve_a.is_zero() || reserve_b.is_zero() {
@@ -126,7 +126,11 @@ impl Library {
 
     /// Given an input amount of an asset and pair reserves, returns the maximum output amount of
     /// the other asset.
-    pub fn get_amount_out(amount_in: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
+    pub fn get_amount_out(
+        amount_in: U256,
+        reserve_in: U256,
+        reserve_out: U256,
+    ) -> LibraryResult<U256> {
         if amount_in.is_zero() {
             return Err(LibraryError::InsufficientInputAmount)
         }
@@ -141,7 +145,11 @@ impl Library {
 
     /// Given an output amount of an asset and pair reserves, returns a required input amount of the
     /// other asset.
-    pub fn get_amount_in(amount_out: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
+    pub fn get_amount_in(
+        amount_out: U256,
+        reserve_in: U256,
+        reserve_out: U256,
+    ) -> LibraryResult<U256> {
         if amount_out.is_zero() {
             return Err(LibraryError::InsufficientOutputAmount)
         }
@@ -159,7 +167,7 @@ impl Library {
         factory: Factory,
         amount_in: U256,
         path: Vec<Address>,
-    ) -> Result<Vec<U256>> {
+    ) -> LibraryResult<Vec<U256>> {
         let l = path.len();
         if l < 2 {
             return Err(LibraryError::InvalidPath)
@@ -180,7 +188,7 @@ impl Library {
         factory: Factory,
         amount_out: U256,
         path: Vec<Address>,
-    ) -> Result<Vec<U256>> {
+    ) -> LibraryResult<Vec<U256>> {
         let l = path.len();
         if l < 2 {
             return Err(LibraryError::InvalidPath)
