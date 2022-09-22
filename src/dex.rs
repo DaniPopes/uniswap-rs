@@ -88,7 +88,7 @@ impl<M: Middleware> Dex<M> {
         self.protocol.router()
     }
 
-    /// Returns the contract call for adding liquidity from a pair.
+    /// Returns the contract call for adding liquidity to a pair.
     pub async fn add_liquidity(
         &self,
         token_a: Address,
