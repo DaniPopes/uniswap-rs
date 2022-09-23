@@ -31,20 +31,20 @@ Examples can be found [here][examples].
 ## Roadmap
 
 -   [ ] UniswapV2 protocol
-    -   [ ] Implementation
-    -   [ ] Documentation
+    -   [x] Implementation
+    -   [x] Documentation
     -   [ ] Tests
 -   [ ] UniswapV3 protocol
     -   [ ] Implementation
     -   [ ] Documentation
     -   [ ] Tests
--   [ ] Contract addresses
+-   [x] Contract addresses
     -   [x] Uniswap v2 and v3
-    -   [ ] Sushiswap
+    -   [x] Sushiswap
     -   [x] Pancakeswap
-    -   [ ] Quickswap
-    -   [ ] Spookyswap
-    -   [ ] Traderjoe
+    -   [x] Quickswap
+    -   [x] Spookyswap
+    -   [x] Traderjoe
 
 ## License
 
