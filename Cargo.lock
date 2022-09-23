@@ -584,6 +584,7 @@ dependencies = [
 [[package]]
 name = "ethers"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "ethers-addressbook",
  "ethers-contract",
@@ -597,6 +598,7 @@ dependencies = [
 [[package]]
 name = "ethers-addressbook"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "ethers-core",
  "once_cell",
@@ -607,6 +609,7 @@ dependencies = [
 [[package]]
 name = "ethers-contract"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "ethers-contract-abigen",
  "ethers-contract-derive",
@@ -624,6 +627,7 @@ dependencies = [
 [[package]]
 name = "ethers-contract-abigen"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "Inflector",
  "cfg-if",
@@ -646,6 +650,7 @@ dependencies = [
 [[package]]
 name = "ethers-contract-derive"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "ethers-contract-abigen",
  "ethers-core",
@@ -659,6 +664,7 @@ dependencies = [
 [[package]]
 name = "ethers-core"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "arrayvec",
  "bytes",
@@ -689,6 +695,7 @@ dependencies = [
 [[package]]
 name = "ethers-etherscan"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "ethers-core",
  "getrandom",
@@ -704,6 +711,7 @@ dependencies = [
 [[package]]
 name = "ethers-middleware"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "async-trait",
  "auto_impl 0.5.0",
@@ -728,6 +736,7 @@ dependencies = [
 [[package]]
 name = "ethers-providers"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "async-trait",
  "auto_impl 1.0.1",
@@ -761,6 +770,7 @@ dependencies = [
 [[package]]
 name = "ethers-signers"
 version = "0.17.0"
+source = "git+https://github.com/danipopes/ethers-rs?branch=fix/contract-impls#6b99b161c0d49317e771e925ab3b57a77d08e020"
 dependencies = [
  "async-trait",
  "coins-bip32",
