@@ -19,6 +19,29 @@ pub struct Router<M> {
     protocol: ProtocolType,
 }
 
+impl<M> Router<M> {
+    /// Returns a reference to the router contract.
+    pub fn contract(&self) -> &IUniswapV2Router02<M> {
+        &self.contract
+    }
+
+    /// Returns a reference to the client.
+    pub fn client(&self) -> Arc<M> {
+        // self.contract.client()
+        todo!()
+    }
+
+    /// Returns the router address.
+    pub fn address(&self) -> Address {
+        self.contract.address()
+    }
+
+    /// Returns the router protocol.
+    pub fn protocol(&self) -> ProtocolType {
+        self.protocol
+    }
+}
+
 impl<M: Middleware> Router<M> {
     /// Creates a new instance from using the provided address.
     pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
@@ -34,21 +57,6 @@ impl<M: Middleware> Router<M> {
             let contract = IUniswapV2Router02::new(address, client);
             Self { contract, protocol }
         })
-    }
-
-    /// Returns a reference to the router contract.
-    pub fn contract(&self) -> &IUniswapV2Router02<M> {
-        &self.contract
-    }
-
-    /// Returns the router address.
-    pub fn address(&self) -> Address {
-        self.contract.address()
-    }
-
-    /// Returns the router protocol.
-    pub fn protocol(&self) -> ProtocolType {
-        self.protocol
     }
 
     /// Generalized add_liquidity function for the various [UniswapV2Router] methods.

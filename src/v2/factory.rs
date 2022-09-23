@@ -13,9 +13,23 @@ pub struct Factory<M> {
 
     /// The factory protocol.
     protocol: ProtocolType,
+
+    /// The chain.
+    chain: Option<Chain>,
 }
 
 impl<M> Factory<M> {
+    /// Returns a reference to the factory contract.
+    pub fn contract(&self) -> &IUniswapV2Factory<M> {
+        &self.contract
+    }
+
+    /// Returns a reference to the client.
+    pub fn client(&self) -> Arc<M> {
+        // self.contract.client()
+        todo!()
+    }
+
     /// Returns the contract address of the factory.
     pub fn address(&self) -> Address {
         self.contract.address()
@@ -27,8 +41,11 @@ impl<M> Factory<M> {
     }
 
     /// Returns the deployment code's hash of the pair that this factory deploys.
-    pub const fn pair_code_hash(&self) -> H256 {
-        self.protocol.pair_code_hash()
+    ///
+    /// Note: `chain` is used only when the pair code hash differs in the same protocol, for example
+    /// `Pancakeswap` has two different code hashes for BSC mainnet and testnet.
+    pub fn pair_code_hash(&self, chain: Option<Chain>) -> H256 {
+        self.protocol.pair_code_hash(chain.or(self.chain))
     }
 }
 
@@ -37,7 +54,7 @@ impl<M: Middleware> Factory<M> {
     pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
         let contract = IUniswapV2Factory::new(address, client);
-        Self { contract, protocol }
+        Self { contract, protocol, chain: None }
     }
 
     /// Creates a new instance using the provided chain.
@@ -45,19 +62,8 @@ impl<M: Middleware> Factory<M> {
         // assert!(protocol.is_v2(), "protocol must be v2");
         protocol.try_addresses(chain).0.map(|address| {
             let contract = IUniswapV2Factory::new(address, client);
-            Self { contract, protocol }
+            Self { contract, protocol, chain: Some(chain) }
         })
-    }
-
-    /// Returns a reference to the factory contract.
-    pub fn contract(&self) -> &IUniswapV2Factory<M> {
-        &self.contract
-    }
-
-    /// Returns a reference to the client.
-    pub fn client(&self) -> Arc<M> {
-        // self.contract.client()
-        todo!()
     }
 
     /// Returns the contract call for creating a pair.

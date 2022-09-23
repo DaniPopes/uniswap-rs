@@ -113,8 +113,11 @@ impl<M: Middleware> Pair<M> {
 
     /// Returns the hash of the pair's deployment code. This can be used to determinalistically
     /// calculate the address of the pair given the addresses of 2 (sorted) tokens.
-    pub const fn code_hash(&self) -> H256 {
-        self.protocol.pair_code_hash()
+    ///
+    /// Note: `chain` is used only when the pair code hash differs in the same protocol, for example
+    /// `Pancakeswap` has two different code hashes for BSC mainnet and testnet.
+    pub fn code_hash(&self, chain: Option<Chain>) -> H256 {
+        self.protocol.pair_code_hash(chain)
     }
 
     /// Returns the contract calls for getting the addresses of the pair's tokens.
