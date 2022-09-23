@@ -34,7 +34,7 @@ pub mod i_uniswap_v2_factory {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for IUniswapV2Factory<M> {
+    impl<M> std::fmt::Debug for IUniswapV2Factory<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             f.debug_tuple(stringify!(IUniswapV2Factory)).field(&self.address()).finish()
         }

@@ -34,7 +34,7 @@ pub mod i_uniswap_v3_pool {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for IUniswapV3Pool<M> {
+    impl<M> std::fmt::Debug for IUniswapV3Pool<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             f.debug_tuple(stringify!(IUniswapV3Pool)).field(&self.address()).finish()
         }

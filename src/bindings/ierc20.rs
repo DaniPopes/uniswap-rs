@@ -34,7 +34,7 @@ pub mod ierc20 {
             &self.0
         }
     }
-    impl<M: ethers::providers::Middleware> std::fmt::Debug for IERC20<M> {
+    impl<M> std::fmt::Debug for IERC20<M> {
         fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
             f.debug_tuple(stringify!(IERC20)).field(&self.address()).finish()
         }
