@@ -1,5 +1,17 @@
 //! Contains all related smart contract addresses. Modified from [`addressbook`].
 //!
+//! Sources:
+//! - UniswapV2
+//!   - Factory: https://docs.uniswap.org/protocol/V2/reference/smart-contracts/factory
+//!   - Router: https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02
+//! - UniswapV3: https://docs.uniswap.org/protocol/reference/deployments
+//! - Sushiswap: https://docs.sushi.com/docs/Developers/Deployment%20Addresses
+//! - Quickswap
+//!   - Factory: https://docs.quickswap.exchange/reference/smart-contracts/01-factory
+//!   - Router: https://docs.quickswap.exchange/reference/smart-contracts/router02
+//! - Spookyswap: https://docs.spooky.fi/Resources/contracts
+//! - Traderjoe: https://docs.traderjoexyz.com/en/security-and-contracts/contracts
+//!
 //! [`addressbook`]: ethers::addressbook
 
 use ethers::prelude::*;
@@ -42,7 +54,9 @@ pub fn try_address<S: Into<String>>(name: S, chain: Chain) -> Option<Address> {
 /// address book we panic.
 pub fn contract<S: Into<String>>(name: S) -> Contract {
     let name: String = name.into();
-    try_contract(&name).unwrap_or_else(|| panic!("Missing {} in contracts.json", name))
+    try_contract(&name).unwrap_or_else(|| {
+        panic!("uniswap_rs::contracts: \"{}\" is not present in addressbook", name)
+    })
 }
 
 /// Fetch the address for a contract by its name and chain. If the contract name is not a part of
@@ -51,7 +65,7 @@ pub fn address<S: Into<String>>(name: S, chain: Chain) -> Address {
     let name: String = name.into();
     let contract = contract(&name);
     contract.address(chain).unwrap_or_else(|| {
-        panic!("Missing {:?} chain in {}.addresses in contracts.json", chain, name)
+        panic!("uniswap_rs::contracts: Chain \"{:?}\" for contract \"{}\" is not present in addressbook", chain, name)
     })
 }
 

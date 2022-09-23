@@ -42,14 +42,23 @@ pub enum ProtocolType {
     #[default]
     UniswapV2,
 
-    /// UniswapV3, deployed on Ethereum, Polygon and Celo.
+    /// Deployed on Ethereum, Polygon and Celo.
     UniswapV3,
 
-    /// Sushiswap, deployed on most chains.
+    /// Deployed on most chains.
     Sushiswap,
 
-    /// Pancakeswap, deployed only on Binance Smart Chain.
+    /// Deployed only on Binance Smart Chain.
     Pancakeswap,
+
+    /// Deployed only on Polygon.
+    Quickswap,
+
+    /// Deployed only on Fantom.
+    Spookyswap,
+
+    /// Deployed only on Avalanche.
+    Traderjoe,
 
     /// Custom protocol.
     Custom {
@@ -71,6 +80,12 @@ impl ProtocolType {
     /// Instantiates a new custom protocol type.
     pub fn new(factory: Address, router: Address, is_v2: bool, pair_code_hash: H256) -> Self {
         Self::Custom { factory, router, is_v2, pair_code_hash }
+    }
+
+    /// Returns all of the defined protocols.
+    pub const fn all() -> [Self; 7] {
+        use ProtocolType::*;
+        [UniswapV2, UniswapV3, Sushiswap, Pancakeswap, Quickswap, Spookyswap, Traderjoe]
     }
 
     /// Returns (factory_address, router_address), returning None if not found.
@@ -95,34 +110,41 @@ impl ProtocolType {
 
     /// Returns (factory_name, router_name).
     pub const fn contract_names(&self) -> (&str, &str) {
+        use ProtocolType::*;
         match self {
-            Self::UniswapV2 => ("UniswapV2Factory", "UniswapV2Router02"),
-            Self::UniswapV3 => ("UniswapV3Factory", "UniswapV3Router02"),
-            Self::Sushiswap => ("SushiswapV2Factory", "SushiswapV2Router02"),
-            Self::Pancakeswap => ("PancakeFactory", "PancakeRouter"),
-            Self::Custom { .. } => ("CustomFactory", "CustomRouter"),
+            UniswapV2 => ("UniswapV2Factory", "UniswapV2Router02"),
+            UniswapV3 => ("UniswapV3Factory", "UniswapV3Router02"),
+            Sushiswap => ("SushiV2Factory", "SushiSwapRouter"),
+            Pancakeswap => ("PancakeFactory", "PancakeRouter"),
+            Quickswap => ("QuickFactory", "QuickRouter"),
+            Spookyswap => ("SpookyFactory", "SpookyRouter"),
+            Traderjoe => ("JoeFactory", "JoeRouter"),
+            Custom { .. } => ("CustomFactory", "CustomRouter"),
         }
     }
 
     /// Returns the code hash of the pair created by the factory of the protocol.
-    ///
-    /// Returns None only when the variant is Custom and the pair_code_hash field is None.
     pub const fn pair_code_hash(&self) -> H256 {
+        use ProtocolType::*;
         match self {
-            Self::UniswapV2 => UNISWAP_V2_PAIR_CODE_HASH,
-            Self::UniswapV3 => UNISWAP_V3_POOL_CODE_HASH,
-            Self::Sushiswap => SUSHISWAP_PAIR_CODE_HASH,
-            Self::Pancakeswap => PANCAKESWAP_PAIR_CODE_HASH,
-            Self::Custom { pair_code_hash, .. } => *pair_code_hash,
+            UniswapV2 => UNISWAP_V2_PAIR_CODE_HASH,
+            UniswapV3 => UNISWAP_V3_POOL_CODE_HASH,
+            Sushiswap => SUSHISWAP_PAIR_CODE_HASH,
+            Pancakeswap => PANCAKESWAP_PAIR_CODE_HASH,
+            Quickswap => todo!(),  // QUICKSWAP_PAIR_CODE_HASH,
+            Spookyswap => todo!(), // SPOOKYSWAP_PAIR_CODE_HASH,
+            Traderjoe => todo!(),  // TRADERJOE_PAIR_CODE_HASH,
+            Custom { pair_code_hash, .. } => *pair_code_hash,
         }
     }
 
     /// Returns whether the protocol is, or is a fork of, UniswapV2.
     pub const fn is_v2(&self) -> bool {
+        use ProtocolType::*;
         match self {
-            Self::Pancakeswap | Self::Sushiswap | Self::UniswapV2 => true,
-            Self::UniswapV3 => false,
-            Self::Custom { is_v2, .. } => *is_v2,
+            Pancakeswap | Sushiswap | UniswapV2 | Quickswap | Spookyswap | Traderjoe => true,
+            UniswapV3 => false,
+            Custom { is_v2, .. } => *is_v2,
         }
     }
 
@@ -295,11 +317,12 @@ impl<M: Middleware> Protocol<M> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use Chain::*;
     use ProtocolType::*;
 
     #[test]
     fn test_versions() {
-        let v2s = [UniswapV2, Sushiswap, Pancakeswap];
+        let v2s = [UniswapV2, Sushiswap, Pancakeswap, Quickswap, Spookyswap, Traderjoe];
         let v3s = [UniswapV3];
 
         for v2 in v2s {
@@ -310,6 +333,40 @@ mod tests {
         for v3 in v3s {
             assert!(!v3.is_v2());
             assert!(v3.is_v3());
+        }
+    }
+
+    #[test]
+    fn test_addresses() {
+        let protocols = ProtocolType::all();
+
+        let mainnet = || vec![Mainnet];
+        let eth_t = || vec![Rinkeby, Ropsten, Goerli, Kovan];
+        let polygon = || vec![Polygon, PolygonMumbai];
+        let l2 = || vec![Optimism, Arbitrum];
+        let l2_t = || vec![OptimismGoerli, OptimismKovan, ArbitrumTestnet];
+        let bsc = || vec![BinanceSmartChain, BinanceSmartChainTestnet];
+        let avax = || vec![Avalanche, AvalancheFuji];
+
+        #[rustfmt::skip]
+        let chains = vec![
+            /*  UniswapV2  */ vec![mainnet(), eth_t()].concat(),
+            /*  UniswapV3  */ vec![mainnet(), eth_t(), polygon(), l2(), l2_t()].concat(),
+            /*  Sushiswap  */ vec![vec![Fantom, Moonriver, Moonbeam, XDai], mainnet(), polygon(), bsc(), avax()].concat(),
+            /* Pancakeswap */ bsc(),
+            /*  Quickswap  */ polygon(),
+            /*  Spookyswap */ vec![Fantom],
+            /*  Traderjoe  */ avax(),
+        ];
+
+        assert_eq!(protocols.len(), chains.len());
+
+        for (protocol, p_chains) in protocols.iter().zip(chains) {
+            for chain in p_chains {
+                let addresses = protocol.addresses(chain);
+                assert_ne!(addresses.0, Address::zero());
+                assert_ne!(addresses.1, Address::zero());
+            }
         }
     }
 }

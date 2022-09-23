@@ -34,22 +34,13 @@
             "binance_smart_chain": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
         }
     },
-    "SushiswapV2Router02": {
+    "UniswapV2Factory": {
         "addresses": {
-            "mainnet": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
-            "rinkeby": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
-            "ropsten": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
-            "goerli": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
-            "kovan": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
-        }
-    },
-    "SushiswapV2Factory": {
-        "addresses": {
-            "mainnet": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
-            "rinkeby": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
-            "ropsten": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
-            "goerli": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
-            "kovan": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4"
+            "mainnet": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            "rinkeby": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            "ropsten": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            "goerli": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+            "kovan": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
         }
     },
     "UniswapV2Router01": {
@@ -70,13 +61,20 @@
             "kovan": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
         }
     },
-    "UniswapV2Factory": {
+    "UniswapV3Factory": {
         "addresses": {
-            "mainnet": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-            "rinkeby": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-            "ropsten": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-            "goerli": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-            "kovan": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+            "mainnet": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "rinkeby": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "ropsten": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "goerli": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "kovan": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "polygon": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "polygon_mumbai": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "optimism": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "optimism_kovan": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "optimism_goerli": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "arbitrum": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "arbitrum_testnet": "0x1F98431c8aD98523631AE4a59f267346ea31F984"
         }
     },
     "UniswapV3Router01": {
@@ -86,7 +84,13 @@
             "ropsten": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
             "goerli": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
             "kovan": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
-            "optimism": "0xE592427A0AEce92De3Edee1F18E0157C05861564"
+            "polygon": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+            "polygon_mumbai": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+            "optimism": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+            "optimism_kovan": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+            "optimism_goerli": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+            "arbitrum": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+            "arbitrum_testnet": "0xE592427A0AEce92De3Edee1F18E0157C05861564"
         }
     },
     "UniswapV3Router02": {
@@ -96,17 +100,57 @@
             "ropsten": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
             "goerli": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
             "kovan": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "optimism": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"
+            "polygon": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "polygon_mumbai": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "optimism": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "optimism_kovan": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "optimism_goerli": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "arbitrum": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "arbitrum_testnet": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"
         }
     },
-    "UniswapV3Factory": {
+    "SushiV2Factory": {
         "addresses": {
-            "mainnet": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-            "rinkeby": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-            "ropsten": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-            "goerli": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-            "kovan": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-            "optimism": "0x1F98431c8aD98523631AE4a59f267346ea31F984"
+            "mainnet": "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac",
+            "rinkeby": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "ropsten": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "goerli": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "kovan": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "binance_smart_chain": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "binance_smart_chain_testnet": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "polygon": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "polygon_mumbai": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "avalanche": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "avalanche_fuji": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "fantom": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "moonriver": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "moonbeam": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
+            "x_dai": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4"
+        }
+    },
+    "SushiSwapRouter": {
+        "addresses": {
+            "mainnet": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
+            "rinkeby": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "ropsten": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "goerli": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "kovan": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "binance_smart_chain": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "binance_smart_chain_testnet": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "polygon": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "polygon_mumbai": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "avalanche": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "avalanche_fuji": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "fantom": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "moonriver": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "moonbeam": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506",
+            "x_dai": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
+        }
+    },
+    "PancakeFactory": {
+        "addresses": {
+            "binance_smart_chain": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
+            "binance_smart_chain_testnet": "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"
         }
     },
     "PancakeRouter": {
@@ -115,10 +159,40 @@
             "binance_smart_chain_testnet": "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3"
         }
     },
-    "PancakeFactory": {
+    "QuickFactory": {
         "addresses": {
-            "binance_smart_chain": "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73",
-            "binance_smart_chain_testnet": "0xB7926C0430Afb07AA7DEfDE6DA862aE0Bde767bc"
+            "polygon": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32",
+            "polygon_mumbai": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32"
+        }
+    },
+    "QuickRouter": {
+        "addresses": {
+            "polygon": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff",
+            "polygon_mumbai": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff"
+        }
+    },
+    "SpookyFactory": {
+        "addresses": {
+            "fantom": "0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3",
+            "fantom_testnet": "0xEE4bC42157cf65291Ba2FE839AE127e3Cc76f741"
+        }
+    },
+    "SpookyRouter": {
+        "addresses": {
+            "fantom": "0xF491e7B69E4244ad4002BC14e878a34207E38c29",
+            "fantom_testnet": "0xa6AD18C2aC47803E193F75c3677b14BF19B94883"
+        }
+    },
+    "JoeFactory": {
+        "addresses": {
+            "avalanche": "0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10",
+            "avalanche_fuji": "0xF5c7d9733e5f53abCC1695820c4818C59B457C2C"
+        }
+    },
+    "JoeRouter": {
+        "addresses": {
+            "avalanche": "0x60aE616a2155Ee3d9A68541Ba4544862310933d4",
+            "avalanche_fuji": "0xd7f655E3376cE2D7A2b08fF01Eb3B1023191A901"
         }
     }
 }
