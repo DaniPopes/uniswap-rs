@@ -13,9 +13,6 @@ use std::sync::Arc;
 /// Aggregates common methods to interact with the Uniswap v2 or v3 protocols and other utilities.
 #[derive(Clone, Debug)]
 pub struct Dex<M> {
-    /// The node and signer.
-    client: Arc<M>,
-
     /// The protocol.
     protocol: Protocol<M>,
 
@@ -32,11 +29,11 @@ impl<M: Middleware> Dex<M> {
     /// When the protocol's addresses could not be found.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         let protocol = match protocol {
-            p if p.is_v2() => Protocol::V2(V2Protocol::new(client.clone(), factory, router, p)),
+            p if p.is_v2() => Protocol::V2(V2Protocol::new(client, factory, router, p)),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
             p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
         };
-        Self { client, weth: None, protocol }
+        Self { protocol, weth: None }
     }
 
     /// Creates a new instance of Dex from a chain.
@@ -46,28 +43,28 @@ impl<M: Middleware> Dex<M> {
     /// When the protocol's addresses could not be found.
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
         let protocol = match protocol {
-            p if p.is_v2() => Protocol::V2(V2Protocol::new_with_chain(client.clone(), chain, p)),
+            p if p.is_v2() => Protocol::V2(V2Protocol::new_with_chain(client, chain, p)),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
             p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
         };
         let weth = try_address("WETH", chain);
-        Self { client, weth, protocol }
+        Self { protocol, weth }
     }
 
-    /// Returns the client.
+    /// Returns a reference to the client.
     pub fn client(&self) -> Arc<M> {
-        self.client.clone()
+        self.protocol.client()
     }
 
     /// Returns the protocol.
-    pub fn protocol(&self) -> Protocol<M> {
-        self.protocol.clone()
+    pub fn protocol(&self) -> &Protocol<M> {
+        &self.protocol
     }
 
     /* ----------------------------------------- Factory ---------------------------------------- */
 
     /// Returns the factory.
-    pub fn factory(&self) -> Factory {
+    pub fn factory(&self) -> &Factory<M> {
         self.protocol.factory()
     }
 
@@ -84,7 +81,7 @@ impl<M: Middleware> Dex<M> {
     /* ----------------------------------------- Router ----------------------------------------- */
 
     /// Returns the router.
-    pub fn router(&self) -> Router {
+    pub fn router(&self) -> &Router<M> {
         self.protocol.router()
     }
 
@@ -100,7 +97,7 @@ impl<M: Middleware> Dex<M> {
         to: Option<Address>,
         deadline: Option<u64>,
     ) -> DexResult<ContractCall<M, (U256, U256, U256)>, M> {
-        let sender = self.client.default_sender();
+        let sender = self.client().default_sender();
         let to = self.get_to(to);
 
         let deadline = unwrap_deadline(deadline);
@@ -141,7 +138,7 @@ impl<M: Middleware> Dex<M> {
     ) -> DexResult<ContractCall<M, (U256, U256)>, M> {
         let deadline = unwrap_deadline(deadline);
 
-        let sender = self.client.default_sender();
+        let sender = self.client().default_sender();
         let to = self.get_to(to);
 
         // TODO: Maths
@@ -182,7 +179,7 @@ impl<M: Middleware> Dex<M> {
         &mut self,
         amount: Amount,
         slippage_tolerance: f32,
-        path: Vec<Address>,
+        path: &[Address],
         to: Option<Address>,
         deadline: Option<u64>,
     ) -> DexResult<ContractCall<M, Vec<U256>>, M> {
@@ -190,7 +187,7 @@ impl<M: Middleware> Dex<M> {
             return Err(DexError::InvalidSlippage)
         }
 
-        let sender = self.client.default_sender();
+        let sender = self.client().default_sender();
         let to = self.get_to(to);
 
         if path.len() < 2 {
@@ -206,14 +203,14 @@ impl<M: Middleware> Dex<M> {
             }
         };
 
-        if path_eq(&path, &weth) {
+        if path_eq(path, &weth) {
             return Err(DexError::SwapToSelf)
         }
 
         let deadline = unwrap_deadline(deadline);
 
         let mut call =
-            self.protocol.swap(amount, slippage_tolerance, path, to, deadline, weth).await?;
+            self.protocol.swap(amount, slippage_tolerance, &path, to, deadline, weth).await?;
 
         if let Some(from) = sender {
             call = call.from(from);
@@ -231,7 +228,7 @@ impl<M: Middleware> Dex<M> {
 
     /// Sets the wrapped native token address by calling the WETH() method on the router.
     pub async fn set_weth(&mut self) -> DexResult<&mut Self, M> {
-        self.weth = Some(self.protocol.router().contract(self.client.clone()).weth().call().await?);
+        self.weth = Some(self.protocol.router().contract().weth().call().await?);
 
         Ok(self)
     }
@@ -249,10 +246,12 @@ impl<M: Middleware> Dex<M> {
             Some(address) => address,
             None => return Err(DexError::WethNotSet),
         };
-        let weth = IWETH::new(address, self.client.clone());
+        let client = self.client();
+        let sender = client.default_sender();
+        let weth = IWETH::new(address, client);
         let mut call = weth.deposit().value(amount);
 
-        if let Some(sender) = self.client.default_sender() {
+        if let Some(sender) = sender {
             call = call.from(sender)
         }
 
@@ -265,19 +264,21 @@ impl<M: Middleware> Dex<M> {
             Some(address) => address,
             None => return Err(DexError::WethNotSet),
         };
-        let weth = IWETH::new(address, self.client.clone());
+        let client = self.client();
+        let sender = client.default_sender();
+        let weth = IWETH::new(address, client);
         let mut call = weth.withdraw(amount);
 
-        if let Some(sender) = self.client.default_sender() {
+        if let Some(sender) = sender {
             call = call.from(sender)
         }
 
         Ok(call)
     }
 
-    /// `to` -> client.default_sender() -> panic
+    /// `to` > client.default_sender() > panic
     fn get_to(&self, to: Option<Address>) -> Address {
-        let sender = self.client.default_sender();
+        let sender = self.client().default_sender();
         // TODO: Not panic?
         to.unwrap_or_else(|| {
             sender
@@ -303,7 +304,7 @@ fn path_eq(path: &[Address], weth: &Address) -> bool {
     (fin && liw) || (lin && fiw)
 }
 
-/// now() + deadline -> DEFAULT_DEADLINE_SECONDS
+/// now() + deadline > DEFAULT_DEADLINE_SECONDS
 fn unwrap_deadline(deadline: Option<u64>) -> U256 {
     let now = now().as_secs();
     let deadline = now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS);
@@ -389,10 +390,8 @@ mod tests {
         let to_pre = Address::random();
         let deadline_pre = 1000;
 
-        let contract_call = dex
-            .swap(amount, 100.0, path_pre.clone(), Some(to_pre), Some(deadline_pre))
-            .await
-            .unwrap();
+        let contract_call =
+            dex.swap(amount, 100.0, &path_pre, Some(to_pre), Some(deadline_pre)).await.unwrap();
 
         let calldata = contract_call.calldata().unwrap();
 
@@ -430,16 +429,10 @@ mod tests {
         let amount = Amount::ExactIn(amount_in_pre);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
-        let amounts_out: Vec<U256> = V2Library::get_amounts_out(
-            dex.client(),
-            dex.factory(),
-            amount_in_pre,
-            path_pre.clone(),
-        )
-        .await
-        .unwrap();
+        let amounts_out: Vec<U256> =
+            V2Library::get_amounts_out(dex.factory(), amount_in_pre, &path_pre).await.unwrap();
 
-        let contract_call = dex.swap(amount, 0.0, path_pre.clone(), None, None).await.unwrap();
+        let contract_call = dex.swap(amount, 0.0, &path_pre, None, None).await.unwrap();
 
         let calldata = contract_call.calldata().unwrap();
 
@@ -460,21 +453,15 @@ mod tests {
         let amount_in_pre = U256::exp10(18);
         let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
 
-        let amounts_out = V2Library::get_amounts_out(
-            dex.client(),
-            dex.factory(),
-            amount_in_pre,
-            path_pre.clone(),
-        )
-        .await
-        .unwrap();
+        let amounts_out =
+            V2Library::get_amounts_out(dex.factory(), amount_in_pre, &path_pre).await.unwrap();
 
         let amount = Amount::ExactIn(amount_in_pre);
         for i in 2..=10 {
             let slippage_tolerance = 100.0 / i as f32;
 
             let contract_call =
-                dex.swap(amount, slippage_tolerance, path_pre.clone(), None, None).await.unwrap();
+                dex.swap(amount, slippage_tolerance, &path_pre, None, None).await.unwrap();
 
             let calldata = contract_call.calldata().unwrap();
 

@@ -56,6 +56,7 @@ pub type PairResult<T, M> = Result<T, PairError<M>>;
 
 /// Errors thrown by a pair.
 #[derive(Debug, Error)]
+#[non_exhaustive]
 pub enum PairError<M: Middleware> {
     /// Thrown when interacting with the smart contracts.
     #[error(transparent)]
@@ -102,7 +103,7 @@ pub enum FactoryError<M: Middleware> {
     LibraryError(#[from] LibraryError),
 }
 
-/// Type alias for the results of a factory.
+/// Type alias for the results of a library.
 pub type LibraryResult<T> = Result<T, LibraryError>;
 
 /// Errors thrown by a library.

@@ -10,36 +10,40 @@ use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
 /// Represents a UniswapV2 router.
-#[derive(Clone, Copy, Debug)]
-pub struct Router {
-    /// The router address.
-    address: Address,
+#[derive(Clone, Debug)]
+pub struct Router<M> {
+    /// The router contract.
+    contract: IUniswapV2Router02<M>,
 
     /// The router protocol.
     protocol: ProtocolType,
 }
 
-impl Router {
+impl<M: Middleware> Router<M> {
     /// Creates a new instance from using the provided address.
-    pub fn new(address: Address, protocol: ProtocolType) -> Self {
+    pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        Self { address, protocol }
+        let contract = IUniswapV2Router02::new(address, client);
+        Self { contract, protocol }
     }
 
     /// Creates a new instance using the provided chain.
-    pub fn new_with_chain(chain: Chain, protocol: ProtocolType) -> Option<Self> {
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        protocol.try_addresses(chain).0.map(|address| Self { address, protocol })
+        protocol.try_addresses(chain).0.map(|address| {
+            let contract = IUniswapV2Router02::new(address, client);
+            Self { contract, protocol }
+        })
     }
 
-    /// Returns the router contract.
-    pub fn contract<M: Middleware>(&self, client: Arc<M>) -> IUniswapV2Router02<M> {
-        IUniswapV2Router02::new(self.address, client)
+    /// Returns a reference to the router contract.
+    pub fn contract(&self) -> &IUniswapV2Router02<M> {
+        &self.contract
     }
 
     /// Returns the router address.
     pub fn address(&self) -> Address {
-        self.address
+        self.contract.address()
     }
 
     /// Returns the router protocol.
@@ -52,15 +56,14 @@ impl Router {
     ///
     /// See documentation of [Dex] for more details on arguments.
     ///
-    /// Note: this function does not perform many sanity checks and it should becalled by using the
+    /// Note: this function does not perform many sanity checks and it should be called by using the
     /// [Dex] struct.
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
     #[allow(clippy::too_many_arguments)]
-    pub fn add_liquidity<M: Middleware>(
+    pub fn add_liquidity(
         &self,
-        client: Arc<M>,
         token_a: Address,
         token_b: Address,
         amount_a_desired: U256,
@@ -70,21 +73,10 @@ impl Router {
         to: Address,
         deadline: U256,
     ) -> RouterResult<ContractCall<M, (U256, U256, U256)>, M> {
-        let router = self.contract(client);
+        let router = self.contract();
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
         let call = if native_a ^ native_b {
-            router.add_liquidity(
-                token_a,
-                token_b,
-                amount_a_desired,
-                amount_b_desired,
-                amount_a_min,
-                amount_b_min,
-                to,
-                deadline,
-            )
-        } else {
             let (token, amount_token_min, amount_token_desired, amount_eth_desired, amount_eth_min) =
                 if native_a {
                     // token_a is ETH
@@ -103,6 +95,17 @@ impl Router {
                     deadline,
                 )
                 .value(amount_eth_desired)
+        } else {
+            router.add_liquidity(
+                token_a,
+                token_b,
+                amount_a_desired,
+                amount_b_desired,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            )
         };
 
         Ok(call)
@@ -113,15 +116,14 @@ impl Router {
     ///
     /// See documentation of [Dex] for more details on arguments.
     ///
-    /// Note: this function does not perform many sanity checks and it should becalled by using the
+    /// Note: this function does not perform many sanity checks and it should be called by using the
     /// [Dex] struct.
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
     #[allow(clippy::too_many_arguments)]
-    pub fn remove_liquidity<M: Middleware>(
+    pub fn remove_liquidity(
         &self,
-        client: Arc<M>,
         token_a: Address,
         token_b: Address,
         liquidity: U256,
@@ -130,20 +132,10 @@ impl Router {
         to: Address,
         deadline: U256,
     ) -> RouterResult<ContractCall<M, (U256, U256)>, M> {
-        let router = self.contract(client);
+        let router = self.contract();
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
         let call = if native_a ^ native_b {
-            router.remove_liquidity(
-                token_a,
-                token_b,
-                liquidity,
-                amount_a_min,
-                amount_b_min,
-                to,
-                deadline,
-            )
-        } else {
             let (token, amount_token_min, amount_eth_min) = if native_a {
                 // token_a is ETH
                 (token_b, amount_b_min, amount_a_min)
@@ -159,6 +151,16 @@ impl Router {
                 to,
                 deadline,
             )
+        } else {
+            router.remove_liquidity(
+                token_a,
+                token_b,
+                liquidity,
+                amount_a_min,
+                amount_b_min,
+                to,
+                deadline,
+            )
         };
 
         Ok(call)
@@ -169,36 +171,34 @@ impl Router {
     ///
     /// See documentation of [Dex] for more details on arguments.
     ///
-    /// Note: this function does not perform many sanity checks and it should becalled by using the
+    /// Note: this function does not perform many sanity checks and it should be called by using the
     /// [Dex] struct.
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
     #[allow(clippy::too_many_arguments)]
-    pub async fn swap<M: Middleware>(
+    pub async fn swap(
         &self,
-        client: Arc<M>,
-        factory: Factory,
+        factory: &Factory<M>,
         amount: Amount,
         slippage_tolerance: f32,
-        mut path: Vec<Address>,
+        path: &[Address],
         to: Address,
         deadline: U256,
         weth: Address,
     ) -> RouterResult<ContractCall<M, Vec<U256>>, M> {
-        let router = self.contract(client.clone());
-        let (from_native, to_native) = is_native_path(&path);
-        map_native(&mut path, weth);
+        let router = self.contract();
+        let (from_native, to_native) = is_native_path(path);
+        let path = map_native(&path, weth);
         let call = match amount {
             Amount::ExactIn(amount_in) => {
                 let amount_out_min = if slippage_tolerance == 100.0 {
                     U256::zero()
                 } else {
-                    let last_amount_out =
-                        *Library::get_amounts_out(client, factory, amount_in, path.clone())
-                            .await?
-                            .last()
-                            .expect("path is empty");
+                    let last_amount_out = *Library::get_amounts_out(factory, amount_in, &path)
+                        .await?
+                        .last()
+                        .expect("path is empty");
                     if slippage_tolerance == 0.0 {
                         last_amount_out
                     } else {
@@ -226,13 +226,12 @@ impl Router {
             }
             Amount::ExactOut(amount_out) => {
                 let amount_in_max = if slippage_tolerance == 100.0 {
-                    U256::max_value()
+                    U256::MAX
                 } else {
-                    let first_amount_in =
-                        *Library::get_amounts_in(client, factory, amount_out, path.clone())
-                            .await?
-                            .first()
-                            .expect("path is empty");
+                    let first_amount_in = *Library::get_amounts_in(factory, amount_out, &path)
+                        .await?
+                        .first()
+                        .expect("path is empty");
                     if slippage_tolerance == 0.0 {
                         first_amount_in
                     } else {

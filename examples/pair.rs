@@ -1,24 +1,13 @@
 use ethers::{prelude::*, utils::format_units};
 use eyre::ContextCompat;
 use std::sync::Arc;
-use uniswap_rs::{
-    contracts::address,
-    v2::{Factory, Pair},
-    Dex, ProtocolType,
-};
+use uniswap_rs::{contracts::address, Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
     let chain = Chain::Mainnet;
     let protocol = ProtocolType::UniswapV2;
-    let client = Arc::new({
-        let provider = MAINNET.provider();
-        let wallet = "1aeda1fc24f9ea6809619040f1d3374255e17a0a3d9c75d85e0ba676ea42ccbd"
-            .parse::<LocalWallet>()?
-            .with_chain_id(chain as u64);
-
-        SignerMiddleware::new(provider, wallet)
-    });
+    let client = Arc::new(MAINNET.provider());
 
     println!("Using {:?} {:?}", chain, protocol);
 
@@ -27,9 +16,6 @@ async fn main() -> eyre::Result<()> {
     let usdc = address("USDC", chain);
 
     println!("Getting ETH/USDC pair info:");
-    let factory = Factory::new_with_chain(chain, protocol).wrap_err("chain not supported")?;
-    let _pair = Pair::new_with_factory(client.clone(), factory, weth, usdc)?;
-    // or
     let dex = Dex::new_with_chain(client, chain, protocol);
     let mut pair = dex.pair_for(weth, usdc)?;
 

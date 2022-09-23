@@ -5,9 +5,7 @@ use crate::{
     Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
-use std::{fmt, sync::Arc};
-
-// TODO: Support for more chains
+use std::sync::Arc;
 
 /// [0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f](https://github.com/Uniswap/v2-periphery/blob/0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f/contracts/libraries/UniswapV2Library.sol#L24)
 const UNISWAP_V2_PAIR_CODE_HASH: H256 = H256([
@@ -37,7 +35,7 @@ const PANCAKESWAP_PAIR_CODE_HASH: H256 = H256([
 ]);
 
 /// Represents a type of protocol that is, or is a fork of, Uniswap v2 or v3.
-#[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum ProtocolType {
     /// UniswapV2, deployed on Ethereum.
@@ -67,12 +65,6 @@ pub enum ProtocolType {
         /// The hash of the deployment code of the pair that the factory creates.
         pair_code_hash: H256,
     },
-}
-
-impl fmt::Display for ProtocolType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt::Debug::fmt(self, f)
-    }
 }
 
 impl ProtocolType {
@@ -142,22 +134,13 @@ impl ProtocolType {
 
 /// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
 /// swapping of ERC-20 tokens on the Ethereum blockchain.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Protocol<M> {
     /// The UniswapV2 protocol.
     V2(V2Protocol<M>),
 
     /// The UniswapV3 protocol. WIP.
     V3,
-}
-
-impl<M> Clone for Protocol<M> {
-    fn clone(&self) -> Self {
-        match self {
-            Self::V2(ref p) => Self::V2(p.clone()),
-            Self::V3 => Self::V3,
-        }
-    }
 }
 
 impl<M: Middleware> Protocol<M> {
@@ -179,18 +162,27 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
+    /// Returns a reference to the client.
+    #[inline(always)]
+    pub fn client(&self) -> Arc<M> {
+        match self {
+            Self::V2(p) => p.client(),
+            Self::V3 => todo!("v3 is not yet implemented"),
+        }
+    }
+
     /* ----------------------------------------- Factory ---------------------------------------- */
 
-    /// Returns the factory.
+    /// Returns a reference to the factory.
     #[inline(always)]
-    pub fn factory(&self) -> Factory {
+    pub fn factory(&self) -> &Factory<M> {
         match self {
             Self::V2(p) => p.factory(),
             Self::V3 => todo!("v3 is not yet implemented"),
         }
     }
 
-    /// The factory's pair_codehash method.
+    /// The protocol's `pair_codehash` method.
     #[inline(always)]
     pub fn pair_codehash(&self) -> H256 {
         match self {
@@ -199,7 +191,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The factory's create_pair method.
+    /// The protocol's `create_pair` method.
     #[inline(always)]
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
         match self {
@@ -208,7 +200,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The factory's pair_for method.
+    /// The protocol's `pair_for` method.
     #[inline(always)]
     pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<Pair<M>, M> {
         match self {
@@ -219,16 +211,16 @@ impl<M: Middleware> Protocol<M> {
 
     /* ----------------------------------------- Router ----------------------------------------- */
 
-    /// Returns the router.
+    /// Returns a reference to the router.
     #[inline(always)]
-    pub fn router(&self) -> Router {
+    pub fn router(&self) -> &Router<M> {
         match self {
             Self::V2(p) => p.router(),
             Self::V3 => todo!("v3 is not yet implemented"),
         }
     }
 
-    /// The router's add_liquidity method.
+    /// The protocol's `add_liquidity` method.
     #[inline(always)]
     pub async fn add_liquidity(
         &self,
@@ -256,7 +248,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The router's remove_liquidity method.
+    /// The protocol's `remove_liquidity` method.
     #[inline(always)]
     pub async fn remove_liquidity(
         &self,
@@ -282,13 +274,13 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The router's swap method.
+    /// The protocol's `swap` method.
     #[inline(always)]
     pub async fn swap(
         &self,
         amount: Amount,
         slippage_tolerance: f32,
-        path: Vec<Address>,
+        path: &[Address],
         to: Address,
         deadline: U256,
         weth: Address,

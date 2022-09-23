@@ -7,13 +7,10 @@ type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
 /// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Pair<M> {
-    /// The client.
-    client: Arc<M>,
-
-    /// The pair address. Might not be currently deployed.
-    address: Address,
+    /// The pair contract.
+    contract: IUniswapV2Pair<M>,
 
     /// The ordered tokens of the pair.
     tokens: Option<Tokens>,
@@ -28,24 +25,13 @@ pub struct Pair<M> {
     protocol: ProtocolType,
 }
 
-// Skip client in formatting
-impl<M> fmt::Debug for Pair<M> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Pair")
-            .field("address", &self.address)
-            .field("tokens", &self.tokens)
-            .field("deployed", &self.deployed)
-            .field("reserves", &self.reserves)
-            .finish()
-    }
-}
-
 impl<M> fmt::Display for Pair<M> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let address = self.contract.address();
         if self.tokens.is_some() {
-            writeln!(f, "Pair:     {:?}", self.address)?;
+            writeln!(f, "Pair:     {:?}", address)?;
         } else {
-            writeln!(f, "Pair: {:?}", self.address)?;
+            writeln!(f, "Pair: {:?}", address)?;
         }
         if let Some((a, b)) = self.tokens {
             writeln!(f, "Token0:   {:?}", a)?;
@@ -65,22 +51,22 @@ impl<M> fmt::Display for Pair<M> {
 impl<M: Middleware> Pair<M> {
     /// Creates a new instance using the provided client and address.
     pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
-        Self { client, address, tokens: None, deployed: false, reserves: None, protocol }
+        let contract = IUniswapV2Pair::new(address, client);
+        Self { contract, tokens: None, deployed: false, reserves: None, protocol }
     }
 
     /// Creates a new instance using the provided client, factory and tokens' addresses.
     pub fn new_with_factory(
-        client: Arc<M>,
-        factory: Factory,
+        factory: &Factory<M>,
         token0: Address,
         token1: Address,
     ) -> PairResult<Self, M> {
         let (token0, token1) = Library::sort_tokens(token0, token1)?;
         let address = Library::pair_for(factory, token0, token1)?;
+        let contract = IUniswapV2Pair::new(address, factory.client());
 
         Ok(Self {
-            client,
-            address,
+            contract,
             tokens: Some((token0, token1)),
             deployed: false,
             reserves: None,
@@ -88,14 +74,20 @@ impl<M: Middleware> Pair<M> {
         })
     }
 
-    /// Returns the pair contract.
-    pub fn contract(&self) -> IUniswapV2Pair<M> {
-        IUniswapV2Pair::new(self.address, self.client.clone())
+    /// Returns a reference to the pair contract.
+    pub fn contract(&self) -> &IUniswapV2Pair<M> {
+        &self.contract
+    }
+
+    /// Returns a reference to the client.
+    pub fn client(&self) -> Arc<M> {
+        // self.contract.client()
+        todo!()
     }
 
     /// Returns the address of the pair.
     pub fn address(&self) -> Address {
-        self.address
+        self.contract.address()
     }
 
     /// Returns whether the pair has been deployed.
@@ -144,10 +136,10 @@ impl<M: Middleware> Pair<M> {
         sync_tokens: bool,
         sync_reserves: bool,
     ) -> PairResult<&mut Self, M> {
-        // let sync_tokens = sync_tokens || self.tokens.is_none() || !self.deployed;
-        // let sync_reserves = sync_reserves || self.reserves.is_none();
+        // let sync_tokens = self.tokens.is_none() || !self.deployed;
+        // let sync_reserves = self.reserves.is_none() || !self.deployed;
 
-        let multicall = Multicall::new(self.client.clone(), None).await?;
+        let multicall = Multicall::new(self.client(), None).await?;
         let mut multicall = multicall.version(MulticallVersion::Multicall3);
 
         if sync_tokens {
@@ -291,9 +283,9 @@ mod tests {
         let usdc = address("USDC", chain);
         let provider = MAINNET.provider();
         let client = Arc::new(provider);
-        let factory = Factory::new_with_chain(chain, ProtocolType::UniswapV2).unwrap();
+        let factory = Factory::new_with_chain(client, chain, ProtocolType::UniswapV2).unwrap();
 
-        Pair::new_with_factory(client, factory, weth, usdc).unwrap()
+        Pair::new_with_factory(&factory, weth, usdc).unwrap()
     }
 
     #[test]

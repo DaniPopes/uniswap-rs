@@ -26,9 +26,9 @@ eyre = "0.6"
 
 [patch."https://github.com/gakonst/ethers-rs"]
 ethers = { path = "../ethers-rs" }
-ethers-core = { path = "../ethers-rs/ethers-core" }
 ethers-contract = { path = "../ethers-rs/ethers-contract" }
-ethers-providers = { path = "../ethers-rs/ethers-providers" }
-ethers-signers = { path = "../ethers-rs/ethers-signers" }
-ethers-etherscan = { path = "../ethers-rs/ethers-etherscan" }
-ethers-solc = { path = "../ethers-rs/ethers-solc" }
+# ethers-core = { path = "../ethers-rs/ethers-core" }
+# ethers-providers = { path = "../ethers-rs/ethers-providers" }
+# ethers-signers = { path = "../ethers-rs/ethers-signers" }
+# ethers-etherscan = { path = "../ethers-rs/ethers-etherscan" }
+# ethers-solc = { path = "../ethers-rs/ethers-solc" }
