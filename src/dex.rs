@@ -210,7 +210,7 @@ impl<M: Middleware> Dex<M> {
         let deadline = unwrap_deadline(deadline);
 
         let mut call =
-            self.protocol.swap(amount, slippage_tolerance, &path, to, deadline, weth).await?;
+            self.protocol.swap(amount, slippage_tolerance, path, to, deadline, weth).await?;
 
         if let Some(from) = sender {
             call = call.from(from);
@@ -441,7 +441,7 @@ mod tests {
         let amount_out_min = args[1].clone().into_uint().unwrap();
 
         // A block may get mined between the start of the test and now, skewing the reserves
-        let a = I256::from_raw(amounts_out[1].clone());
+        let a = I256::from_raw(amounts_out[1]);
         let b = I256::from_raw(amount_out_min);
         assert!((a - b).abs() < I256::from(1_000_000u64));
     }

@@ -189,7 +189,7 @@ impl<M: Middleware> Router<M> {
     ) -> RouterResult<ContractCall<M, Vec<U256>>, M> {
         let router = self.contract();
         let (from_native, to_native) = is_native_path(path);
-        let path = map_native(&path, weth);
+        let path = map_native(path, weth);
         let call = match amount {
             Amount::ExactIn(amount_in) => {
                 let amount_out_min = if slippage_tolerance == 100.0 {
