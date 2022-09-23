@@ -61,7 +61,6 @@ impl<M: Middleware> Router<M> {
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
-    #[allow(clippy::too_many_arguments)]
     pub fn add_liquidity(
         &self,
         token_a: Address,
@@ -121,7 +120,6 @@ impl<M: Middleware> Router<M> {
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
-    #[allow(clippy::too_many_arguments)]
     pub fn remove_liquidity(
         &self,
         token_a: Address,
@@ -176,7 +174,6 @@ impl<M: Middleware> Router<M> {
     ///
     /// [UniswapV2Router]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol
     /// [Dex]: crate::Dex
-    #[allow(clippy::too_many_arguments)]
     pub async fn swap(
         &self,
         factory: &Factory<M>,

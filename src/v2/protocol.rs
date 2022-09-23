@@ -1,6 +1,6 @@
 use super::{Factory, Pair, Router};
 use crate::{
-    errors::{FactoryResult, RouterError},
+    errors::{FactoryResult, RouterResult},
     Amount, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
@@ -81,7 +81,7 @@ impl<M: Middleware> V2Protocol<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> Result<ContractCall<M, (U256, U256, U256)>, RouterError<M>> {
+    ) -> RouterResult<ContractCall<M, (U256, U256, U256)>, M> {
         self.router.add_liquidity(
             token_a,
             token_b,
@@ -105,7 +105,7 @@ impl<M: Middleware> V2Protocol<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> Result<ContractCall<M, (U256, U256)>, RouterError<M>> {
+    ) -> RouterResult<ContractCall<M, (U256, U256)>, M> {
         self.router.remove_liquidity(
             token_a,
             token_b,
@@ -127,7 +127,7 @@ impl<M: Middleware> V2Protocol<M> {
         to: Address,
         deadline: U256,
         weth: Address,
-    ) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
+    ) -> RouterResult<ContractCall<M, Vec<U256>>, M> {
         self.router.swap(&self.factory, amount, slippage_tolerance, path, to, deadline, weth).await
     }
 }

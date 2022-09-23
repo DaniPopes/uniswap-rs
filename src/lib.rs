@@ -2,6 +2,7 @@
 //!
 //! Unofficial Rust SDK library for Uniswap smart contracts.
 
+#![allow(clippy::too_many_arguments)]
 #![warn(missing_docs, unreachable_pub)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
