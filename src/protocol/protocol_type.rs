@@ -188,13 +188,10 @@ mod tests {
             /*  UniswapV2   */ mainnet(),
             /*  UniswapV3   */ vec![mainnet(), polygon(), l2(), l2_t()].concat(),
             /*  Sushiswap   */ vec![vec![Fantom, Moonriver, Moonbeam, XDai], mainnet(), polygon(), bsc(), avax()].concat(),
-            /* Pancakeswap  */ vec![BinanceSmartChain],
-            /* PancakeswapT */ vec![BinanceSmartChainTestnet],
+            /* Pancakeswap  */ bsc(),
             /*  Quickswap   */ polygon(),
-            /*  Spookyswap  */ vec![Fantom],
-            /*  SpookyswapT */ vec![FantomTestnet],
-            /*  Traderjoe   */ vec![Avalanche],
-            /*  TraderjoeT  */ vec![AvalancheFuji],
+            /*  Spookyswap  */ vec![Fantom, FantomTestnet],
+            /*  Traderjoe   */ avax(),
         ];
 
         assert_eq!(protocols.len(), chains.len());

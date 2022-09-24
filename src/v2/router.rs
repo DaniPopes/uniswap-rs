@@ -2,7 +2,7 @@ use super::{Factory, Library};
 use crate::{
     bindings::i_uniswap_v2_router_02::IUniswapV2Router02,
     constants::BPS_U256,
-    errors::RouterResult,
+    errors::{LibraryError, RouterResult},
     utils::{is_native_path, map_native},
     Amount, ProtocolType,
 };
@@ -25,10 +25,9 @@ impl<M> Router<M> {
         &self.contract
     }
 
-    /// Returns a reference to the client.
+    /// Returns a pointer to the client.
     pub fn client(&self) -> Arc<M> {
-        // self.contract.client()
-        todo!()
+        self.contract.client()
     }
 
     /// Returns the router address.
@@ -83,27 +82,33 @@ impl<M: Middleware> Router<M> {
         let router = self.contract();
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
-        let call = if native_a ^ native_b {
-            let (token, amount_token_min, amount_token_desired, amount_eth_desired, amount_eth_min) =
-                if native_a {
+        let call = match (native_a, native_b) {
+            (false, true) | (true, false) => {
+                let (
+                    token,
+                    amount_token_min,
+                    amount_token_desired,
+                    amount_eth_desired,
+                    amount_eth_min,
+                ) = if native_a {
                     // token_a is ETH
                     (token_b, amount_b_min, amount_b_desired, amount_a_desired, amount_a_min)
                 } else {
                     // token_b is ETH
                     (token_a, amount_a_min, amount_a_desired, amount_b_desired, amount_b_min)
                 };
-            router
-                .add_liquidity_eth(
-                    token,
-                    amount_token_desired,
-                    amount_token_min,
-                    amount_eth_min,
-                    to,
-                    deadline,
-                )
-                .value(amount_eth_desired)
-        } else {
-            router.add_liquidity(
+                router
+                    .add_liquidity_eth(
+                        token,
+                        amount_token_desired,
+                        amount_token_min,
+                        amount_eth_min,
+                        to,
+                        deadline,
+                    )
+                    .value(amount_eth_desired)
+            }
+            (false, false) => router.add_liquidity(
                 token_a,
                 token_b,
                 amount_a_desired,
@@ -112,7 +117,8 @@ impl<M: Middleware> Router<M> {
                 amount_b_min,
                 to,
                 deadline,
-            )
+            ),
+            (true, true) => return Err(LibraryError::IdenticalAddresses.into()),
         };
 
         Ok(call)
@@ -141,24 +147,25 @@ impl<M: Middleware> Router<M> {
         let router = self.contract();
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
-        let call = if native_a ^ native_b {
-            let (token, amount_token_min, amount_eth_min) = if native_a {
-                // token_a is ETH
-                (token_b, amount_b_min, amount_a_min)
-            } else {
-                // token_b is ETH
-                (token_a, amount_a_min, amount_b_min)
-            };
-            router.remove_liquidity_eth(
-                token,
-                liquidity,
-                amount_token_min,
-                amount_eth_min,
-                to,
-                deadline,
-            )
-        } else {
-            router.remove_liquidity(
+        let call = match (native_a, native_b) {
+            (false, true) | (true, false) => {
+                let (token, amount_token_min, amount_eth_min) = if native_a {
+                    // token_a is ETH
+                    (token_b, amount_b_min, amount_a_min)
+                } else {
+                    // token_b is ETH
+                    (token_a, amount_a_min, amount_b_min)
+                };
+                router.remove_liquidity_eth(
+                    token,
+                    liquidity,
+                    amount_token_min,
+                    amount_eth_min,
+                    to,
+                    deadline,
+                )
+            }
+            (false, false) => router.remove_liquidity(
                 token_a,
                 token_b,
                 liquidity,
@@ -166,7 +173,8 @@ impl<M: Middleware> Router<M> {
                 amount_b_min,
                 to,
                 deadline,
-            )
+            ),
+            (true, true) => return Err(LibraryError::IdenticalAddresses.into()),
         };
 
         Ok(call)

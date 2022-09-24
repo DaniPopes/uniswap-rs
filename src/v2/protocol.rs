@@ -32,7 +32,7 @@ impl<M: Middleware> V2Protocol<M> {
         Self { factory, router }
     }
 
-    /// Returns a reference to the client.
+    /// Returns a pointer to the client.
     pub fn client(&self) -> Arc<M> {
         self.factory.client()
     }

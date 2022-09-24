@@ -79,10 +79,9 @@ impl<M: Middleware> Pair<M> {
         &self.contract
     }
 
-    /// Returns a reference to the client.
+    /// Returns a pointer to the client.
     pub fn client(&self) -> Arc<M> {
-        // self.contract.client()
-        todo!()
+        self.contract.client()
     }
 
     /// Returns the address of the pair.

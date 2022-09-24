@@ -41,7 +41,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// Returns a reference to the client.
+    /// Returns a pointer to the client.
     #[inline(always)]
     pub fn client(&self) -> Arc<M> {
         match self {

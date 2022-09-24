@@ -20,7 +20,6 @@ pub struct Dex<M> {
     weth: Option<Address>,
 }
 
-// TODO: UniV3
 impl<M: Middleware> Dex<M> {
     /// Creates a new instance of Dex from a chain.
     ///
@@ -51,7 +50,7 @@ impl<M: Middleware> Dex<M> {
         Self { protocol, weth }
     }
 
-    /// Returns a reference to the client.
+    /// Returns a pointer to the client.
     pub fn client(&self) -> Arc<M> {
         self.protocol.client()
     }
@@ -279,7 +278,6 @@ impl<M: Middleware> Dex<M> {
     /// `to` > client.default_sender() > panic
     fn get_to(&self, to: Option<Address>) -> Address {
         let sender = self.client().default_sender();
-        // TODO: Not panic?
         to.unwrap_or_else(|| {
             sender
                 .expect("Must specify a `to` address if the client does not have a default sender")
@@ -317,6 +315,12 @@ mod tests {
     use ethers::abi::{ParamType, Token, Tokenize};
 
     use super::*;
+
+    fn assert_approx_eq<A: Into<U256>, B: Into<U256>, C: Into<U256>>(a: A, b: B, c: C) {
+        let a = I256::from_raw(a.into());
+        let b = I256::from_raw(b.into());
+        assert!((a - b).abs() < I256::from_raw(c.into()));
+    }
 
     fn default_dex() -> Dex<SignerMiddleware<Provider<Http>, Wallet<k256::ecdsa::SigningKey>>> {
         let provider: Provider<Http> = MAINNET.provider();
@@ -441,9 +445,7 @@ mod tests {
         let amount_out_min = args[1].clone().into_uint().unwrap();
 
         // A block may get mined between the start of the test and now, skewing the reserves
-        let a = I256::from_raw(amounts_out[1]);
-        let b = I256::from_raw(amount_out_min);
-        assert!((a - b).abs() < I256::from(1_000_000u64));
+        assert_approx_eq(amounts_out[1], amount_out_min, 1_000_000u64);
     }
 
     #[tokio::test]
@@ -470,7 +472,8 @@ mod tests {
             let amount_out_min = args[1].clone().into_uint().unwrap();
             let mult = 100.0 - slippage_tolerance;
             let mult_bps = U256::from((mult * 100.0) as u32);
-            assert_eq!(amount_out_min, (amounts_out[1] * mult_bps) / BPS_U256);
+            // A block may get mined between the start of the test and now, skewing the reserves
+            assert_approx_eq(amount_out_min, (amounts_out[1] * mult_bps) / BPS_U256, 1_000_000u64);
         }
     }
 }
