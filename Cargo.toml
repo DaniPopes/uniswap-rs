@@ -24,9 +24,9 @@ serde_json = "1.0"
 tokio = { version = "1", features = ["macros"] }
 eyre = "0.6"
 
-[patch."https://github.com/gakonst/ethers-rs"]
-ethers = { git = "https://github.com/danipopes/ethers-rs", branch = "fix/contract-impls" }
-ethers-contract = { git = "https://github.com/danipopes/ethers-rs", branch = "fix/contract-impls" }
+# [patch."https://github.com/gakonst/ethers-rs"]
+# ethers = { git = "https://github.com/danipopes/ethers-rs" }
+# ethers-contract = { git = "https://github.com/danipopes/ethers-rs" }
 
 # ethers = { path = "../ethers-rs" }
 # ethers-contract = { path = "../ethers-rs/ethers-contract" }
