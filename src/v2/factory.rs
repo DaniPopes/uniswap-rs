@@ -2,7 +2,7 @@ use super::{Library, Pair};
 use crate::{
     bindings::i_uniswap_v2_factory::IUniswapV2Factory, errors::FactoryResult, ProtocolType,
 };
-use ethers::prelude::{builders::ContractCall, *};
+use ethers::prelude::*;
 use std::sync::Arc;
 
 /// Represents a UniswapV2 factory.
@@ -61,11 +61,6 @@ impl<M: Middleware> Factory<M> {
             let contract = IUniswapV2Factory::new(address, client);
             Self { contract, protocol, chain: Some(chain) }
         })
-    }
-
-    /// Returns the contract call for creating a pair.
-    pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
-        self.contract.create_pair(token_a, token_b)
     }
 
     /// Returns the pair for two token addresses.

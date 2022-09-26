@@ -27,10 +27,9 @@ pub struct Pair<M> {
 
 impl<M> fmt::Display for Pair<M> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let address = self.contract.address();
-        if self.tokens.is_none() {
-            writeln!(f, "Pair: {:?}", address)?;
-            return Ok(())
+        let address = self.address();
+        if self.tokens.is_none() && self.reserves.is_none() {
+            return writeln!(f, "Pair: {:?}", address)
         }
         writeln!(f, "Pair:     {:?}", address)?;
         if let Some((a, b)) = self.tokens {
@@ -121,8 +120,7 @@ impl<M: Middleware> Pair<M> {
 
     /// Returns the contract calls for getting the addresses of the pair's tokens.
     pub fn get_tokens(&self) -> (ContractCall<M, Address>, ContractCall<M, Address>) {
-        let pair = self.contract();
-        (pair.token_0(), pair.token_1())
+        (self.token_0(), self.token_1())
     }
 
     /// Syncs the tokens and reserves of the pair by querying the blockchain.
