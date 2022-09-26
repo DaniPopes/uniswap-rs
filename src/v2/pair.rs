@@ -28,11 +28,11 @@ pub struct Pair<M> {
 impl<M> fmt::Display for Pair<M> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let address = self.contract.address();
-        if self.tokens.is_some() {
-            writeln!(f, "Pair:     {:?}", address)?;
-        } else {
+        if self.tokens.is_none() {
             writeln!(f, "Pair: {:?}", address)?;
+            return Ok(())
         }
+        writeln!(f, "Pair:     {:?}", address)?;
         if let Some((a, b)) = self.tokens {
             writeln!(f, "Token0:   {:?}", a)?;
             write!(f, "Token1:   {:?}", b)?;
@@ -48,45 +48,18 @@ impl<M> fmt::Display for Pair<M> {
     }
 }
 
-impl<M: Middleware> Pair<M> {
-    /// Creates a new instance using the provided client and address.
-    pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
-        let contract = IUniswapV2Pair::new(address, client);
-        Self { contract, tokens: None, deployed: false, reserves: None, protocol }
+impl<M> std::ops::Deref for Pair<M> {
+    type Target = IUniswapV2Pair<M>;
+
+    fn deref(&self) -> &Self::Target {
+        self.contract()
     }
+}
 
-    /// Creates a new instance using the provided client, factory and tokens' addresses.
-    pub fn new_with_factory(
-        factory: &Factory<M>,
-        token0: Address,
-        token1: Address,
-    ) -> PairResult<Self, M> {
-        let (token0, token1) = Library::sort_tokens(token0, token1)?;
-        let address = Library::pair_for(factory, token0, token1)?;
-        let contract = IUniswapV2Pair::new(address, factory.client());
-
-        Ok(Self {
-            contract,
-            tokens: Some((token0, token1)),
-            deployed: false,
-            reserves: None,
-            protocol: factory.protocol(),
-        })
-    }
-
+impl<M> Pair<M> {
     /// Returns a reference to the pair contract.
     pub fn contract(&self) -> &IUniswapV2Pair<M> {
         &self.contract
-    }
-
-    /// Returns a pointer to the client.
-    pub fn client(&self) -> Arc<M> {
-        self.contract.client()
-    }
-
-    /// Returns the address of the pair.
-    pub fn address(&self) -> Address {
-        self.contract.address()
     }
 
     /// Returns whether the pair has been deployed.
@@ -118,16 +91,38 @@ impl<M: Middleware> Pair<M> {
     pub fn code_hash(&self, chain: Option<Chain>) -> H256 {
         self.protocol.pair_code_hash(chain)
     }
+}
+
+impl<M: Middleware> Pair<M> {
+    /// Creates a new instance using the provided client and address.
+    pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
+        let contract = IUniswapV2Pair::new(address, client);
+        Self { contract, tokens: None, deployed: false, reserves: None, protocol }
+    }
+
+    /// Creates a new instance using the provided client, factory and tokens' addresses.
+    pub fn new_with_factory(
+        factory: &Factory<M>,
+        token0: Address,
+        token1: Address,
+    ) -> PairResult<Self, M> {
+        let (token0, token1) = Library::sort_tokens(token0, token1)?;
+        let address = Library::pair_for(factory, token0, token1)?;
+        let contract = IUniswapV2Pair::new(address, factory.client());
+
+        Ok(Self {
+            contract,
+            tokens: Some((token0, token1)),
+            deployed: false,
+            reserves: None,
+            protocol: factory.protocol(),
+        })
+    }
 
     /// Returns the contract calls for getting the addresses of the pair's tokens.
     pub fn get_tokens(&self) -> (ContractCall<M, Address>, ContractCall<M, Address>) {
         let pair = self.contract();
         (pair.token_0(), pair.token_1())
-    }
-
-    /// Returns the contract call for getting the reserves of the pair.
-    pub fn get_reserves(&self) -> ContractCall<M, Reserves> {
-        self.contract().get_reserves()
     }
 
     /// Syncs the tokens and reserves of the pair by querying the blockchain.

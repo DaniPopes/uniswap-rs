@@ -10,16 +10,11 @@ mod common;
 mod dex;
 mod protocol;
 
-pub mod v2;
-pub mod v3;
-
-/// Contains the bindings for related smart contracts. Generated programmatically using [`Abigen`].
-///
-/// [`Abigen`]: ethers::contract::Abigen
 #[allow(missing_docs)]
 pub mod bindings;
-
 pub mod contracts;
+pub mod v2;
+pub mod v3;
 
 pub use common::*;
 pub use dex::*;

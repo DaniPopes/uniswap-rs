@@ -18,20 +18,18 @@ pub struct Factory<M> {
     chain: Option<Chain>,
 }
 
+impl<M> std::ops::Deref for Factory<M> {
+    type Target = IUniswapV2Factory<M>;
+
+    fn deref(&self) -> &Self::Target {
+        self.contract()
+    }
+}
+
 impl<M> Factory<M> {
     /// Returns a reference to the factory contract.
     pub fn contract(&self) -> &IUniswapV2Factory<M> {
         &self.contract
-    }
-
-    /// Returns a pointer to the client.
-    pub fn client(&self) -> Arc<M> {
-        self.contract.client()
-    }
-
-    /// Returns the contract address of the factory.
-    pub fn address(&self) -> Address {
-        self.contract.address()
     }
 
     /// Returns the protocol of the factory.

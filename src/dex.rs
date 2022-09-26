@@ -4,7 +4,7 @@ use crate::{
     contracts::try_address,
     errors::{DexError, DexResult, LibraryError},
     utils::*,
-    v2::{Factory, Pair, Router, V2Protocol},
+    v2::{Factory, Pair, Router},
     Amount, Protocol, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
@@ -27,11 +27,7 @@ impl<M: Middleware> Dex<M> {
     ///
     /// When the protocol's addresses could not be found.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
-        let protocol = match protocol {
-            p if p.is_v2() => Protocol::V2(V2Protocol::new(client, factory, router, p)),
-            p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
-        };
+        let protocol = Protocol::new(client, factory, router, protocol);
         Self { protocol, weth: None }
     }
 
@@ -41,11 +37,7 @@ impl<M: Middleware> Dex<M> {
     ///
     /// When the protocol's addresses could not be found.
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
-        let protocol = match protocol {
-            p if p.is_v2() => Protocol::V2(V2Protocol::new_with_chain(client, chain, p)),
-            p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
-        };
+        let protocol = Protocol::new_with_chain(client, chain, protocol);
         let weth = try_address("WETH", chain);
         Self { protocol, weth }
     }
@@ -164,8 +156,8 @@ impl<M: Middleware> Dex<M> {
     ///   while the transaction is pending, that you are willing to tolerate before it reverts.
     ///   `0.0` means no price change tolerated, while `100.0` means any price change is tolerated.
     ///
-    /// * `path` - The path to take. `path.first()` or `path.last()` == [`NATIVE_TOKEN_ADDRESS`]
-    ///   indicates intention to swap from or to the native token respectively.
+    /// * `path` - The path to take. `path.first()` or `path.last()` == [`NATIVE_ADDRESS`] indicates
+    ///   intention to swap from or to the native token respectively.
     ///
     /// * `to` - The address that will receive the swap output. If `None`, it will default to the
     ///   default address of the client.
@@ -173,7 +165,7 @@ impl<M: Middleware> Dex<M> {
     /// * `deadline` - The number of seconds after which the transaction will revert. If `None`, it
     ///   will default to 1800 seconds.
     ///
-    /// [`NATIVE_TOKEN_ADDRESS`]: crate::constants::NATIVE_TOKEN_ADDRESS
+    /// [`NATIVE_ADDRESS`]: crate::constants::NATIVE_ADDRESS
     pub async fn swap(
         &mut self,
         amount: Amount,
@@ -377,10 +369,10 @@ mod tests {
         assert!(!path_eq(&path, &weth));
 
         // eq
-        let path = vec![NATIVE_TOKEN_ADDRESS, weth];
+        let path = vec![NATIVE_ADDRESS, weth];
         assert!(path_eq(&path, &weth));
 
-        let path = vec![weth, NATIVE_TOKEN_ADDRESS];
+        let path = vec![weth, NATIVE_ADDRESS];
         assert!(path_eq(&path, &weth));
     }
 

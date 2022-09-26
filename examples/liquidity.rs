@@ -4,7 +4,7 @@ use ethers::{
 };
 use eyre::ContextCompat;
 use std::sync::Arc;
-use uniswap_rs::{constants::NATIVE_TOKEN_ADDRESS, contracts::address, Dex, ProtocolType};
+use uniswap_rs::{constants::NATIVE_ADDRESS, contracts::address, Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
@@ -51,7 +51,7 @@ async fn main() -> eyre::Result<()> {
     // create the remove liquidity transaction
     println!("Removing {} liquidity...", liquidity);
     let call = dex
-        .remove_liquidity(NATIVE_TOKEN_ADDRESS, usdc, liquidity, 0.into(), 0.into(), None, None)
+        .remove_liquidity(NATIVE_ADDRESS, usdc, liquidity, 0.into(), 0.into(), None, None)
         .await?;
     println!("Sending swap...");
     let receipt = send(call).await?;

@@ -4,7 +4,6 @@ use ethers::prelude::*;
 
 /// Represents a type of protocol that is, or is a fork of, Uniswap v2 or v3.
 #[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq)]
-#[non_exhaustive]
 pub enum ProtocolType {
     /// Deployed on Ethereum and its testnets.
     #[default]

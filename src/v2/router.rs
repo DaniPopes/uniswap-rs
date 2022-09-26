@@ -19,20 +19,18 @@ pub struct Router<M> {
     protocol: ProtocolType,
 }
 
+impl<M> std::ops::Deref for Router<M> {
+    type Target = IUniswapV2Router02<M>;
+
+    fn deref(&self) -> &Self::Target {
+        self.contract()
+    }
+}
+
 impl<M> Router<M> {
     /// Returns a reference to the router contract.
     pub fn contract(&self) -> &IUniswapV2Router02<M> {
         &self.contract
-    }
-
-    /// Returns a pointer to the client.
-    pub fn client(&self) -> Arc<M> {
-        self.contract.client()
-    }
-
-    /// Returns the router address.
-    pub fn address(&self) -> Address {
-        self.contract.address()
     }
 
     /// Returns the router protocol.

@@ -12,7 +12,7 @@
 //! - Spookyswap: https://docs.spooky.fi/Resources/contracts
 //! - Traderjoe: https://docs.traderjoexyz.com/en/security-and-contracts/contracts
 //!
-//! [`addressbook`]: ethers::addressbook
+//! [`addressbook`]: https://github.com/gakonst/ethers-rs/blob/master/ethers-addressbook/src/lib.rs
 
 use ethers::prelude::*;
 use serde::Deserialize;
