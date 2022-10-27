@@ -19,7 +19,7 @@ Add this to your cargo.toml:
 
 ```toml
 [dependencies]
-uniswap_rs = { git = "https://github.com/danipopes/uniswap-rs" }
+uniswap-rs = { git = "https://github.com/danipopes/uniswap-rs" }
 ```
 
 ## Examples
