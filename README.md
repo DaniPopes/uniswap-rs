@@ -15,7 +15,7 @@ Unofficial Rust SDK library for Uniswap smart contracts.
 
 ## Quickstart
 
-Add this to your cargo.toml:
+Add this to your Cargo.toml:
 
 ```toml
 [dependencies]
