@@ -11,7 +11,7 @@ pub fn now() -> Duration {
 
 /// Returns `address` == [NATIVE_ADDRESS].
 pub fn is_native(address: &Address) -> bool {
-    address == &NATIVE_ADDRESS
+    *address == NATIVE_ADDRESS
 }
 
 /// Returns (first_native, last_native).
