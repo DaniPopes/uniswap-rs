@@ -1,15 +1,20 @@
 use super::pair_code_hashes::*;
 use crate::contracts::{address, try_address};
 use ethers::prelude::*;
+use serde::{Deserialize, Serialize};
+use std::fmt;
 
 /// Represents a type of protocol that is, or is a fork of, Uniswap v2 or v3.
-#[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub enum ProtocolType {
     /// Deployed on Ethereum and its testnets.
     #[default]
+    #[serde(rename = "uniswapv2")]
     UniswapV2,
 
     /// Deployed on Ethereum, Polygon, Celo and testnets.
+    #[serde(rename = "uniswapv3")]
     UniswapV3,
 
     /// Deployed on most chains.
@@ -41,6 +46,15 @@ pub enum ProtocolType {
         /// The hash of the deployment code of the pair that the factory creates.
         pair_code_hash: H256,
     },
+}
+
+impl fmt::Display for ProtocolType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Custom { .. } => f.pad("Custom"),
+            _ => fmt::Debug::fmt(self, f),
+        }
+    }
 }
 
 impl ProtocolType {
