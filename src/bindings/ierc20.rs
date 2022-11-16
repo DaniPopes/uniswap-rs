@@ -18,7 +18,7 @@ pub mod ierc20 {
     };
     #[doc = "IERC20 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
-    # [rustfmt :: skip] const __ABI : & str = "[\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Approval\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Transfer\",\n        \"type\": \"event\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"allowance\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"approve\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"account\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalSupply\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"recipient\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transfer\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"sender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"recipient\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transferFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    }\n]\n" ;
+    # [rustfmt :: skip] const __ABI : & str = "[\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Approval\",\n        \"type\": \"event\"\n    },\n    {\n        \"anonymous\": false,\n        \"inputs\": [\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": true,\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"indexed\": false,\n                \"internalType\": \"uint256\",\n                \"name\": \"value\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"Transfer\",\n        \"type\": \"event\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"owner\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"allowance\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"spender\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"approve\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"account\",\n                \"type\": \"address\"\n            }\n        ],\n        \"name\": \"balanceOf\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"decimals\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint8\",\n                \"name\": \"\",\n                \"type\": \"uint8\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"name\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"symbol\",\n        \"outputs\": [\n            {\n                \"internalType\": \"string\",\n                \"name\": \"\",\n                \"type\": \"string\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [],\n        \"name\": \"totalSupply\",\n        \"outputs\": [\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"stateMutability\": \"view\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transfer\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    },\n    {\n        \"inputs\": [\n            {\n                \"internalType\": \"address\",\n                \"name\": \"from\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"address\",\n                \"name\": \"to\",\n                \"type\": \"address\"\n            },\n            {\n                \"internalType\": \"uint256\",\n                \"name\": \"amount\",\n                \"type\": \"uint256\"\n            }\n        ],\n        \"name\": \"transferFrom\",\n        \"outputs\": [\n            {\n                \"internalType\": \"bool\",\n                \"name\": \"\",\n                \"type\": \"bool\"\n            }\n        ],\n        \"stateMutability\": \"nonpayable\",\n        \"type\": \"function\"\n    }\n]\n" ;
     #[doc = r" The parsed JSON-ABI of the contract."]
     pub static IERC20_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
         ethers::contract::Lazy::new(|| {
@@ -80,6 +80,24 @@ pub mod ierc20 {
                 .method_hash([112, 160, 130, 49], account)
                 .expect("method not found (this should never happen)")
         }
+        #[doc = "Calls the contract's `decimals` (0x313ce567) function"]
+        pub fn decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
+            self.0
+                .method_hash([49, 60, 229, 103], ())
+                .expect("method not found (this should never happen)")
+        }
+        #[doc = "Calls the contract's `name` (0x06fdde03) function"]
+        pub fn name(&self) -> ethers::contract::builders::ContractCall<M, String> {
+            self.0
+                .method_hash([6, 253, 222, 3], ())
+                .expect("method not found (this should never happen)")
+        }
+        #[doc = "Calls the contract's `symbol` (0x95d89b41) function"]
+        pub fn symbol(&self) -> ethers::contract::builders::ContractCall<M, String> {
+            self.0
+                .method_hash([149, 216, 155, 65], ())
+                .expect("method not found (this should never happen)")
+        }
         #[doc = "Calls the contract's `totalSupply` (0x18160ddd) function"]
         pub fn total_supply(
             &self,
@@ -91,22 +109,22 @@ pub mod ierc20 {
         #[doc = "Calls the contract's `transfer` (0xa9059cbb) function"]
         pub fn transfer(
             &self,
-            recipient: ethers::core::types::Address,
+            to: ethers::core::types::Address,
             amount: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, bool> {
             self.0
-                .method_hash([169, 5, 156, 187], (recipient, amount))
+                .method_hash([169, 5, 156, 187], (to, amount))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `transferFrom` (0x23b872dd) function"]
         pub fn transfer_from(
             &self,
-            sender: ethers::core::types::Address,
-            recipient: ethers::core::types::Address,
+            from: ethers::core::types::Address,
+            to: ethers::core::types::Address,
             amount: ethers::core::types::U256,
         ) -> ethers::contract::builders::ContractCall<M, bool> {
             self.0
-                .method_hash([35, 184, 114, 221], (sender, recipient, amount))
+                .method_hash([35, 184, 114, 221], (from, to, amount))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Gets the contract's `Approval` event"]
@@ -234,6 +252,42 @@ pub mod ierc20 {
     pub struct BalanceOfCall {
         pub account: ethers::core::types::Address,
     }
+    #[doc = "Container type for all input parameters for the `decimals` function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        Default,
+    )]
+    #[ethcall(name = "decimals", abi = "decimals()")]
+    pub struct DecimalsCall;
+    #[doc = "Container type for all input parameters for the `name` function with signature `name()` and selector `[6, 253, 222, 3]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        Default,
+    )]
+    #[ethcall(name = "name", abi = "name()")]
+    pub struct NameCall;
+    #[doc = "Container type for all input parameters for the `symbol` function with signature `symbol()` and selector `[149, 216, 155, 65]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthCall,
+        ethers :: contract :: EthDisplay,
+        Default,
+    )]
+    #[ethcall(name = "symbol", abi = "symbol()")]
+    pub struct SymbolCall;
     #[doc = "Container type for all input parameters for the `totalSupply` function with signature `totalSupply()` and selector `[24, 22, 13, 221]`"]
     #[derive(
         Clone,
@@ -258,7 +312,7 @@ pub mod ierc20 {
     )]
     #[ethcall(name = "transfer", abi = "transfer(address,uint256)")]
     pub struct TransferCall {
-        pub recipient: ethers::core::types::Address,
+        pub to: ethers::core::types::Address,
         pub amount: ethers::core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `[35, 184, 114, 221]`"]
@@ -273,8 +327,8 @@ pub mod ierc20 {
     )]
     #[ethcall(name = "transferFrom", abi = "transferFrom(address,address,uint256)")]
     pub struct TransferFromCall {
-        pub sender: ethers::core::types::Address,
-        pub recipient: ethers::core::types::Address,
+        pub from: ethers::core::types::Address,
+        pub to: ethers::core::types::Address,
         pub amount: ethers::core::types::U256,
     }
     #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
@@ -282,6 +336,9 @@ pub mod ierc20 {
         Allowance(AllowanceCall),
         Approve(ApproveCall),
         BalanceOf(BalanceOfCall),
+        Decimals(DecimalsCall),
+        Name(NameCall),
+        Symbol(SymbolCall),
         TotalSupply(TotalSupplyCall),
         Transfer(TransferCall),
         TransferFrom(TransferFromCall),
@@ -304,6 +361,18 @@ pub mod ierc20 {
                 <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::BalanceOf(decoded))
+            }
+            if let Ok(decoded) =
+                <DecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(IERC20Calls::Decimals(decoded))
+            }
+            if let Ok(decoded) = <NameCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+                return Ok(IERC20Calls::Name(decoded))
+            }
+            if let Ok(decoded) = <SymbolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            {
+                return Ok(IERC20Calls::Symbol(decoded))
             }
             if let Ok(decoded) =
                 <TotalSupplyCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
@@ -329,6 +398,9 @@ pub mod ierc20 {
                 IERC20Calls::Allowance(element) => element.encode(),
                 IERC20Calls::Approve(element) => element.encode(),
                 IERC20Calls::BalanceOf(element) => element.encode(),
+                IERC20Calls::Decimals(element) => element.encode(),
+                IERC20Calls::Name(element) => element.encode(),
+                IERC20Calls::Symbol(element) => element.encode(),
                 IERC20Calls::TotalSupply(element) => element.encode(),
                 IERC20Calls::Transfer(element) => element.encode(),
                 IERC20Calls::TransferFrom(element) => element.encode(),
@@ -341,6 +413,9 @@ pub mod ierc20 {
                 IERC20Calls::Allowance(element) => element.fmt(f),
                 IERC20Calls::Approve(element) => element.fmt(f),
                 IERC20Calls::BalanceOf(element) => element.fmt(f),
+                IERC20Calls::Decimals(element) => element.fmt(f),
+                IERC20Calls::Name(element) => element.fmt(f),
+                IERC20Calls::Symbol(element) => element.fmt(f),
                 IERC20Calls::TotalSupply(element) => element.fmt(f),
                 IERC20Calls::Transfer(element) => element.fmt(f),
                 IERC20Calls::TransferFrom(element) => element.fmt(f),
@@ -360,6 +435,21 @@ pub mod ierc20 {
     impl ::std::convert::From<BalanceOfCall> for IERC20Calls {
         fn from(var: BalanceOfCall) -> Self {
             IERC20Calls::BalanceOf(var)
+        }
+    }
+    impl ::std::convert::From<DecimalsCall> for IERC20Calls {
+        fn from(var: DecimalsCall) -> Self {
+            IERC20Calls::Decimals(var)
+        }
+    }
+    impl ::std::convert::From<NameCall> for IERC20Calls {
+        fn from(var: NameCall) -> Self {
+            IERC20Calls::Name(var)
+        }
+    }
+    impl ::std::convert::From<SymbolCall> for IERC20Calls {
+        fn from(var: SymbolCall) -> Self {
+            IERC20Calls::Symbol(var)
         }
     }
     impl ::std::convert::From<TotalSupplyCall> for IERC20Calls {
@@ -410,6 +500,39 @@ pub mod ierc20 {
         Default,
     )]
     pub struct BalanceOfReturn(pub ethers::core::types::U256);
+    #[doc = "Container type for all return fields from the `decimals` function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthAbiType,
+        ethers :: contract :: EthAbiCodec,
+        Default,
+    )]
+    pub struct DecimalsReturn(pub u8);
+    #[doc = "Container type for all return fields from the `name` function with signature `name()` and selector `[6, 253, 222, 3]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthAbiType,
+        ethers :: contract :: EthAbiCodec,
+        Default,
+    )]
+    pub struct NameReturn(pub String);
+    #[doc = "Container type for all return fields from the `symbol` function with signature `symbol()` and selector `[149, 216, 155, 65]`"]
+    #[derive(
+        Clone,
+        Debug,
+        Eq,
+        PartialEq,
+        ethers :: contract :: EthAbiType,
+        ethers :: contract :: EthAbiCodec,
+        Default,
+    )]
+    pub struct SymbolReturn(pub String);
     #[doc = "Container type for all return fields from the `totalSupply` function with signature `totalSupply()` and selector `[24, 22, 13, 221]`"]
     #[derive(
         Clone,
