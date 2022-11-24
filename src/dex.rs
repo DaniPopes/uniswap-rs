@@ -28,16 +28,13 @@ impl<M: Middleware> Dex<M> {
 
     /// Creates a new instance by searching for the required addresses in the [addressbook].
     ///
-    /// # Panics
-    ///
-    /// When the addresses could not be found.
-    ///
     /// [addressbook]: crate::contracts::addresses
     #[cfg(feature = "addresses")]
-    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
-        let protocol = Protocol::new_with_chain(client, chain, protocol);
-        let weth = crate::contracts::addresses::try_address("WETH", chain);
-        Self { protocol, weth }
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
+        Protocol::new_with_chain(client, chain, protocol).map(|protocol| {
+            let weth = crate::contracts::addresses::try_address("WETH", chain);
+            Self { protocol, weth }
+        })
     }
 
     /// Returns a pointer to the client.
@@ -321,7 +318,7 @@ mod tests {
         let chain = Chain::Mainnet;
         let dex_type = ProtocolType::UniswapV2;
 
-        Dex::new_with_chain(Arc::new(client), chain, dex_type)
+        Dex::new_with_chain(Arc::new(client), chain, dex_type).unwrap()
     }
 
     fn decode_call(calldata: &Bytes) -> Vec<Token> {

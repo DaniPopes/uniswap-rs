@@ -18,10 +18,10 @@ async fn main() -> eyre::Result<()> {
         SignerMiddleware::new(provider, wallet)
     });
 
-    println!("Using {:?} {:?}", chain, protocol);
+    println!("Using {chain:?} {protocol:?}");
 
     // instantiate a new dex
-    let dex = Dex::new_with_chain(client, chain, protocol);
+    let dex = Dex::new_with_chain(client, chain, protocol).unwrap();
 
     println!("WETH address: {:?}", dex.weth().expect("Mainnet WETH not set (should not happen)"));
 

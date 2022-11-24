@@ -9,14 +9,14 @@ async fn main() -> eyre::Result<()> {
     let protocol = ProtocolType::UniswapV2;
     let client = Arc::new(MAINNET.provider());
 
-    println!("Using {:?} {:?}", chain, protocol);
+    println!("Using {chain:?} {protocol:?}");
 
     // get contract addresses from address book
     let weth = address("WETH", chain);
     let usdc = address("USDC", chain);
 
     println!("Getting ETH/USDC pair info:");
-    let dex = Dex::new_with_chain(client, chain, protocol);
+    let dex = Dex::new_with_chain(client, chain, protocol).unwrap();
     let mut pair = dex.pair_for(weth, usdc)?;
 
     pair.sync(true, true).await?;

@@ -20,21 +20,20 @@ impl<M: Middleware> V2Protocol<M> {
     /// Creates a new instance using the provided client, factory and tokens' addresses.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         let factory = Factory::new(client.clone(), factory, protocol);
-        let router = Router::new(client, router, protocol);
+        let router = Router::new(client, router);
         Self { factory, router }
     }
 
-    /// Creates a new instance deriving the addresses from the provided chain.
+    /// Creates a new instance by searching for the required addresses in the [addressbook].
     ///
-    /// # Panics
-    ///
-    /// When the protocol's addresses for the provided chain could not be found.
+    /// [addressbook]: crate::contracts::addresses
     #[cfg(feature = "addresses")]
-    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
-        let (factory, router) = protocol.addresses(chain);
-        let factory = Factory::new(client.clone(), factory, protocol);
-        let router = Router::new(client, router, protocol);
-        Self { factory, router }
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
+        if let (Some(factory), Some(router)) = protocol.try_addresses(chain) {
+            Some(Self::new(client, factory, router, protocol))
+        } else {
+            None
+        }
     }
 
     /// Returns a pointer to the client.

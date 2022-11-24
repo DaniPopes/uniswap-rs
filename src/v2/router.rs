@@ -4,20 +4,17 @@ use crate::{
     constants::BPS_U256,
     errors::{LibraryError, RouterResult},
     utils::{is_native_path, map_native},
-    Amount, ProtocolType,
+    Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
+#[cfg(feature = "addresses")]
+use crate::protocol::ProtocolType;
+
 /// Represents a UniswapV2 router.
 #[derive(Clone, Debug)]
-pub struct Router<M> {
-    /// The router contract.
-    contract: IUniswapV2Router02<M>,
-
-    /// The router protocol.
-    protocol: ProtocolType,
-}
+pub struct Router<M>(IUniswapV2Router02<M>);
 
 impl<M> std::ops::Deref for Router<M> {
     type Target = IUniswapV2Router02<M>;
@@ -30,37 +27,25 @@ impl<M> std::ops::Deref for Router<M> {
 impl<M> Router<M> {
     /// Returns a reference to the router contract.
     pub fn contract(&self) -> &IUniswapV2Router02<M> {
-        &self.contract
-    }
-
-    /// Returns the router protocol.
-    pub fn protocol(&self) -> ProtocolType {
-        self.protocol
+        &self.0
     }
 }
 
 impl<M: Middleware> Router<M> {
-    /// Creates a new instance from using the provided address.
-    pub fn new(client: Arc<M>, address: Address, protocol: ProtocolType) -> Self {
+    /// Creates a new instance using the provided address.
+    pub fn new(client: Arc<M>, address: Address) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
         let contract = IUniswapV2Router02::new(address, client);
-        Self { contract, protocol }
+        Self(contract)
     }
 
     /// Creates a new instance by searching for the required addresses in the [addressbook].
-    ///
-    /// # Panics
-    ///
-    /// When the addresses could not be found.
     ///
     /// [addressbook]: crate::contracts::addresses
     #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        protocol.try_addresses(chain).1.map(|address| {
-            let contract = IUniswapV2Router02::new(address, client);
-            Self { contract, protocol }
-        })
+        protocol.try_addresses(chain).1.map(|address| Self::new(client, address))
     }
 
     /// Generalized add_liquidity function for the various [UniswapV2Router] methods.

@@ -34,15 +34,11 @@ impl<M: Middleware> Protocol<M> {
 
     /// Creates a new instance by searching for the required addresses in the [addressbook].
     ///
-    /// # Panics
-    ///
-    /// When the addresses could not be found.
-    ///
     /// [addressbook]: crate::contracts::addresses
     #[cfg(feature = "addresses")]
-    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
+    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         match protocol {
-            p if p.is_v2() => Self::V2(V2Protocol::new_with_chain(client, chain, protocol)),
+            p if p.is_v2() => V2Protocol::new_with_chain(client, chain, protocol).map(Self::V2),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
             p => unreachable!("protocol \"{p:?}\" is neither v2 nor v3"),
         }

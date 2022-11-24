@@ -19,13 +19,13 @@ async fn main() -> eyre::Result<()> {
         SignerMiddleware::new(provider, wallet)
     });
 
-    println!("Using {:?} {:?}", chain, protocol);
+    println!("Using {chain:?} {protocol:?}");
 
     // get contract addresses from address book
     let usdc = address("USDC", chain);
 
     // instantiate a new dex
-    let mut dex = Dex::new_with_chain(client, chain, protocol);
+    let mut dex = Dex::new_with_chain(client, chain, protocol).unwrap();
 
     // swap amount
     let raw_amount = U256::exp10(3);

@@ -21,14 +21,14 @@ async fn main() -> eyre::Result<()> {
         SignerMiddleware::new(provider, wallet)
     });
 
-    println!("Using {:?} {:?}", chain, protocol);
+    println!("Using {chain:?} {protocol:?}");
 
     // get contract addresses from address book
     let weth = address("WETH", chain);
     let usdc = address("USDC", chain);
 
     // instantiate a new dex
-    let dex = Dex::new_with_chain(client.clone(), chain, protocol);
+    let dex = Dex::new_with_chain(client.clone(), chain, protocol).unwrap();
 
     let pair = dex.pair_for(weth, usdc)?;
 
