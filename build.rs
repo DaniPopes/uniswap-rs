@@ -2,7 +2,7 @@ use ethers_contract::MultiAbigen;
 
 fn main() {
     let input_path = concat!(env!("CARGO_MANIFEST_DIR"), "/abi");
-    let output_path = concat!(env!("CARGO_MANIFEST_DIR"), "/src/bindings");
+    let output_path = concat!(env!("CARGO_MANIFEST_DIR"), "/src/contracts/bindings");
 
     let gen = MultiAbigen::from_json_files(input_path).unwrap();
     let bindings = gen.build().unwrap();

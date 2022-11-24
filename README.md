@@ -45,6 +45,9 @@ Examples can be found [here][examples].
     -   [x] Quickswap
     -   [x] Spookyswap
     -   [x] Traderjoe
+-   [ ] Features
+    -   [ ] Serde, Addressbook and `new_with_chain`
+    -   [ ] V2 and V3, separated
 
 ## License
 

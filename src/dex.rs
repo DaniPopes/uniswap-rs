@@ -1,7 +1,6 @@
 use crate::{
     bindings::iweth::IWETH,
     constants::*,
-    contracts::try_address,
     errors::{DexError, DexResult, LibraryError},
     utils::*,
     v2::{Factory, Pair, Router},
@@ -21,24 +20,23 @@ pub struct Dex<M> {
 }
 
 impl<M: Middleware> Dex<M> {
-    /// Creates a new instance of Dex from a chain.
-    ///
-    /// # Panics
-    ///
-    /// When the protocol's addresses could not be found.
+    /// Creates a new instance of Dex using the provided addresses.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         let protocol = Protocol::new(client, factory, router, protocol);
         Self { protocol, weth: None }
     }
 
-    /// Creates a new instance of Dex from a chain.
+    /// Creates a new instance by searching for the required addresses in the [addressbook].
     ///
     /// # Panics
     ///
-    /// When the protocol's addresses could not be found.
+    /// When the addresses could not be found.
+    ///
+    /// [addressbook]: crate::contracts::addresses
+    #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
         let protocol = Protocol::new_with_chain(client, chain, protocol);
-        let weth = try_address("WETH", chain);
+        let weth = crate::contracts::addresses::try_address("WETH", chain);
         Self { protocol, weth }
     }
 
@@ -303,7 +301,7 @@ fn unwrap_deadline(deadline: Option<u64>) -> U256 {
 
 #[cfg(test)]
 mod tests {
-    use crate::{contracts::address, v2::Library as V2Library};
+    use crate::v2::Library as V2Library;
     use ethers::abi::{ParamType, Token, Tokenize};
 
     use super::*;
@@ -423,7 +421,8 @@ mod tests {
 
         let amount_in_pre = U256::exp10(18);
         let amount = Amount::ExactIn(amount_in_pre);
-        let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
+        let path_pre =
+            vec![dex.weth.unwrap(), "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48".parse().unwrap()];
 
         let amounts_out: Vec<U256> =
             V2Library::get_amounts_out(dex.factory(), amount_in_pre, &path_pre).await.unwrap();
@@ -445,7 +444,8 @@ mod tests {
         let mut dex = default_dex();
 
         let amount_in_pre = U256::exp10(18);
-        let path_pre = vec![dex.weth.unwrap(), address("USDC", Chain::Mainnet)];
+        let path_pre =
+            vec![dex.weth.unwrap(), "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48".parse().unwrap()];
 
         let amounts_out =
             V2Library::get_amounts_out(dex.factory(), amount_in_pre, &path_pre).await.unwrap();

@@ -23,21 +23,28 @@ pub enum Protocol<M> {
 }
 
 impl<M: Middleware> Protocol<M> {
-    /// Creates a new instance using the provided client, factory and tokens' addresses.
+    /// Creates a new instance using the provided client, factory and router addresses.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         match protocol {
             p if p.is_v2() => Self::V2(V2Protocol::new(client, factory, router, protocol)),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
+            p => unreachable!("protocol \"{p:?}\" is neither v2 nor v3"),
         }
     }
 
-    /// Creates a new instance using the provided chain.
+    /// Creates a new instance by searching for the required addresses in the [addressbook].
+    ///
+    /// # Panics
+    ///
+    /// When the addresses could not be found.
+    ///
+    /// [addressbook]: crate::contracts::addresses
+    #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
         match protocol {
             p if p.is_v2() => Self::V2(V2Protocol::new_with_chain(client, chain, protocol)),
             p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol \"{:?}\" is neither v2 nor v3", p),
+            p => unreachable!("protocol \"{p:?}\" is neither v2 nor v3"),
         }
     }
 

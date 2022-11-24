@@ -10,8 +10,6 @@ mod common;
 mod dex;
 mod protocol;
 
-#[allow(missing_docs)]
-pub mod bindings;
 pub mod contracts;
 pub mod v2;
 pub mod v3;
@@ -19,3 +17,7 @@ pub mod v3;
 pub use common::*;
 pub use dex::*;
 pub use protocol::*;
+
+// Re-export from contracts
+#[doc(hidden)]
+pub use contracts::bindings;

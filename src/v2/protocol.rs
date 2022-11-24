@@ -24,7 +24,12 @@ impl<M: Middleware> V2Protocol<M> {
         Self { factory, router }
     }
 
-    /// Creates a new instance using the provided client and chain.
+    /// Creates a new instance deriving the addresses from the provided chain.
+    ///
+    /// # Panics
+    ///
+    /// When the protocol's addresses for the provided chain could not be found.
+    #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Self {
         let (factory, router) = protocol.addresses(chain);
         let factory = Factory::new(client.clone(), factory, protocol);

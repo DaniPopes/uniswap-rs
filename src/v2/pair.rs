@@ -270,12 +270,12 @@ fn parse_reserves_result<M: Middleware>(tokens: Vec<Token>) -> PairResult<Option
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{contracts::address, ProtocolType};
+    use crate::ProtocolType;
 
     fn default_pair() -> Pair<Provider<Http>> {
         let chain = Chain::Mainnet;
-        let weth = address("WETH", chain);
-        let usdc = address("USDC", chain);
+        let weth: Address = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2".parse().unwrap();
+        let usdc: Address = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48".parse().unwrap();
         let provider = MAINNET.provider();
         let client = Arc::new(provider);
         let factory = Factory::new_with_chain(client, chain, ProtocolType::UniswapV2).unwrap();

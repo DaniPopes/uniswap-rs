@@ -1,20 +1,23 @@
 use super::pair_code_hashes::*;
-use crate::contracts::{address, try_address};
 use ethers::prelude::*;
-use serde::{Deserialize, Serialize};
 use std::fmt;
 
+#[cfg(feature = "addresses")]
+use crate::contracts::addresses::{address, try_address};
+
 /// Represents a type of protocol that is, or is a fork of, Uniswap v2 or v3.
-#[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq)]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize, serde::Serialize),
+    serde(rename_all = "lowercase")
+)]
 pub enum ProtocolType {
     /// Deployed on Ethereum and its testnets.
     #[default]
-    #[serde(rename = "uniswapv2")]
     UniswapV2,
 
     /// Deployed on Ethereum, Polygon, Celo and testnets.
-    #[serde(rename = "uniswapv3")]
     UniswapV3,
 
     /// Deployed on most chains.
@@ -70,6 +73,7 @@ impl ProtocolType {
     }
 
     /// Returns (factory_address, router_address), returning None if not found.
+    #[cfg(feature = "addresses")]
     pub fn try_addresses(&self, chain: Chain) -> (Option<Address>, Option<Address>) {
         if let Self::Custom { factory, router, .. } = self {
             (Some(*factory), Some(*router))
@@ -80,6 +84,7 @@ impl ProtocolType {
     }
 
     /// Returns (factory_address, router_address), panicking if not found.
+    #[cfg(feature = "addresses")]
     pub fn addresses(&self, chain: Chain) -> (Address, Address) {
         if let Self::Custom { factory, router, .. } = self {
             (*factory, *router)

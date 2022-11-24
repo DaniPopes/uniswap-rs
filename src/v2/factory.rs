@@ -54,7 +54,14 @@ impl<M: Middleware> Factory<M> {
         Self { contract, protocol, chain: None }
     }
 
-    /// Creates a new instance using the provided chain.
+    /// Creates a new instance by searching for the required addresses in the [addressbook].
+    ///
+    /// # Panics
+    ///
+    /// When the addresses could not be found.
+    ///
+    /// [addressbook]: crate::contracts::addresses
+    #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
         protocol.try_addresses(chain).0.map(|address| {

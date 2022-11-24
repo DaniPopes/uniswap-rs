@@ -1,7 +1,7 @@
 use ethers::{prelude::*, utils::format_units};
 use eyre::ContextCompat;
 use std::sync::Arc;
-use uniswap_rs::{contracts::address, Dex, ProtocolType};
+use uniswap_rs::{contracts::addresses::address, Dex, ProtocolType};
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
