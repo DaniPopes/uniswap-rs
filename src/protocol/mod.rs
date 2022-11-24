@@ -1,6 +1,6 @@
 use crate::{
     errors::{FactoryResult, RouterError},
-    v2::{Factory, Pair, Router, V2Protocol},
+    v2::{Factory as V2Factory, Pair as V2Pair, Protocol as V2Protocol, Router as V2Router},
     Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
@@ -57,7 +57,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// Returns a reference to the factory.
     #[inline(always)]
-    pub fn factory(&self) -> &Factory<M> {
+    pub fn factory(&self) -> &V2Factory<M> {
         match self {
             Self::V2(p) => p.factory(),
             Self::V3 => todo!("v3 is not yet implemented"),
@@ -84,7 +84,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// The protocol's `pair_for` method.
     #[inline(always)]
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<Pair<M>, M> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<V2Pair<M>, M> {
         match self {
             Self::V2(p) => p.pair_for(token_a, token_b),
             Self::V3 => todo!("v3 is not yet implemented"),
@@ -95,7 +95,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// Returns a reference to the router.
     #[inline(always)]
-    pub fn router(&self) -> &Router<M> {
+    pub fn router(&self) -> &V2Router<M> {
         match self {
             Self::V2(p) => p.router(),
             Self::V3 => todo!("v3 is not yet implemented"),

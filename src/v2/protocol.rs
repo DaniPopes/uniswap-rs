@@ -8,7 +8,7 @@ use std::sync::Arc;
 
 /// Represents the UniswapV2 protocol.
 #[derive(Clone, Debug)]
-pub struct V2Protocol<M> {
+pub struct Protocol<M> {
     /// The liquidity pair factory.
     factory: Factory<M>,
 
@@ -16,7 +16,7 @@ pub struct V2Protocol<M> {
     router: Router<M>,
 }
 
-impl<M: Middleware> V2Protocol<M> {
+impl<M: Middleware> Protocol<M> {
     /// Creates a new instance using the provided client, factory and tokens' addresses.
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         let factory = Factory::new(client.clone(), factory, protocol);

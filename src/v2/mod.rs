@@ -9,5 +9,5 @@ mod router;
 pub use factory::Factory;
 pub use library::Library;
 pub use pair::Pair;
-pub use protocol::V2Protocol;
+pub use protocol::Protocol;
 pub use router::Router;
