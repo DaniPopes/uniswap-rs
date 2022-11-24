@@ -147,9 +147,18 @@ impl<M: Middleware> Pair<M> {
             multicall.add_call(self.get_reserves(), true);
         }
 
-        let result = multicall.call_raw().await?;
-
         // Assume any call failure means the contract has not been deployed yet
+        let result = multicall.call_raw().await;
+        let result = match result {
+            Ok(result) => result,
+            Err(MulticallError::ContractError(ContractError::DecodingError(_))) => {
+                self.tokens = None;
+                self.deployed = false;
+                return Ok(self)
+            }
+            Err(e) => return Err(e.into()),
+        };
+
         match (sync_tokens, sync_reserves) {
             (true, true) => {
                 let tokens = parse_tokens_result(result[0..2].to_vec())?;
