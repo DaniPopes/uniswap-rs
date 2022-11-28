@@ -599,9 +599,9 @@ dependencies = [
 
 [[package]]
 name = "ethers"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d338f456cf5158d8cb630d39202cca4416ad2248193eadf9562bfb563d123176"
+checksum = "11f26f9d8d80da18ca72aca51804c65eb2153093af3bec74fd5ce32aa0c1f665"
 dependencies = [
  "ethers-addressbook",
  "ethers-contract",
@@ -614,9 +614,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-addressbook"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c3fb042cc02501fd7c1338d229ff2f10562efa430136ac8c467190c5cfe46eba"
+checksum = "fe4be54dd2260945d784e06ccdeb5ad573e8f1541838cee13a1ab885485eaa0b"
 dependencies = [
  "ethers-core",
  "once_cell",
@@ -626,9 +626,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-contract"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40ce616689f073bdfbe317314abbe018f1baedf1209d32f1b01220a68ff120cf"
+checksum = "e9c3c3e119a89f0a9a1e539e7faecea815f74ddcf7c90d0b00d1f524db2fdc9c"
 dependencies = [
  "ethers-contract-abigen",
  "ethers-contract-derive",
@@ -645,9 +645,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-contract-abigen"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c4c4cef2795a98b861ef4729556b3b4d72e6ef3f1d8c426cd78d9cf7d087e54"
+checksum = "3d4e5ad46aede34901f71afdb7bb555710ed9613d88d644245c657dc371aa228"
 dependencies = [
  "Inflector",
  "cfg-if",
@@ -670,9 +670,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-contract-derive"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcc9816ce5d707cff3a75d6cd2c96ae60e157eb83f6754438064e30873f2196e"
+checksum = "f192e8e4cf2b038318aae01e94e7644e0659a76219e94bcd3203df744341d61f"
 dependencies = [
  "ethers-contract-abigen",
  "ethers-core",
@@ -685,9 +685,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-core"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6e97a2dcf550b681966f9392f4e1389ffe54ebb1667e64583104ee4e01c058c"
+checksum = "ade3e9c97727343984e1ceada4fdab11142d2ee3472d2c67027d56b1251d4f15"
 dependencies = [
  "arrayvec",
  "bytes",
@@ -716,9 +716,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-etherscan"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb8547a8b696795f027350be348c9a2faff94ad4e08103e7916360dd15da5919"
+checksum = "a9713f525348e5dde025d09b0a4217429f8074e8ff22c886263cc191e87d8216"
 dependencies = [
  "ethers-core",
  "getrandom",
@@ -733,9 +733,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-middleware"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21af40f8e3808e165cb624704786656670d37dce73fec5eb8d3346d981f68e70"
+checksum = "e71df7391b0a9a51208ffb5c7f2d068900e99d6b3128d3a4849d138f194778b7"
 dependencies = [
  "async-trait",
  "auto_impl 0.5.0",
@@ -759,9 +759,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-providers"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7405eaf127aec599f839799111315b8c2e7bfe767e2536412dbb16e284f2d8c"
+checksum = "a1a9e0597aa6b2fdc810ff58bc95e4eeaa2c219b3e615ed025106ecb027407d8"
 dependencies = [
  "async-trait",
  "auto_impl 1.0.1",
@@ -794,9 +794,9 @@ dependencies = [
 
 [[package]]
 name = "ethers-signers"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "341b582c30f5949b63bd76b2a08b6b997d8fe08fbe8026bd6ae042f5f9190eb4"
+checksum = "3f41ced186867f64773db2e55ffdd92959e094072a1d09a5e5e831d443204f98"
 dependencies = [
  "async-trait",
  "coins-bip32",
@@ -1927,9 +1927,9 @@ checksum = "930c0acf610d3fdb5e2ab6213019aaa04e227ebe9547b0649ba599b16d788bd7"
 
 [[package]]
 name = "serde"
-version = "1.0.147"
+version = "1.0.148"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d193d69bae983fc11a79df82342761dfbf28a99fc8d203dca4c3c1b590948965"
+checksum = "e53f64bb4ba0191d6d0676e1b141ca55047d83b74f5607e6d8eb88126c52c2dc"
 dependencies = [
  "serde_derive",
 ]
@@ -1946,9 +1946,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.147"
+version = "1.0.148"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f1d362ca8fc9c3e3a7484440752472d68a6caa98f1ab81d99b5dfe517cec852"
+checksum = "a55492425aa53521babf6137309e7d34c20bbfbbfcfe2c7f3a047fd1f6b92c0c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2098,9 +2098,9 @@ checksum = "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
 
 [[package]]
 name = "syn"
-version = "1.0.103"
+version = "1.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a864042229133ada95abf3b54fdc62ef5ccabe9515b64717bcb9a1919e59445d"
+checksum = "4ae548ec36cf198c0ef7710d3c230987c2d6d7bd98ad6edc0274462724c585ce"
 dependencies = [
  "proc-macro2",
  "quote",
