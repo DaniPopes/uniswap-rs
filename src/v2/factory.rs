@@ -44,6 +44,12 @@ impl<M> Factory<M> {
     pub fn pair_code_hash(&self, chain: Option<Chain>) -> H256 {
         self.protocol.pair_code_hash(chain.or(self.chain))
     }
+
+    /// Sets the factory's chain.
+    pub fn set_chain(&mut self, chain: Chain) -> &mut Self {
+        self.chain = Some(chain);
+        self
+    }
 }
 
 impl<M: Middleware> Factory<M> {

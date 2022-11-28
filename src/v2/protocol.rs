@@ -30,7 +30,9 @@ impl<M: Middleware> Protocol<M> {
     #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         if let (Some(factory), Some(router)) = protocol.try_addresses(chain) {
-            Some(Self::new(client, factory, router, protocol))
+            let mut this = Self::new(client, factory, router, protocol);
+            this.factory.set_chain(chain);
+            Some(this)
         } else {
             None
         }
