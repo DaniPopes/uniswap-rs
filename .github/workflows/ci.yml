@@ -4,6 +4,8 @@ on:
     pull_request:
 
 name: CI
+env:
+    ABIGEN_CHECK: true
 
 jobs:
     test:
