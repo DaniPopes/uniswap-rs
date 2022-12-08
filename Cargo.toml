@@ -12,7 +12,8 @@ description = "Unofficial Rust SDK library for Uniswap smart contracts."
 keywords = ["dex", "uniswap", "sdk", "ethereum", "eth"]
 
 [build-dependencies]
-ethers-contract = "1.0"
+ethers-contract-abigen = { version = "1.0", default-features = false }
+eyre = "*"
 
 [dependencies]
 ethers = "1.0.2"

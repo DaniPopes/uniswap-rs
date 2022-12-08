@@ -2330,7 +2330,7 @@ name = "uniswap-rs"
 version = "0.2.0"
 dependencies = [
  "ethers",
- "ethers-contract",
+ "ethers-contract-abigen",
  "eyre",
  "serde",
  "serde_json",

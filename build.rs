@@ -1,12 +1,17 @@
-use ethers_contract::MultiAbigen;
+use ethers_contract_abigen::MultiAbigen;
+
+const ABI_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/abi");
+const BINDINGS_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/contracts/bindings");
 
 fn main() {
-    let input_path = concat!(env!("CARGO_MANIFEST_DIR"), "/abi");
-    let output_path = concat!(env!("CARGO_MANIFEST_DIR"), "/src/contracts/bindings");
+    // ignore fails, eg for docs.rs builds
+    abigen().unwrap_or_else(|e| eprintln!("Failed to abigen: {e}"));
+}
 
-    let gen = MultiAbigen::from_json_files(input_path).unwrap();
-    let bindings = gen.build().unwrap();
-    bindings.write_to_module(output_path, false).unwrap();
-
-    println!("cargo:rerun-if-changed={}", input_path)
+fn abigen() -> eyre::Result<()> {
+    let gen = MultiAbigen::from_json_files(ABI_PATH)?;
+    let bindings = gen.build()?;
+    bindings.write_to_module(BINDINGS_PATH, false)?;
+    println!("cargo:rerun-if-changed={ABI_PATH}");
+    Ok(())
 }
