@@ -2336,6 +2336,7 @@ dependencies = [
  "serde_json",
  "thiserror",
  "tokio",
+ "walkdir",
 ]
 
 [[package]]

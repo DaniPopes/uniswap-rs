@@ -13,7 +13,8 @@ keywords = ["dex", "uniswap", "sdk", "ethereum", "eth"]
 
 [build-dependencies]
 ethers-contract-abigen = { version = "1.0", default-features = false }
-eyre = "0"
+eyre = ">=0"
+walkdir = ">=2"
 
 [dependencies]
 ethers = "1.0.2"
