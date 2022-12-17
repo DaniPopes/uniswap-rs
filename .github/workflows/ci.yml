@@ -9,14 +9,18 @@ env:
 
 jobs:
     test:
-        name: test all
-        runs-on: ubuntu-latest
+        name: test all (${{ matrix.os }} / ${{ matrix.toolchain }})
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+                toolchain: ["stable", "nightly"]
         steps:
             - uses: actions/checkout@v3
             - name: Install Rust
               uses: actions-rs/toolchain@v1
               with:
-                  toolchain: stable
+                  toolchain: ${{ matrix.toolchain }}
                   override: true
             - uses: Swatinem/rust-cache@v2
               with:
@@ -32,14 +36,33 @@ jobs:
             - name: Install Rust
               uses: actions-rs/toolchain@v1
               with:
+                  components: clippy, rustfmt
+                  profile: minimal
                   toolchain: nightly
                   override: true
-                  components: clippy
             - uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
             - name: clippy --all
               run: cargo clippy --all --tests --all-features
+
+    docs:
+        name: docs
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Install Rust
+              uses: actions-rs/toolchain@v1
+              with:
+                  components: rust-docs, rustfmt
+                  profile: minimal
+                  toolchain: nightly
+                  override: true
+            - uses: Swatinem/rust-cache@v2
+              with:
+                  cache-on-failure: true
+            - name: doc --all
+              run: cargo doc --all --all-features
 
     fmt:
         name: fmt
@@ -49,11 +72,12 @@ jobs:
             - name: Install Rust
               uses: actions-rs/toolchain@v1
               with:
+                  components: rustfmt
+                  profile: minimal
                   toolchain: nightly
                   override: true
-                  components: rustfmt
             - uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
-            - name: rustfmt --check
-              run: rustfmt --check
+            - name: cargo fmt --check
+              run: cargo fmt --check
