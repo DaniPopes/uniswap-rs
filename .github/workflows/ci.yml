@@ -12,6 +12,7 @@ jobs:
         name: test all (${{ matrix.os }} / ${{ matrix.toolchain }})
         runs-on: ${{ matrix.os }}
         strategy:
+            fail-fast: false
             matrix:
                 os: ["ubuntu-latest", "windows-latest", "macos-latest"]
                 toolchain: ["stable", "nightly"]
