@@ -1,7 +1,5 @@
 use super::{Library, Pair};
-use crate::{
-    bindings::i_uniswap_v2_factory::IUniswapV2Factory, errors::FactoryResult, ProtocolType,
-};
+use crate::{bindings::i_uniswap_v2_factory::IUniswapV2Factory, errors::Result, ProtocolType};
 use ethers::prelude::*;
 use std::sync::Arc;
 
@@ -75,7 +73,7 @@ impl<M: Middleware> Factory<M> {
     }
 
     /// Returns the pair for two token addresses.
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<Pair<M>, M> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<Pair<M>> {
         let address = Library::pair_for(self, token_a, token_b)?;
         Ok(Pair::new(self.client(), address, self.protocol))
     }

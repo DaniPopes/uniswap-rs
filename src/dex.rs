@@ -1,7 +1,7 @@
 use crate::{
     bindings::iweth::IWETH,
     constants::*,
-    errors::{DexError, DexResult, LibraryError},
+    errors::{Error, Result},
     utils::*,
     v2::{Factory, Pair, Router},
     Amount, Protocol, ProtocolType,
@@ -60,7 +60,7 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Returns the pair for two token addresses.
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> DexResult<Pair<M>, M> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<Pair<M>> {
         Ok(self.protocol.pair_for(token_a, token_b)?)
     }
 
@@ -82,7 +82,7 @@ impl<M: Middleware> Dex<M> {
         amount_b_min: U256,
         to: Option<Address>,
         deadline: Option<u64>,
-    ) -> DexResult<ContractCall<M, (U256, U256, U256)>, M> {
+    ) -> Result<ContractCall<M, (U256, U256, U256)>> {
         let sender = self.client().default_sender();
         let to = self.get_to(to);
 
@@ -121,7 +121,7 @@ impl<M: Middleware> Dex<M> {
         amount_b_min: U256,
         to: Option<Address>,
         deadline: Option<u64>,
-    ) -> DexResult<ContractCall<M, (U256, U256)>, M> {
+    ) -> Result<ContractCall<M, (U256, U256)>> {
         let deadline = unwrap_deadline(deadline);
 
         let sender = self.client().default_sender();
@@ -168,16 +168,16 @@ impl<M: Middleware> Dex<M> {
         path: &[Address],
         to: Option<Address>,
         deadline: Option<u64>,
-    ) -> DexResult<ContractCall<M, Vec<U256>>, M> {
+    ) -> Result<ContractCall<M, Vec<U256>>> {
         if !(0.0..=100.0).contains(&slippage_tolerance) {
-            return Err(DexError::InvalidSlippage)
+            return Err(Error::InvalidSlippage)
         }
 
         let sender = self.client().default_sender();
         let to = self.get_to(to);
 
         if path.len() < 2 {
-            return Err(LibraryError::InvalidPath.into())
+            return Err(Error::InvalidPath)
         }
 
         // set weth
@@ -190,7 +190,7 @@ impl<M: Middleware> Dex<M> {
         };
 
         if path_eq(path, &weth) {
-            return Err(DexError::SwapToSelf)
+            return Err(Error::SwapToSelf)
         }
 
         let deadline = unwrap_deadline(deadline);
@@ -213,7 +213,7 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Sets the wrapped native token address by calling the WETH() method on the router.
-    pub async fn set_weth(&mut self) -> DexResult<&mut Self, M> {
+    pub async fn set_weth(&mut self) -> Result<&mut Self> {
         self.weth = Some(self.protocol.router().contract().weth().call().await?);
 
         Ok(self)
@@ -227,10 +227,10 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Returns the contract call for `weth.deposit{ value: amount }()`.
-    pub fn weth_deposit(&self, amount: U256) -> DexResult<ContractCall<M, ()>, M> {
+    pub fn weth_deposit(&self, amount: U256) -> Result<ContractCall<M, ()>> {
         let address = match self.weth {
             Some(address) => address,
-            None => return Err(DexError::WethNotSet),
+            None => return Err(Error::WethNotSet),
         };
         let client = self.client();
         let sender = client.default_sender();
@@ -245,10 +245,10 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Returns the contract call for `weth.withdraw(amount)`.
-    pub fn weth_withdraw(&self, amount: U256) -> DexResult<ContractCall<M, ()>, M> {
+    pub fn weth_withdraw(&self, amount: U256) -> Result<ContractCall<M, ()>> {
         let address = match self.weth {
             Some(address) => address,
-            None => return Err(DexError::WethNotSet),
+            None => return Err(Error::WethNotSet),
         };
         let client = self.client();
         let sender = client.default_sender();

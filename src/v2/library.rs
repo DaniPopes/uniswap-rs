@@ -1,9 +1,10 @@
 use super::factory::Factory;
 use crate::{
     bindings::i_uniswap_v2_pair::IUniswapV2Pair,
-    errors::{LibraryError, LibraryResult},
+    errors::{Error, Result},
 };
-use ethers::{core::abi::Detokenize, prelude::*};
+use ethers::{core::abi::Tokenizable, prelude::*};
+use std::cmp::Ordering;
 
 /// The UniswapV2 library refactored from the official [@Uniswap/v2-periphery].
 ///
@@ -13,15 +14,15 @@ pub struct Library;
 impl Library {
     /// Returns sorted token addresses, used to handle return values from pairs sorted in this
     /// order.
-    pub fn sort_tokens(a: Address, b: Address) -> LibraryResult<(Address, Address)> {
+    pub fn sort_tokens(a: Address, b: Address) -> Result<(Address, Address)> {
         let (a, b) = match a.cmp(&b) {
-            std::cmp::Ordering::Less => (a, b),
-            std::cmp::Ordering::Equal => return Err(LibraryError::IdenticalAddresses),
-            std::cmp::Ordering::Greater => (b, a),
+            Ordering::Less => (a, b),
+            Ordering::Equal => return Err(Error::IdenticalAddresses),
+            Ordering::Greater => (b, a),
         };
 
         if a.is_zero() {
-            return Err(LibraryError::AddressZero)
+            return Err(Error::AddressZero)
         }
 
         Ok((a, b))
@@ -32,7 +33,7 @@ impl Library {
         factory: &Factory<M>,
         a: Address,
         b: Address,
-    ) -> LibraryResult<Address> {
+    ) -> Result<Address> {
         let (a, b) = Self::sort_tokens(a, b)?;
 
         let from = factory.address();
@@ -49,14 +50,10 @@ impl Library {
         factory: &Factory<M>,
         a: Address,
         b: Address,
-    ) -> LibraryResult<(U256, U256)> {
+    ) -> Result<(U256, U256)> {
         let (address_0, _) = Self::sort_tokens(a, b)?;
         let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, factory.client());
-        let r = pair
-            .get_reserves()
-            .call()
-            .await
-            .map_err(|e| LibraryError::ContractError(e.to_string()))?;
+        let r = pair.get_reserves().call().await?;
         let (reserve_a, reserve_b) = (r.0.into(), r.1.into());
         if a == address_0 {
             Ok((reserve_a, reserve_b))
@@ -70,10 +67,10 @@ impl Library {
     pub async fn get_reserves_multi<M: Middleware>(
         factory: &Factory<M>,
         path: &[Address],
-    ) -> LibraryResult<Vec<(U256, U256)>> {
-        let l = match path.len() {
-            l if l < 2 => return Err(LibraryError::InvalidPath),
-            l if l == 2 => {
+    ) -> Result<Vec<(U256, U256)>> {
+        let len = match path.len() {
+            0 | 1 => return Err(Error::InvalidPath),
+            2 => {
                 // avoid multicall for only 1 call
                 let (a, b) = (path[0], path[1]);
                 let res = Self::get_reserves(factory, a, b).await?;
@@ -83,14 +80,11 @@ impl Library {
         };
 
         let client = factory.client();
-        let mut multicall = Multicall::new(client.clone(), None)
-            .await
-            .map_err(|e| LibraryError::MulticallError(e.to_string()))?
-            .version(MulticallVersion::Multicall);
+        let mut multicall =
+            Multicall::new(client.clone(), None).await?.version(MulticallVersion::Multicall);
         // whether to sort the reserves later
-        let mut sorted = vec![false; l];
+        let mut sorted = vec![false; len];
 
-        let client = factory.client();
         for (i, sl) in path.windows(2).enumerate() {
             let (a, b) = (sl[0], sl[1]);
             let (address_0, _) = Self::sort_tokens(a, b)?;
@@ -100,16 +94,14 @@ impl Library {
             multicall.add_call(call, false);
         }
 
-        let tokens =
-            multicall.call_raw().await.map_err(|e| LibraryError::MulticallError(e.to_string()))?;
-        let mut reserves = vec![(U256::zero(), U256::zero()); l];
+        let tokens = multicall.call_raw().await?;
+        let mut reserves = vec![(U256::zero(), U256::zero()); len];
 
-        for ((i, token), sort) in tokens.into_iter().enumerate().zip(sorted) {
+        for ((token, sort), reserves) in tokens.into_iter().zip(sorted).zip(reserves.iter_mut()) {
             type ReservesResult = (u128, u128, u32);
-            let r = ReservesResult::from_tokens(vec![token])
-                .map_err(|e| LibraryError::ContractError(e.to_string()))?;
-            let (a, b) = (r.0.into(), r.1.into());
-            reserves[i] = if sort { (b, a) } else { (a, b) };
+            let (a, b, _) = ReservesResult::from_token(token)?;
+            let (a, b) = (a.into(), b.into());
+            *reserves = if sort { (b, a) } else { (a, b) };
         }
 
         Ok(reserves)
@@ -117,11 +109,11 @@ impl Library {
 
     /// Given some amount of an asset and pair reserves, returns an equivalent amount of the other
     /// asset.
-    pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> LibraryResult<U256> {
+    pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> Result<U256> {
         if amount_a.is_zero() {
-            Err(LibraryError::InsufficientAmount)
+            Err(Error::InsufficientAmount)
         } else if reserve_a.is_zero() || reserve_b.is_zero() {
-            Err(LibraryError::InsufficientLiquidity)
+            Err(Error::InsufficientLiquidity)
         } else {
             Ok((amount_a * reserve_b) / reserve_a)
         }
@@ -129,15 +121,11 @@ impl Library {
 
     /// Given an input amount of an asset and pair reserves, returns the maximum output amount of
     /// the other asset.
-    pub fn get_amount_out(
-        amount_in: U256,
-        reserve_in: U256,
-        reserve_out: U256,
-    ) -> LibraryResult<U256> {
+    pub fn get_amount_out(amount_in: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if amount_in.is_zero() {
-            Err(LibraryError::InsufficientInputAmount)
+            Err(Error::InsufficientInputAmount)
         } else if reserve_in.is_zero() || reserve_out.is_zero() {
-            Err(LibraryError::InsufficientLiquidity)
+            Err(Error::InsufficientLiquidity)
         } else {
             let amount_in_with_fee = amount_in * 997;
             let numerator = amount_in_with_fee * reserve_out;
@@ -148,15 +136,11 @@ impl Library {
 
     /// Given an output amount of an asset and pair reserves, returns a required input amount of the
     /// other asset.
-    pub fn get_amount_in(
-        amount_out: U256,
-        reserve_in: U256,
-        reserve_out: U256,
-    ) -> LibraryResult<U256> {
+    pub fn get_amount_in(amount_out: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if amount_out.is_zero() {
-            Err(LibraryError::InsufficientOutputAmount)
+            Err(Error::InsufficientOutputAmount)
         } else if reserve_in.is_zero() || reserve_out.is_zero() {
-            Err(LibraryError::InsufficientLiquidity)
+            Err(Error::InsufficientLiquidity)
         } else {
             let numerator = (reserve_in * amount_out) * 1000;
             let denominator = (reserve_out - amount_out) * 997;
@@ -169,15 +153,15 @@ impl Library {
         factory: &Factory<M>,
         amount_in: U256,
         path: &[Address],
-    ) -> LibraryResult<Vec<U256>> {
-        let l = path.len();
-        if l < 2 {
-            return Err(LibraryError::InvalidPath)
+    ) -> Result<Vec<U256>> {
+        let len = path.len();
+        if len < 2 {
+            return Err(Error::InvalidPath)
         }
-        let mut amounts = Vec::with_capacity(l);
-        amounts.push(amount_in);
 
         let reserves = Self::get_reserves_multi(factory, path).await?;
+        let mut amounts = Vec::with_capacity(len);
+        amounts.push(amount_in);
         for (i, (reserve_in, reserve_out)) in reserves.into_iter().enumerate() {
             amounts.push(Self::get_amount_out(amounts[i], reserve_in, reserve_out)?);
         }
@@ -189,15 +173,15 @@ impl Library {
         factory: &Factory<M>,
         amount_out: U256,
         path: &[Address],
-    ) -> LibraryResult<Vec<U256>> {
-        let l = path.len();
-        if l < 2 {
-            return Err(LibraryError::InvalidPath)
+    ) -> Result<Vec<U256>> {
+        let len = path.len();
+        if len < 2 {
+            return Err(Error::InvalidPath)
         }
-        let mut amounts = vec![U256::zero(); l];
-        amounts[l - 1] = amount_out;
 
         let reserves = Self::get_reserves_multi(factory, path).await?;
+        let mut amounts = vec![U256::zero(); len];
+        amounts[len - 1] = amount_out;
         for (i, (reserve_in, reserve_out)) in reserves.into_iter().enumerate().rev() {
             amounts[i] = Self::get_amount_in(amounts[i + 1], reserve_in, reserve_out)?;
         }
@@ -226,13 +210,13 @@ mod tests {
         let addr = Address::repeat_byte(0x69);
         let (a, b) = (addr, addr);
         let res = Library::sort_tokens(a, b);
-        assert!(matches!(res.unwrap_err(), LibraryError::IdenticalAddresses));
+        assert!(matches!(res.unwrap_err(), Error::IdenticalAddresses));
 
         let res = Library::sort_tokens(Address::zero(), b);
-        assert!(matches!(res.unwrap_err(), LibraryError::AddressZero));
+        assert!(matches!(res.unwrap_err(), Error::AddressZero));
 
         let res = Library::sort_tokens(a, Address::zero());
-        assert!(matches!(res.unwrap_err(), LibraryError::AddressZero));
+        assert!(matches!(res.unwrap_err(), Error::AddressZero));
 
         let (a, b) = (Address::random(), Address::random());
         Library::sort_tokens(a, b).unwrap();
@@ -266,16 +250,16 @@ mod tests {
         let reserve_b = U256::from(5000) * base;
 
         let res = Library::quote(U256::zero(), reserve_a, reserve_b);
-        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientAmount));
+        assert!(matches!(res.unwrap_err(), Error::InsufficientAmount));
 
         let res = Library::quote(amount_a, U256::zero(), reserve_b);
-        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientLiquidity));
+        assert!(matches!(res.unwrap_err(), Error::InsufficientLiquidity));
 
         let res = Library::quote(amount_a, U256::zero(), U256::zero());
-        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientLiquidity));
+        assert!(matches!(res.unwrap_err(), Error::InsufficientLiquidity));
 
         let res = Library::quote(amount_a, reserve_a, U256::zero());
-        assert!(matches!(res.unwrap_err(), LibraryError::InsufficientLiquidity));
+        assert!(matches!(res.unwrap_err(), Error::InsufficientLiquidity));
 
         let amount_b = Library::quote(amount_a, reserve_a, reserve_b).unwrap();
 

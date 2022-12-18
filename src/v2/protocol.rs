@@ -1,8 +1,5 @@
 use super::{Factory, Pair, Router};
-use crate::{
-    errors::{FactoryResult, RouterResult},
-    Amount, ProtocolType,
-};
+use crate::{errors::Result, Amount, ProtocolType};
 use ethers::prelude::{builders::ContractCall, *};
 use std::sync::Arc;
 
@@ -64,7 +61,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// The factory's `pair_for` method. See documentation of [Factory] for more details.
     #[inline(always)]
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<Pair<M>, M> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<Pair<M>> {
         self.factory.pair_for(token_a, token_b)
     }
 
@@ -87,7 +84,7 @@ impl<M: Middleware> Protocol<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> RouterResult<ContractCall<M, (U256, U256, U256)>, M> {
+    ) -> Result<ContractCall<M, (U256, U256, U256)>> {
         self.router.add_liquidity(
             token_a,
             token_b,
@@ -111,7 +108,7 @@ impl<M: Middleware> Protocol<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> RouterResult<ContractCall<M, (U256, U256)>, M> {
+    ) -> Result<ContractCall<M, (U256, U256)>> {
         self.router.remove_liquidity(
             token_a,
             token_b,
@@ -133,7 +130,7 @@ impl<M: Middleware> Protocol<M> {
         to: Address,
         deadline: U256,
         weth: Address,
-    ) -> RouterResult<ContractCall<M, Vec<U256>>, M> {
+    ) -> Result<ContractCall<M, Vec<U256>>> {
         self.router.swap(&self.factory, amount, slippage_tolerance, path, to, deadline, weth).await
     }
 }

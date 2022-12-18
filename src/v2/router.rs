@@ -2,7 +2,7 @@ use super::{Factory, Library};
 use crate::{
     bindings::i_uniswap_v2_router_02::IUniswapV2Router02,
     constants::BPS_U256,
-    errors::{LibraryError, RouterResult},
+    errors::{Error, Result},
     utils::{is_native_path, map_native},
     Amount,
 };
@@ -68,7 +68,7 @@ impl<M: Middleware> Router<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> RouterResult<ContractCall<M, (U256, U256, U256)>, M> {
+    ) -> Result<ContractCall<M, (U256, U256, U256)>> {
         let router = self.contract();
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
@@ -108,7 +108,7 @@ impl<M: Middleware> Router<M> {
                 to,
                 deadline,
             ),
-            (true, true) => return Err(LibraryError::IdenticalAddresses.into()),
+            (true, true) => return Err(Error::IdenticalAddresses),
         };
 
         Ok(call)
@@ -133,7 +133,7 @@ impl<M: Middleware> Router<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> RouterResult<ContractCall<M, (U256, U256)>, M> {
+    ) -> Result<ContractCall<M, (U256, U256)>> {
         let router = self.contract();
         let (native_a, native_b) = is_native_path(&[token_a, token_b]);
 
@@ -164,7 +164,7 @@ impl<M: Middleware> Router<M> {
                 to,
                 deadline,
             ),
-            (true, true) => return Err(LibraryError::IdenticalAddresses.into()),
+            (true, true) => return Err(Error::IdenticalAddresses),
         };
 
         Ok(call)
@@ -189,7 +189,7 @@ impl<M: Middleware> Router<M> {
         to: Address,
         deadline: U256,
         weth: Address,
-    ) -> RouterResult<ContractCall<M, Vec<U256>>, M> {
+    ) -> Result<ContractCall<M, Vec<U256>>> {
         let router = self.contract();
         let (from_native, to_native) = is_native_path(path);
         let path = map_native(path, weth);

@@ -1,42 +1,34 @@
 //! Errors
 
-use ethers::prelude::*;
-use thiserror::Error;
+use ethers::{
+    abi::InvalidOutputType,
+    contract::{ContractError, MulticallError},
+    providers::{Middleware, ProviderError},
+};
+use thiserror::Error as ThisError;
 
-/// Type alias for the results of [Dex].
-///
-/// [Dex]: crate::dex::Dex
-pub type DexResult<T, M> = Result<T, DexError<M>>;
+/// Type alias for Result<T, E = Error>
+pub type Result<T, E = Error> = std::result::Result<T, E>;
 
-/// Errors thrown by [Dex].
-///
-/// [Dex]: crate::dex::Dex
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum DexError<M: Middleware> {
-    /// Thrown when using a library.
-    #[error(transparent)]
-    LibraryError(#[from] LibraryError),
+/// Error thrown by Uniswap.
+#[derive(Debug, ThisError)]
+#[rustfmt::skip]
+pub enum Error {
+    /* ----------------------------------------- Generic ---------------------------------------- */
 
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
+    /// Thrown by interacted smart contracts.
+    #[error("{0}")]
+    ContractError(String),
+
+    /// Thrown when interacting with [Multicall][ethers::contract::Multicall].
+    #[error("{0}")]
+    MulticallError(String),
 
     /// Thrown when a provider call fails.
     #[error(transparent)]
     ProviderError(#[from] ProviderError),
 
-    /// Thrown by the router.
-    #[error(transparent)]
-    RouterError(#[from] RouterError<M>),
-
-    /// Thrown by the factory.
-    #[error(transparent)]
-    FactoryError(#[from] FactoryError<M>),
-
-    /// Thrown by a pair.
-    #[error(transparent)]
-    PairError(#[from] PairError<M>),
+    /* ------------------------------------------- Dex ------------------------------------------ */
 
     /// Thrown when the provided slippage is invalid.
     #[error("Slippage must be in range: 0.0..=100.0")]
@@ -49,74 +41,8 @@ pub enum DexError<M: Middleware> {
     /// Thrown when trying to create a WETH deposit or withdrawal and WETH has not been set.
     #[error("WETH has yet to be set")]
     WethNotSet,
-}
 
-/// Type alias for the results of a pair.
-pub type PairResult<T, M> = Result<T, PairError<M>>;
-
-/// Errors thrown by a pair.
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum PairError<M: Middleware> {
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
-
-    /// Thrown when using a library.
-    #[error(transparent)]
-    LibraryError(#[from] LibraryError),
-
-    /// Thrown when interacting with [Multicall].
-    #[error(transparent)]
-    MulticallError(#[from] MulticallError<M>),
-}
-
-/// Type alias for the results of a router.
-pub type RouterResult<T, M> = Result<T, RouterError<M>>;
-
-/// Errors thrown by a router.
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum RouterError<M: Middleware> {
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
-
-    /// Thrown when using a library.
-    #[error(transparent)]
-    LibraryError(#[from] LibraryError),
-}
-
-/// Type alias for the results of a factory.
-pub type FactoryResult<T, M> = Result<T, FactoryError<M>>;
-
-/// Errors thrown by a factory.
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum FactoryError<M: Middleware> {
-    /// Thrown when interacting with the smart contracts.
-    #[error(transparent)]
-    ContractError(#[from] ContractError<M>),
-
-    /// Thrown when using a library.
-    #[error(transparent)]
-    LibraryError(#[from] LibraryError),
-}
-
-/// Type alias for the results of a library.
-pub type LibraryResult<T> = Result<T, LibraryError>;
-
-/// Errors thrown by a library.
-#[derive(Debug, Error)]
-#[non_exhaustive]
-pub enum LibraryError {
-    /// Thrown when interacting with the smart contracts.
-    #[error("{0}")]
-    ContractError(String),
-
-    /// Thrown when interacting with [Multicall].
-    #[error("{0}")]
-    MulticallError(String),
+    /* ----------------------------------------- Library ---------------------------------------- */
 
     /// Thrown when providing identical addresses as parameters.
     #[error("Sorting identical addresses")]
@@ -147,6 +73,25 @@ pub enum LibraryError {
     InvalidPath,
 
     /// Thrown when the factory provided returns none for pair_code_hash
-    #[error("Custom protocol is missing pair_code_hash.")]
+    #[error("Custom protocol is missing pair_code_hash")]
     NoPairCodeHash,
+}
+
+// Workaround for removing generic type in [Error].
+impl<M: Middleware> From<ContractError<M>> for Error {
+    fn from(value: ContractError<M>) -> Self {
+        Self::ContractError(value.to_string())
+    }
+}
+
+impl From<InvalidOutputType> for Error {
+    fn from(value: InvalidOutputType) -> Self {
+        Self::ContractError(value.to_string())
+    }
+}
+
+impl<M: Middleware> From<MulticallError<M>> for Error {
+    fn from(value: MulticallError<M>) -> Self {
+        Self::MulticallError(value.to_string())
+    }
 }

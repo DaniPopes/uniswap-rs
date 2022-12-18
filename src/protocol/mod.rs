@@ -1,5 +1,5 @@
 use crate::{
-    errors::{FactoryResult, RouterError},
+    errors::Result,
     v2::{Factory as V2Factory, Pair as V2Pair, Protocol as V2Protocol, Router as V2Router},
     Amount,
 };
@@ -84,7 +84,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// The protocol's `pair_for` method.
     #[inline(always)]
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> FactoryResult<V2Pair<M>, M> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<V2Pair<M>> {
         match self {
             Self::V2(p) => p.pair_for(token_a, token_b),
             Self::V3 => todo!("v3 is not yet implemented"),
@@ -114,7 +114,7 @@ impl<M: Middleware> Protocol<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> Result<ContractCall<M, (U256, U256, U256)>, RouterError<M>> {
+    ) -> Result<ContractCall<M, (U256, U256, U256)>> {
         match self {
             Self::V2(p) => p.add_liquidity(
                 token_a,
@@ -141,7 +141,7 @@ impl<M: Middleware> Protocol<M> {
         amount_b_min: U256,
         to: Address,
         deadline: U256,
-    ) -> Result<ContractCall<M, (U256, U256)>, RouterError<M>> {
+    ) -> Result<ContractCall<M, (U256, U256)>> {
         match self {
             Self::V2(p) => p.remove_liquidity(
                 token_a,
@@ -166,7 +166,7 @@ impl<M: Middleware> Protocol<M> {
         to: Address,
         deadline: U256,
         weth: Address,
-    ) -> Result<ContractCall<M, Vec<U256>>, RouterError<M>> {
+    ) -> Result<ContractCall<M, Vec<U256>>> {
         match self {
             Self::V2(p) => p.swap(amount, slippage_tolerance, path, to, deadline, weth).await,
             Self::V3 => todo!("v3 is not yet implemented"),
