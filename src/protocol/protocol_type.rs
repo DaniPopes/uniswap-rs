@@ -62,7 +62,7 @@ impl fmt::Display for ProtocolType {
 
 impl ProtocolType {
     /// Instantiates a new custom protocol type.
-    pub fn new(factory: Address, router: Address, is_v2: bool, pair_code_hash: H256) -> Self {
+    pub const fn new(factory: Address, router: Address, is_v2: bool, pair_code_hash: H256) -> Self {
         Self::Custom { factory, router, is_v2, pair_code_hash }
     }
 
@@ -113,7 +113,7 @@ impl ProtocolType {
     ///
     /// Note: `chain` is used only when the pair code hash differs in the same protocol, for example
     /// `Pancakeswap` has two different code hashes for BSC mainnet and testnet.
-    pub fn pair_code_hash(&self, chain: Option<Chain>) -> H256 {
+    pub const fn pair_code_hash(&self, chain: Option<Chain>) -> H256 {
         use ProtocolType::*;
         match self {
             UniswapV2 => UNISWAP_V2_PAIR_CODE_HASH,
@@ -122,21 +122,21 @@ impl ProtocolType {
             Pancakeswap => chain_or(
                 chain,
                 Chain::BinanceSmartChainTestnet,
-                PANCAKESWAP_PAIR_CODE_HASH,
                 PANCAKESWAP_TESTNET_PAIR_CODE_HASH,
+                PANCAKESWAP_PAIR_CODE_HASH,
             ),
             Quickswap => QUICKSWAP_PAIR_CODE_HASH,
             Spookyswap => chain_or(
                 chain,
                 Chain::FantomTestnet,
-                SPOOKYSWAP_PAIR_CODE_HASH,
                 SPOOKYSWAP_TESTNET_PAIR_CODE_HASH,
+                SPOOKYSWAP_PAIR_CODE_HASH,
             ),
             Traderjoe => chain_or(
                 chain,
                 Chain::AvalancheFuji,
-                TRADERJOE_PAIR_CODE_HASH,
                 TRADERJOE_TESTNET_PAIR_CODE_HASH,
+                TRADERJOE_PAIR_CODE_HASH,
             ),
             Custom { pair_code_hash, .. } => *pair_code_hash,
         }
@@ -158,14 +158,14 @@ impl ProtocolType {
     }
 }
 
-/// if c1 == c2 {h2} else {h1}
-fn chain_or(c1: Option<Chain>, c2: Chain, h1: H256, h2: H256) -> H256 {
+/// if c1 == c2 { hash } else { default }
+const fn chain_or(c1: Option<Chain>, c2: Chain, hash: H256, default: H256) -> H256 {
     if let Some(c1) = c1 {
-        if c1 == c2 {
-            return h2
+        if c1 as u64 == c2 as u64 {
+            return hash
         }
     }
-    h1
+    default
 }
 
 #[cfg(test)]
