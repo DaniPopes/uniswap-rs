@@ -14,35 +14,28 @@ pub struct Library;
 impl Library {
     /// Returns sorted token addresses, used to handle return values from pairs sorted in this
     /// order.
-    pub fn sort_tokens(a: Address, b: Address) -> Result<(Address, Address)> {
-        let (a, b) = match a.cmp(&b) {
+    #[inline]
+    pub fn sort_tokens(a: Address, b: Address) -> (Address, Address) {
+        match a.cmp(&b) {
             Ordering::Less => (a, b),
-            Ordering::Equal => return Err(Error::IdenticalAddresses),
-            Ordering::Greater => (b, a),
-        };
-
-        if a.is_zero() {
-            return Err(Error::AddressZero)
+            _ => (b, a),
         }
-
-        Ok((a, b))
     }
 
     /// Calculates the CREATE2 address for a pair without making any external calls.
     pub fn pair_for<M: Middleware>(
         factory: &Factory<M>,
-        a: Address,
-        b: Address,
-    ) -> Result<Address> {
-        let (a, b) = Self::sort_tokens(a, b)?;
+        mut a: Address,
+        mut b: Address,
+    ) -> Address {
+        (a, b) = Self::sort_tokens(a, b);
 
         let from = factory.address();
         // keccak256(abi.encodePacked(a, b))
         let salt = ethers::utils::keccak256([a.0, b.0].concat());
         let init_code_hash = factory.pair_code_hash(None).0;
-        let address = ethers::utils::get_create2_address_from_hash(from, salt, init_code_hash);
 
-        Ok(address)
+        ethers::utils::get_create2_address_from_hash(from, salt, init_code_hash)
     }
 
     /// Fetches and sorts the reserves for a pair.
@@ -51,8 +44,8 @@ impl Library {
         a: Address,
         b: Address,
     ) -> Result<(U256, U256)> {
-        let (address_0, _) = Self::sort_tokens(a, b)?;
-        let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, factory.client());
+        let (address_0, _) = Self::sort_tokens(a, b);
+        let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b), factory.client());
         let r = pair.get_reserves().call().await?;
         let (reserve_a, reserve_b) = (r.0.into(), r.1.into());
         if a == address_0 {
@@ -83,69 +76,63 @@ impl Library {
         let mut multicall =
             Multicall::new(client.clone(), None).await?.version(MulticallVersion::Multicall);
         // whether to sort the reserves later
-        let mut sorted = vec![false; len];
+        let mut sorted = Vec::with_capacity(len);
 
-        for (i, sl) in path.windows(2).enumerate() {
-            let (a, b) = (sl[0], sl[1]);
-            let (address_0, _) = Self::sort_tokens(a, b)?;
-            sorted[i] = address_0 == b;
-            let pair = IUniswapV2Pair::new(Self::pair_for(factory, a, b)?, client.clone());
-            let call = pair.get_reserves();
+        let pair = IUniswapV2Pair::new(Address::zero(), client);
+        let call = pair.get_reserves();
+        for slice in path.windows(2) {
+            let (a, b) = (slice[0], slice[1]);
+
+            let (address_0, _) = Self::sort_tokens(a, b);
+            sorted.push(address_0 == b);
+
+            let mut call = call.clone();
+            call.tx.set_to(Self::pair_for(factory, a, b));
             multicall.add_call(call, false);
         }
 
-        let tokens = multicall.call_raw().await?;
-        let mut reserves = vec![(U256::zero(), U256::zero()); len];
-
-        for ((token, sort), reserves) in tokens.into_iter().zip(sorted).zip(reserves.iter_mut()) {
-            type ReservesResult = (u128, u128, u32);
-            let (a, b, _) = ReservesResult::from_token(token)?;
-            let (a, b) = (a.into(), b.into());
-            *reserves = if sort { (b, a) } else { (a, b) };
-        }
-
-        Ok(reserves)
+        multicall
+            .call_raw()
+            .await?
+            .into_iter()
+            .zip(sorted)
+            .map(|(token, sort)| {
+                let (a, b): (U256, U256) = Tokenizable::from_token(token)?;
+                Ok(if sort { (b, a) } else { (a, b) })
+            })
+            .collect()
     }
 
     /// Given some amount of an asset and pair reserves, returns an equivalent amount of the other
     /// asset.
     pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> Result<U256> {
-        if amount_a.is_zero() {
-            Err(Error::InsufficientAmount)
-        } else if reserve_a.is_zero() || reserve_b.is_zero() {
-            Err(Error::InsufficientLiquidity)
-        } else {
-            Ok((amount_a * reserve_b) / reserve_a)
+        if reserve_a.is_zero() || reserve_b.is_zero() {
+            return Err(Error::InsufficientLiquidity)
         }
+        Ok((amount_a * reserve_b) / reserve_a)
     }
 
     /// Given an input amount of an asset and pair reserves, returns the maximum output amount of
     /// the other asset.
     pub fn get_amount_out(amount_in: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
-        if amount_in.is_zero() {
-            Err(Error::InsufficientInputAmount)
-        } else if reserve_in.is_zero() || reserve_out.is_zero() {
-            Err(Error::InsufficientLiquidity)
-        } else {
-            let amount_in_with_fee = amount_in * 997;
-            let numerator = amount_in_with_fee * reserve_out;
-            let denominator = (reserve_in * 1000) + amount_in_with_fee;
-            Ok(numerator / denominator)
+        if reserve_in.is_zero() || reserve_out.is_zero() {
+            return Err(Error::InsufficientLiquidity)
         }
+        let amount_in_with_fee = amount_in * 997;
+        let numerator = amount_in_with_fee * reserve_out;
+        let denominator = reserve_in * 1000 + amount_in_with_fee;
+        Ok(numerator / denominator)
     }
 
     /// Given an output amount of an asset and pair reserves, returns a required input amount of the
     /// other asset.
     pub fn get_amount_in(amount_out: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
-        if amount_out.is_zero() {
-            Err(Error::InsufficientOutputAmount)
-        } else if reserve_in.is_zero() || reserve_out.is_zero() {
-            Err(Error::InsufficientLiquidity)
-        } else {
-            let numerator = (reserve_in * amount_out) * 1000;
-            let denominator = (reserve_out - amount_out) * 997;
-            Ok((numerator / denominator) + 1)
+        if reserve_in.is_zero() || reserve_out.is_zero() {
+            return Err(Error::InsufficientLiquidity)
         }
+        let numerator = reserve_in * amount_out * 1000;
+        let denominator = (reserve_out - amount_out) * 997;
+        Ok((numerator / denominator) + 1)
     }
 
     /// Performs chained get_amount_out calculations on any number of pairs.
@@ -207,24 +194,23 @@ mod tests {
 
     #[test]
     fn can_sort_tokens() {
-        let addr = Address::repeat_byte(0x69);
-        let (a, b) = (addr, addr);
-        let res = Library::sort_tokens(a, b);
-        assert!(matches!(res.unwrap_err(), Error::IdenticalAddresses));
-
-        let res = Library::sort_tokens(Address::zero(), b);
-        assert!(matches!(res.unwrap_err(), Error::AddressZero));
-
-        let res = Library::sort_tokens(a, Address::zero());
-        assert!(matches!(res.unwrap_err(), Error::AddressZero));
-
         let (a, b) = (Address::random(), Address::random());
-        Library::sort_tokens(a, b).unwrap();
+        let (res_a, res_b) = Library::sort_tokens(a, b);
+        match a.cmp(&b) {
+            Ordering::Less | Ordering::Equal => {
+                assert_eq!(res_a, a);
+                assert_eq!(res_b, b);
+            }
+            Ordering::Greater => {
+                assert_eq!(res_a, b);
+                assert_eq!(res_b, a);
+            }
+        }
     }
 
     #[test]
     fn can_get_pair_for() {
-        assert_eq!(Library::pair_for(&*FACTORY, *WETH, *USDC).unwrap(), *WETH_USDC);
+        assert_eq!(Library::pair_for(&*FACTORY, *WETH, *USDC), *WETH_USDC);
     }
 
     async fn get_weth_usdc_reserves() -> (U256, U256) {
@@ -248,9 +234,6 @@ mod tests {
         let amount_a = U256::from(100) * base;
         let reserve_a = U256::from(1000) * base;
         let reserve_b = U256::from(5000) * base;
-
-        let res = Library::quote(U256::zero(), reserve_a, reserve_b);
-        assert!(matches!(res.unwrap_err(), Error::InsufficientAmount));
 
         let res = Library::quote(amount_a, U256::zero(), reserve_b);
         assert!(matches!(res.unwrap_err(), Error::InsufficientLiquidity));

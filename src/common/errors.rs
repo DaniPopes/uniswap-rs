@@ -48,14 +48,6 @@ pub enum Error {
     #[error("Sorting identical addresses")]
     IdenticalAddresses,
 
-    /// Thrown when providing [address(0)][Address] as a parameter.
-    #[error("Sorting Address::zero()")]
-    AddressZero,
-
-    /// Thrown when providing an amount equal to zero.
-    #[error("Amount is zero")]
-    InsufficientAmount,
-
     /// Thrown when providing an input amount equal to zero.
     #[error("Input amount is zero")]
     InsufficientInputAmount,

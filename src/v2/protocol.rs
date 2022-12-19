@@ -61,7 +61,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// The factory's `pair_for` method. See documentation of [Factory] for more details.
     #[inline(always)]
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<Pair<M>> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Pair<M> {
         self.factory.pair_for(token_a, token_b)
     }
 

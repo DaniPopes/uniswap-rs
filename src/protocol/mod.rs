@@ -84,7 +84,7 @@ impl<M: Middleware> Protocol<M> {
 
     /// The protocol's `pair_for` method.
     #[inline(always)]
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<V2Pair<M>> {
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> V2Pair<M> {
         match self {
             Self::V2(p) => p.pair_for(token_a, token_b),
             Self::V3 => todo!("v3 is not yet implemented"),

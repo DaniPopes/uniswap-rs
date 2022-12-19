@@ -105,8 +105,8 @@ impl<M: Middleware> Pair<M> {
         token0: Address,
         token1: Address,
     ) -> Result<Self> {
-        let (token0, token1) = Library::sort_tokens(token0, token1)?;
-        let address = Library::pair_for(factory, token0, token1)?;
+        let (token0, token1) = Library::sort_tokens(token0, token1);
+        let address = Library::pair_for(factory, token0, token1);
         let contract = IUniswapV2Pair::new(address, factory.client());
 
         Ok(Self {

@@ -30,7 +30,7 @@ async fn main() -> eyre::Result<()> {
     // instantiate a new dex
     let dex = Dex::new_with_chain(client.clone(), chain, protocol).unwrap();
 
-    let pair = dex.pair_for(weth, usdc)?;
+    let pair = dex.pair_for(weth, usdc);
 
     // liquidity amount
     let liquidity = U256::exp10(9);

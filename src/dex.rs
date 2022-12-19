@@ -60,8 +60,8 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Returns the pair for two token addresses.
-    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Result<Pair<M>> {
-        Ok(self.protocol.pair_for(token_a, token_b)?)
+    pub fn pair_for(&self, token_a: Address, token_b: Address) -> Pair<M> {
+        self.protocol.pair_for(token_a, token_b)
     }
 
     /* ----------------------------------------- Router ----------------------------------------- */
