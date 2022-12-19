@@ -21,7 +21,9 @@
 //! - UniswapV2
 //!   - Factory: <https://docs.uniswap.org/protocol/V2/reference/smart-contracts/factory>
 //!   - Router: <https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02>
-//! - UniswapV3: <https://docs.uniswap.org/protocol/reference/deployments>
+//! - UniswapV3
+//!   - V3: <https://docs.uniswap.org/protocol/reference/deployments>
+//!   - UniversalRouter: <https://github.com/Uniswap/universal-router/tree/main/deploy-addresses>
 //! - Sushiswap: <https://docs.sushi.com/docs/Developers/Deployment%20Addresses>
 //! - Quickswap
 //!   - Factory: <https://docs.quickswap.exchange/reference/smart-contracts/01-factory>
@@ -33,10 +35,10 @@ use ethers::prelude::*;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
 
-const CONTRACTS_JSON: &str = include_str!("./contracts.json");
+const ADDRESSES_JSON: &str = include_str!("./addresses.json");
 
-static CONTRACTS_ADDRESS_BOOK: Lazy<HashMap<String, Contract>> =
-    Lazy::new(|| serde_json::from_str(CONTRACTS_JSON).unwrap());
+static ADDRESS_BOOK: Lazy<HashMap<String, Contract>> =
+    Lazy::new(|| serde_json::from_str(ADDRESSES_JSON).unwrap());
 
 /// Wrapper around a hash map that maps a [Chain] to the contract's deployed address on that chain.
 #[derive(Clone, Debug, Deserialize)]
@@ -54,8 +56,8 @@ impl Contract {
 
 /// Fetch the addressbook for a contract by its name. If the contract name is not a part of the
 /// address book we return None.
-pub fn try_contract<S: Borrow<str>>(name: S) -> Option<Contract> {
-    CONTRACTS_ADDRESS_BOOK.get(name.borrow()).cloned()
+pub fn try_contract<S: Borrow<str>>(name: S) -> Option<&'static Contract> {
+    ADDRESS_BOOK.get(name.borrow())
 }
 
 /// Fetch the address for a contract by its name and chain. If the contract name is not a part of
@@ -67,7 +69,7 @@ pub fn try_address<S: Borrow<str>, C: Borrow<Chain>>(name: S, chain: C) -> Optio
 
 /// Fetch the addressbook for a contract by its name. If the contract name is not a part of the
 /// address book we panic.
-pub fn contract<S: Borrow<str>>(name: S) -> Contract {
+pub fn contract<S: Borrow<str>>(name: S) -> &'static Contract {
     let name = name.borrow();
     try_contract(name).unwrap_or_else(|| {
         panic!("uniswap_rs::contracts: \"{name}\" is not present in addressbook")
