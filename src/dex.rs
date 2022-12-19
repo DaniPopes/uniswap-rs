@@ -1,6 +1,5 @@
 use crate::{
     bindings::iweth::IWETH,
-    constants::*,
     errors::{Error, Result},
     utils::*,
     v2::{Factory, Pair, Router},
@@ -86,7 +85,7 @@ impl<M: Middleware> Dex<M> {
         let sender = self.client().default_sender();
         let to = self.get_to(to);
 
-        let deadline = unwrap_deadline(deadline);
+        let deadline = get_deadline(deadline);
 
         // TODO: Maths
 
@@ -122,7 +121,7 @@ impl<M: Middleware> Dex<M> {
         to: Option<Address>,
         deadline: Option<u64>,
     ) -> Result<ContractCall<M, (U256, U256)>> {
-        let deadline = unwrap_deadline(deadline);
+        let deadline = get_deadline(deadline);
 
         let sender = self.client().default_sender();
         let to = self.get_to(to);
@@ -193,7 +192,7 @@ impl<M: Middleware> Dex<M> {
             return Err(Error::SwapToSelf)
         }
 
-        let deadline = unwrap_deadline(deadline);
+        let deadline = get_deadline(deadline);
 
         let mut call =
             self.protocol.swap(amount, slippage_tolerance, path, to, deadline, weth).await?;
@@ -289,16 +288,9 @@ fn path_eq(path: &[Address], weth: &Address) -> bool {
     (fin && liw) || (lin && fiw)
 }
 
-/// now() + deadline > DEFAULT_DEADLINE_SECONDS
-fn unwrap_deadline(deadline: Option<u64>) -> U256 {
-    let now = now().as_secs();
-    let deadline = now + deadline.unwrap_or(DEFAULT_DEADLINE_SECONDS);
-    U256::from(deadline)
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::v2::Library as V2Library;
+    use crate::{constants::*, v2::Library as V2Library};
     use ethers::abi::{ParamType, Token, Tokenize};
 
     use super::*;
