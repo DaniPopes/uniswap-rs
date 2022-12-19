@@ -10,10 +10,10 @@ pub struct Factory<M> {
     contract: IUniswapV2Factory<M>,
 
     /// The factory protocol.
-    protocol: ProtocolType,
+    pub protocol: ProtocolType,
 
     /// The chain.
-    chain: Option<Chain>,
+    pub chain: Option<Chain>,
 }
 
 impl<M> std::ops::Deref for Factory<M> {
@@ -40,7 +40,7 @@ impl<M> Factory<M> {
     /// Note: `chain` is used only when the pair code hash differs in the same protocol, for example
     /// `Pancakeswap` has two different code hashes for BSC mainnet and testnet.
     pub fn pair_code_hash(&self, chain: Option<Chain>) -> H256 {
-        self.protocol.pair_code_hash(chain.or(self.chain))
+        self.protocol.pair_code_hash(self.chain.or(chain))
     }
 
     /// Sets the factory's chain.
@@ -64,12 +64,10 @@ impl<M: Middleware> Factory<M> {
     #[cfg(feature = "addresses")]
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         // assert!(protocol.is_v2(), "protocol must be v2");
-        if let (Some(address), _) = protocol.try_addresses(chain) {
+        protocol.try_addresses(chain).0.map(|address| {
             let contract = IUniswapV2Factory::new(address, client);
-            Some(Self { contract, protocol, chain: Some(chain) })
-        } else {
-            None
-        }
+            Self { contract, protocol, chain: Some(chain) }
+        })
     }
 
     /// Returns the pair for two token addresses.

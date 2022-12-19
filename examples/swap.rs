@@ -36,7 +36,7 @@ async fn main() -> eyre::Result<()> {
     // specify native ETH by using NATIVE_ADDRESS or Address::repeat_byte(0xee)
     let eth = NATIVE_ADDRESS;
     let path = [eth, usdc];
-    println!("Path:   {:?}", path);
+    println!("Path:   {path:?}");
 
     // create the swap transaction
     let swap_call = dex.swap(amount, 0.5, &path, None, None).await?;

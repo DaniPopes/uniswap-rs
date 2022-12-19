@@ -389,7 +389,7 @@ mod tests {
         println!("{}", calldata);
 
         let args = decode_call(&calldata);
-        println!("{:?}", args);
+        println!("{args:?}");
 
         let amount_in = args[0].clone().into_uint().unwrap();
         let amount_out_min = args[1].clone().into_uint().unwrap();

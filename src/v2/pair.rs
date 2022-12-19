@@ -22,26 +22,26 @@ pub struct Pair<M> {
     reserves: Option<Reserves>,
 
     /// The protocol of the pair.
-    protocol: ProtocolType,
+    pub protocol: ProtocolType,
 }
 
 impl<M> fmt::Display for Pair<M> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let address = self.address();
         if self.tokens.is_none() && self.reserves.is_none() {
-            return writeln!(f, "Pair: {:?}", address)
+            return writeln!(f, "Pair: {address:?}")
         }
-        writeln!(f, "Pair:     {:?}", address)?;
+        writeln!(f, "Pair:     {address:?}")?;
         if let Some((a, b)) = self.tokens {
-            writeln!(f, "Token0:   {:?}", a)?;
-            write!(f, "Token1:   {:?}", b)?;
+            writeln!(f, "Token0:   {a:?}")?;
+            write!(f, "Token1:   {b:?}")?;
             if self.reserves.is_some() {
                 writeln!(f)?
             };
         }
         if let Some((a, b, _)) = self.reserves {
-            writeln!(f, "Reserve0: {:?}", a)?;
-            write!(f, "Reserve1: {:?}", b)?;
+            writeln!(f, "Reserve0: {a:?}")?;
+            write!(f, "Reserve1: {b:?}")?;
         }
         Ok(())
     }
