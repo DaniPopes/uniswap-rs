@@ -7,10 +7,48 @@ use crate::{
     utils::get_deadline,
 };
 use ethers::{
-    abi::AbiEncode, prelude::builders::ContractCall, providers::Middleware, types::Bytes,
+    abi::Tokenize, contract::builders::ContractCall, providers::Middleware, types::Bytes,
 };
 
 /// Builds a call to the UniversalRouter's `execute` function.
+///
+/// # Example
+///
+/// ``` no_run
+/// use ethers::prelude::*;
+/// use uniswap_rs::{
+///     bindings::{i_universal_router_commands::V2SwapExactInCall, i_universal_router::IUniversalRouter},
+///     v3::Builder,
+/// };
+/// use std::{convert::TryFrom, sync::Arc};
+///
+/// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
+/// // construct the router
+/// let router = Address::random();
+/// let provider = Arc::new(Provider::<Http>::try_from("https://example.com")?);
+/// let router = IUniversalRouter::new(router, provider);
+///
+/// // construct the commands
+/// let token = Address::repeat_byte(0x11);
+/// let recipient = Address::repeat_byte(0x24);
+/// let value = U256::from(1_000_000_000_u64);
+/// let swap = V2SwapExactInCall {
+///     recipient,
+///     amount_in: value,
+///     amount_out_min: U256::zero(),
+///     path: vec![Address::zero(), token],
+///     payer_is_user: true,
+/// }.into();
+///
+/// // construct the call
+/// let call = Builder::new().command(swap, false).call(&router, None).value(value);
+///
+/// // send the call
+/// let pending = call.send().await?;
+/// let _receipt = pending.await?.expect("dropped");
+/// # Ok(())
+/// # }
+/// ```
 #[derive(Clone, Debug, Default)]
 pub struct Builder {
     commands: Vec<u8>,
@@ -107,7 +145,7 @@ impl Builder {
             // 0x1e
             // 0x1f
         };
-        let input = command.encode().into();
+        let input = ethers::abi::encode(&command.into_tokens()).into();
         self.command_raw(command_type, allow_revert, input)
     }
 
@@ -118,5 +156,27 @@ impl Builder {
         self.commands.push(command.encode(allow_revert));
         self.inputs.push(input);
         self
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::bindings::i_universal_router_commands::SweepCall;
+    use ethers::types::{Address, U256};
+
+    #[test]
+    fn builder() {
+        let token = Address::from_low_u64_be(1);
+        let recipient = Address::from_low_u64_be(2);
+        let amount_min = U256::from(3);
+        let command = SweepCall { token, recipient, amount_min };
+        let allow_revert = false;
+
+        let encoded = ethers::abi::encode(&command.clone().into_tokens());
+
+        let r = Builder::new().command(command.into(), allow_revert).build(None);
+        assert_eq!(r.commands, Bytes::from(vec![Command::Sweep.encode(allow_revert)]));
+        assert_eq!(r.inputs, vec![Bytes::from(encoded)]);
     }
 }

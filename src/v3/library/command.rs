@@ -52,36 +52,38 @@ pub enum Command {
     // 0x1e
     // 0x1f
 
-    // (invalid) 0x20..
+    // (unused)  0x20..0x80
+    // (invalid) 0x80..=0xff
     /// Placeholder for the currently unassigned commands.
-    Invalid = 0x20,
+    ///
+    /// Is always equivalent to [`Command::V3SwapExactIn`] (0x00) when masked.
+    Invalid = 0x80,
 }
 
 impl Command {
-    /// The first 5 bits are the command integer.
+    /// The first 5 bits, the command value.
     pub const MASK: u8 = 0b00011111;
-    /// The 5th and 6th bit are currently unused and will be ignored.
+    /// The 5th and 6th bit, currently unused and will be ignored.
     pub const UNUSED_BITS: u8 = 0b01100000;
-    /// The last bit is the allow revert flag.
+    /// The last bit, the `allow_revert` flag.
     pub const FLAG_ALLOW_REVERT: u8 = 0b10000000;
 
     /// ?
-    pub const NFT_TYPE_MASK: u8 = 0x10;
+    pub const NFT_TYPE_MASK: u8 = 0b00010000;
     /// ?
-    pub const SUB_IF_BRANCH_MASK: u8 = 0x08;
+    pub const SUB_IF_BRANCH_MASK: u8 = 0b00001000;
 
     /// Encodes the command to a single byte.
     ///
-    /// Structure: <https://docs.uniswap.org/contracts/universal-router/technical-reference#command-structure>
+    /// Note: [`Command::Invalid`] will return the same value as [`Command::V3SwapExactIn`] (0x00)
+    /// since it occupies an invalid bit that gets ignored.
     pub fn encode(self, allow_revert: bool) -> u8 {
-        self as u8 | ((allow_revert as u8) << 7)
+        (self as u8 & Self::MASK) | ((allow_revert as u8) << 7)
     }
 
     /// Decodes the command from a single byte.
     ///
     /// Returns [Command::Invalid] if the command integer is a currently un-implemented command.
-    ///
-    /// Structure: <https://docs.uniswap.org/contracts/universal-router/technical-reference#command-structure>
     pub fn decode(byte: u8) -> (Self, bool) {
         let allow_revert = (byte >> 7) == 1; // No need to mask as it's the first bit
         let command = match byte & Self::MASK {
