@@ -1,5 +1,8 @@
 use ethers::core::types::U256;
 
+mod token;
+pub use token::Erc20;
+
 pub mod constants;
 pub mod errors;
 pub mod utils;
