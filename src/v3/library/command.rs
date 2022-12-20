@@ -8,9 +8,9 @@ macro_rules! invalid {
 }
 
 /// A UniswapV3 [Universal Router command](https://docs.uniswap.org/contracts/universal-router/technical-reference#command).
+#[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(u8)]
-#[allow(missing_docs)]
 pub enum Command {
     // 0x00..0x08
     V3SwapExactIn = 0x00,
@@ -83,7 +83,8 @@ impl Command {
 
     /// Decodes the command from a single byte.
     ///
-    /// Returns [Command::Invalid] if the command integer is a currently un-implemented command.
+    /// Returns [Command::Invalid] if the command integer is a currently un-implemented or invalid
+    /// command integer.
     pub fn decode(byte: u8) -> (Self, bool) {
         let allow_revert = (byte >> 7) == 1; // No need to mask as it's the first bit
         let command = match byte & Self::MASK {

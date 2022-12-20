@@ -82,7 +82,7 @@ impl Builder {
         ExecuteCall { commands: commands.into(), inputs }
     }
 
-    /// Consumes `self` to call the router's `execute` function.
+    /// Consumes `self` to create the call to [`router`][IUniversalRouter]'s `execute` function.
     pub fn call<M: Middleware>(
         self,
         router: &IUniversalRouter<M>,
