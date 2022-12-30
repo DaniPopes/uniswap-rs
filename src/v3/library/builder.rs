@@ -66,6 +66,15 @@ impl Builder {
         Self { commands: Vec::with_capacity(capacity), inputs: Vec::with_capacity(capacity) }
     }
 
+    /// Reserves capacity for at least additional more elements to be inserted.
+    ///
+    /// After calling `reserve`, capacity will be greater than or equal to `self.len() +
+    /// additional`. Does nothing if capacity is already sufficient.
+    pub fn reserve(&mut self, additional: usize) {
+        self.commands.reserve(additional);
+        self.inputs.reserve(additional);
+    }
+
     /// Consumes `self` to build into [`ExecuteWithCommandsAndInputsCall`].
     pub fn build(self, deadline: Option<u64>) -> ExecuteWithCommandsAndInputsCall {
         let Self { commands, inputs } = self;
@@ -82,7 +91,7 @@ impl Builder {
         ExecuteCall { commands: commands.into(), inputs }
     }
 
-    /// Consumes `self` to create the call to [`router`][IUniversalRouter]'s `execute` function.
+    /// Consumes `self` to create a call to the [`router`][IUniversalRouter]'s `execute` function.
     pub fn call<M: Middleware>(
         self,
         router: &IUniversalRouter<M>,

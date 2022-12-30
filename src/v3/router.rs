@@ -17,7 +17,7 @@ impl<M> std::ops::Deref for Router<M> {
 }
 
 impl<M> Router<M> {
-    /// Returns a reference to the SwapRouter contract
+    /// Returns a reference to the router contract.
     pub fn contract(&self) -> &ISwapRouter<M> {
         &self.0
     }
