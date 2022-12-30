@@ -1,6 +1,6 @@
 //! Utils
 
-use super::constants::{DEFAULT_DEADLINE_SECONDS, NATIVE_ADDRESS};
+use super::constants::NATIVE_ADDRESS;
 use ethers::types::{Address, U256};
 use std::time::{Duration, SystemTime};
 
@@ -11,7 +11,7 @@ pub fn now() -> Duration {
 
 /// Returns [`now()`][now] + `deadline` or [`U256::MAX`](U256).
 pub fn get_deadline(deadline: Option<u64>) -> U256 {
-    deadline.map(|dl| now().as_secs() + dl).unwrap_or(U256::MAX)
+    deadline.map(|dl| U256::from(now().as_secs() + dl)).unwrap_or(U256::MAX)
 }
 
 /// Returns `address` == [NATIVE_ADDRESS].
