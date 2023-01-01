@@ -1,16 +1,17 @@
+name: CI
+
 on:
     push:
         branches: ["master"]
     pull_request:
 
-name: CI
 env:
     ABIGEN_CHECK: true
     RUSTFLAGS: "-D warnings"
 
 jobs:
     test:
-        name: test all (${{ matrix.os }} / ${{ matrix.toolchain }})
+        name: test +${{ matrix.toolchain }} @ ${{ matrix.os }}
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
@@ -19,67 +20,51 @@ jobs:
                 toolchain: ["stable", "nightly"]
         steps:
             - uses: actions/checkout@v3
-            - name: Install Rust
-              uses: actions-rs/toolchain@v1
-              with:
-                  toolchain: ${{ matrix.toolchain }}
-                  override: true
+            - uses: dtolnay/rust-toolchain@${{ matrix.toolchain }}
             - uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
-            - name: test --all
-              run: cargo test --all --all-features
+            - name: test
+              run: cargo test --all-features
 
     clippy:
         name: clippy
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Install Rust
-              uses: actions-rs/toolchain@v1
+            - uses: dtolnay/rust-toolchain@nightly
               with:
                   components: clippy, rustfmt
-                  profile: minimal
-                  toolchain: nightly
-                  override: true
             - uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
-            - name: clippy --all
-              run: cargo clippy --all --tests --all-features
+            - name: clippy
+              run: cargo clippy --tests --all-features
 
     docs:
         name: docs
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Install Rust
-              uses: actions-rs/toolchain@v1
+            - uses: dtolnay/rust-toolchain@nightly
               with:
                   components: rust-docs, rustfmt
-                  profile: minimal
-                  toolchain: nightly
-                  override: true
             - uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
-            - name: doc --all
-              run: cargo doc --all --all-features
+            - name: doc
+              run: cargo doc --all-features
 
     fmt:
         name: fmt
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Install Rust
-              uses: actions-rs/toolchain@v1
+            - uses: dtolnay/rust-toolchain@nightly
               with:
                   components: rustfmt
-                  profile: minimal
-                  toolchain: nightly
-                  override: true
             - uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
-            - name: cargo fmt --check
+            - name: fmt --check
               run: cargo fmt --check
