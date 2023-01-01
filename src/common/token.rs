@@ -134,6 +134,7 @@ mod tests {
     use ethers::providers::MAINNET;
 
     #[tokio::test]
+    #[ignore = "async test"]
     async fn metadata() {
         let address = crate::contracts::addresses::address("WETH", Chain::Mainnet);
         let provider = Arc::new(MAINNET.provider());

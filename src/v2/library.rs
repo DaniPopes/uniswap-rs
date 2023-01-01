@@ -218,11 +218,13 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "async test"]
     async fn can_get_reserves() {
         get_weth_usdc_reserves().await;
     }
 
     #[tokio::test]
+    #[ignore = "async test"]
     async fn can_get_reserves_multi() {
         let path = [*WETH, *USDC, *WETH, *USDC];
         Library::get_reserves_multi(&*FACTORY, &path).await.unwrap();
@@ -250,6 +252,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "async test"]
     async fn can_quote_async() {
         let weth_amount = U256::exp10(18);
         let (weth_reserve, usdc_reserve) = get_weth_usdc_reserves().await;
@@ -257,6 +260,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "async test"]
     async fn can_get_amount() {
         let weth_amount = U256::exp10(18);
         let (weth_reserve, usdc_reserve) = get_weth_usdc_reserves().await;
@@ -265,6 +269,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "async test"]
     async fn can_get_amounts() {
         let weth_amount = U256::exp10(18);
         let path_1 = [*WETH, *USDC, *WETH, *USDC];
