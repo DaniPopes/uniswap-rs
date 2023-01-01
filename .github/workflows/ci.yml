@@ -6,6 +6,7 @@ on:
 name: CI
 env:
     ABIGEN_CHECK: true
+    RUSTFLAGS: "-D warnings"
 
 jobs:
     test:
