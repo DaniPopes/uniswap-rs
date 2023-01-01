@@ -18,7 +18,12 @@ macro_rules! cmds {
         #[inline]
         pub fn $fn_name(mut self, allow_revert: bool, $($arg: $ty),+) -> Self {
             // concat_idents! workaround to instantiate a struct with braces syntax
-            type __Command = concat_idents!($name, Call);
+            // #[cfg(feature = "nightly")]
+            // type __Command = concat_idents!($name, Call);
+
+            // #[cfg(not(feature = "nightly"))]
+            type __Command = paste::paste!([<$name Call>]);
+
             let command = __Command { $($arg),+ };
             let command = IUniversalRouterCommandsCalls::$name(command);
             self.builder = self.builder.command(command, allow_revert);
