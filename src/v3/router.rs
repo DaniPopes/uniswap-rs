@@ -32,25 +32,25 @@ impl<M: Middleware> Router<M> {
 
     pub fn exact_input(&self, params: ExactInputParams) -> ContractCall<M, U256> {
         let swap_router = self.contract();
-        
+
         swap_router.exact_input(params)
     }
 
     pub fn exact_input_single(&self, params: ExactInputSingleParams) -> ContractCall<M, U256> {
         let swap_router = self.contract();
-        
+
         swap_router.exact_input_single(params)
     }
 
     pub fn exact_output(&self, params: ExactOutputParams) -> ContractCall<M, U256> {
         let swap_router = self.contract();
-        
+
         swap_router.exact_output(params)
     }
 
     pub fn exact_output_single(&self, params: ExactOutputSingleParams) -> ContractCall<M, U256> {
         let swap_router = self.contract();
-        
+
         swap_router.exact_output_single(params)
     }
 
@@ -61,7 +61,7 @@ impl<M: Middleware> Router<M> {
         data: Bytes,
     ) -> ContractCall<M, ()> {
         let swap_router = self.contract();
-        
+
         swap_router.uniswap_v3_swap_callback(amount_0_delta, amount_1_delta, data)
     }
 }
