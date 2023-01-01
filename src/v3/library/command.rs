@@ -99,7 +99,8 @@ impl Command {
     }
 
     /// Returns whether this command is valid.
-    pub fn is_valid(&self) -> bool {
+    #[allow(clippy::match_like_matches_macro)]
+    pub const fn is_valid(&self) -> bool {
         match self {
             Self::Invalid => false,
             _ => true,
@@ -107,7 +108,8 @@ impl Command {
     }
 
     /// Returns whether this command is invalid.
-    pub fn is_invalid(&self) -> bool {
+    #[allow(clippy::match_like_matches_macro)]
+    pub const fn is_invalid(&self) -> bool {
         match self {
             Self::Invalid => true,
             _ => false,

@@ -15,7 +15,7 @@ async fn main() -> eyre::Result<()> {
         SignerMiddleware::new(provider, wallet)
     });
 
-    println!("Using {:?} Custom protocol", chain);
+    println!("Using {chain:?} Custom protocol");
 
     // FIXME: Protocol's factory address
     let my_factory: Address = "0x1234123412341234123412341234123412341234".parse()?;
@@ -31,7 +31,7 @@ async fn main() -> eyre::Result<()> {
 
     let dex = Dex::new_with_chain(client, chain, my_protocol);
 
-    println!("Using dex: {:#?}", dex);
+    println!("Using dex: {dex:#?}");
 
     Ok(())
 }

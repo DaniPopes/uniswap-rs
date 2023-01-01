@@ -51,14 +51,14 @@ impl<M> Erc20<M> {
     ///
     /// Defaults to "unknown" if not synced or not present.
     pub fn name(&self) -> &str {
-        self.name.as_ref().map(String::as_str).unwrap_or(UNKNOWN)
+        self.name.as_deref().unwrap_or(UNKNOWN)
     }
 
     /// The token's symbol.
     ///
     /// Defaults to "unknown" if not synced or not present.
     pub fn symbol(&self) -> &str {
-        self.symbol.as_ref().map(String::as_str).unwrap_or(UNKNOWN)
+        self.symbol.as_deref().unwrap_or(UNKNOWN)
     }
 
     /// The token's decimals.
@@ -107,6 +107,7 @@ impl<M: Middleware> Erc20<M> {
         self.add_metadata(&mut multicall);
 
         // TODO: results
+        #[allow(clippy::single_match)]
         match multicall.call_raw().await {
             Ok(tokens) => {
                 let mut tokens = tokens.into_iter();
@@ -121,7 +122,7 @@ impl<M: Middleware> Erc20<M> {
                 }
                 assign_if_ok!(name symbol decimals);
             }
-            Err(_) => {}
+            Err(_) => { /* TODO */ }
         }
 
         Ok(self)

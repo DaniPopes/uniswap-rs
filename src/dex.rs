@@ -379,7 +379,7 @@ mod tests {
 
         let calldata = contract_call.calldata().unwrap();
 
-        println!("{}", calldata);
+        println!("{calldata}");
 
         let args = decode_call(&calldata);
         println!("{args:?}");

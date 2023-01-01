@@ -31,8 +31,8 @@ async fn main() -> eyre::Result<()> {
 
     let price = usdc_reserve / eth_reserve;
 
-    println!("{}", pair);
-    println!("Price: ${:.2}", price);
+    println!("{pair}");
+    println!("Price: ${price:.2}");
 
     Ok(())
 }

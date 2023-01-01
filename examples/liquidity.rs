@@ -43,19 +43,19 @@ async fn main() -> eyre::Result<()> {
         println!("Approving for removal...");
         let call = pair.contract().approve(dex.router().address(), liquidity);
         let receipt = send(call).await?;
-        println!("Contract approved successfully! Receipt: {:#?}", receipt);
+        println!("Contract approved successfully! Receipt: {receipt:#?}");
     } else {
         println!("Already approved, skipping approval");
     }
 
     // create the remove liquidity transaction
-    println!("Removing {} liquidity...", liquidity);
+    println!("Removing {liquidity} liquidity...");
     let call = dex
         .remove_liquidity(NATIVE_ADDRESS, usdc, liquidity, 0.into(), 0.into(), None, None)
         .await?;
     println!("Sending swap...");
     let receipt = send(call).await?;
-    println!("Successfully removed {} liquidity from ETH/USDC. Receipt: {:#?}", liquidity, receipt);
+    println!("Successfully removed {liquidity} liquidity from ETH/USDC. Receipt: {receipt:#?}");
 
     Ok(())
 }

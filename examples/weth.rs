@@ -36,7 +36,7 @@ async fn main() -> eyre::Result<()> {
     let pending_tx = deposit_call.send().await?;
     println!("Transaction sent successfully, awaiting inclusion...");
     let receipt = pending_tx.await?.wrap_err("deposit transaction was dropped from mempool")?;
-    println!("Successfully deposited {} ETH to WETH. Receipt: {:?}", amount, receipt);
+    println!("Successfully deposited {amount} ETH to WETH. Receipt: {receipt:?}");
 
     Ok(())
 }

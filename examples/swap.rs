@@ -51,7 +51,7 @@ async fn main() -> eyre::Result<()> {
     let pending_tx = swap_call.send().await?;
     println!("Transaction sent successfully, awaiting inclusion...");
     let receipt = pending_tx.await?.expect("swap transaction was dropped from mempool");
-    println!("Swap successful. Receipt: {:#?}", receipt);
+    println!("Swap successful. Receipt: {receipt:#?}");
 
     Ok(())
 }
