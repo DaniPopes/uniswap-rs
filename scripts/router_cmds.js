@@ -1,5 +1,10 @@
 #!/usr/bin/env node
-// Parses an Abigen'd contract's structs.
+// Parses the Abigen'd contract `UniversalRouterCommands`' structs for the `cmds` UniversalRouter
+// macro_rules in the form:
+//
+// StructName -> pub fn struct_name(
+//     $($arg),+
+// );
 
 const fs = require("fs");
 const path = require("path");
@@ -48,8 +53,8 @@ const order = [
     // 0x1f
 ];
 
-const startStructR = /^pub struct (\w+) \{$/g;
-const endStructR = /^\}$/g;
+const startStructR = /^pub struct (\w+) \{$/;
+const endStructR = /^\}$/;
 
 const snakeCase = string => {
     return string
@@ -69,14 +74,19 @@ for (let line of file.split("\n")) {
     line = line.trim();
     if (inStruct) {
         if (endStructR.test(line)) {
-            if (n.endsWith("Call")) {
+            // struct definition is done
+            // add only if it's a "call"
+            if (curr[0].endsWith("Call")) {
                 structs[curr[0].replace("Call", "")] = [...curr[1]];
-                i++;
             }
             curr = [];
             inStruct = false;
-        } else curr[1].push(line.trim().replace("pub ", "").replace(",", ""));
+        } else {
+            // still in struct definition, push field
+            curr[1].push(line.trim().replace("pub ", "").replace(",", ""));
+        }
     } else if (startStructR.test(line)) {
+        // struct definition started, store name
         inStruct = true;
         line.match(startStructR);
         let res = startStructR.exec(line).pop();
@@ -94,7 +104,7 @@ for (const x of order) {
 for (const [structName, fnName, ...args] of _structs) {
     let _args = args
         .join(",\n    ")
-        .replaceAll("ethers::core::types::", "")
+        .replaceAll("ethers_core::types::", "")
         .replaceAll("::std::vec::Vec", "Vec");
     const exp = `\
 ${structName} => pub fn ${fnName}(
