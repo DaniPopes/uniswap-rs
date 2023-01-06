@@ -1,18 +1,17 @@
-#![allow(dead_code, unreachable_pub)]
-
-/// Invalid command integer values.
-macro_rules! invalid {
+/// Integers that are in the valid command range but are unassigned, and so don't have variants.
+macro_rules! no_variants {
     () => {
         0x07 | 0x0e | 0x0f | 0x1e | 0x1f
     };
 }
 
-/// A UniswapV3 [Universal Router command](https://docs.uniswap.org/contracts/universal-router/technical-reference#command).
+/// A [Universal Router command](https://docs.uniswap.org/contracts/universal-router/technical-reference#command).
 #[allow(missing_docs)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(u8)]
 pub enum Command {
     // 0x00..0x08
+    #[default]
     V3SwapExactIn = 0x00,
     V3SwapExactOut,
     Permit2TransferFrom,
@@ -86,14 +85,16 @@ impl Command {
     /// Returns [Command::Invalid] if the command integer is a currently un-implemented or invalid
     /// command integer.
     pub fn decode(byte: u8) -> (Self, bool) {
-        let allow_revert = (byte >> 7) == 1; // No need to mask as it's the first bit
-        let command = match byte & Self::MASK {
-            invalid!() => Self::Invalid,
-            cmd => {
-                // SAFETY: `cmd` is masked to the valid command range, while the unassigned values
-                // are covered above.
-                unsafe { std::mem::transmute(cmd) }
-            }
+        // last bit
+        let allow_revert = (byte >> 7) == 1;
+        const MAX: u8 = Command::MASK + 1;
+        let command = match byte {
+            // no variants yet
+            no_variants!() => Self::Invalid,
+            // outside of valid range
+            MAX.. => Self::Invalid,
+            // SAFETY: All invalid values are covered in the match arms above.
+            _ => unsafe { std::mem::transmute(byte) },
         };
         (command, allow_revert)
     }
@@ -127,11 +128,15 @@ mod tests {
             let allow_revert = (byte >> 7) == 1;
             let (command, r_allow_revert) = Command::decode(byte);
             assert_eq!(r_allow_revert, allow_revert);
-            match byte & Command::MASK {
-                invalid!() => assert_eq!(command, Command::Invalid),
+            const MAX: u8 = Command::MASK + 1;
+            match byte {
+                no_variants!() => assert_eq!(command, Command::Invalid),
+                MAX.. => assert_eq!(command, Command::Invalid),
                 _ => {
                     assert_ne!(command, Command::Invalid);
                     assert_eq!(command.encode(allow_revert), byte & !Command::UNUSED_BITS);
+                    // catch invalid references by formatting the command
+                    let _s = format!("0x{byte:02x} => {command:?}");
                 }
             };
         }
