@@ -1,9 +1,8 @@
 use crate::{bindings::i_uniswap_v3_factory::IUniswapV3Factory, ProtocolType};
 use ethers::prelude::*;
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 /// Represents a UniswapV3 factory.
-#[derive(Clone, Debug)]
 pub struct Factory<M> {
     /// The factory contract.
     contract: IUniswapV3Factory<M>,
@@ -15,6 +14,23 @@ pub struct Factory<M> {
     pub chain: Option<Chain>,
 }
 
+impl<M> Clone for Factory<M> {
+    fn clone(&self) -> Self {
+        Self { contract: self.contract.clone(), protocol: self.protocol, chain: self.chain.clone() }
+    }
+}
+
+impl<M> fmt::Debug for Factory<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Factory")
+            .field("address", &self.contract.address())
+            .field("protocol", &self.protocol)
+            .field("chain", &self.chain)
+            .finish()
+    }
+}
+
+// TODO: Remove
 impl<M> std::ops::Deref for Factory<M> {
     type Target = IUniswapV3Factory<M>;
 

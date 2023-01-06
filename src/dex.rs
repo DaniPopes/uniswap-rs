@@ -6,16 +6,27 @@ use crate::{
     Amount, Protocol, ProtocolType,
 };
 use ethers::prelude::{builders::ContractCall, *};
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 /// Aggregates common methods to interact with the Uniswap v2 or v3 protocols and other utilities.
-#[derive(Clone, Debug)]
 pub struct Dex<M> {
     /// The protocol.
     protocol: Protocol<M>,
 
     /// The address of the chain's wrapped native token.
     weth: Option<Address>,
+}
+
+impl<M> Clone for Dex<M> {
+    fn clone(&self) -> Self {
+        Self { protocol: self.protocol.clone(), weth: self.weth.clone() }
+    }
+}
+
+impl<M> fmt::Debug for Dex<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Dex").field("protocol", &self.protocol).field("weth", &self.weth).finish()
+    }
 }
 
 impl<M: Middleware> Dex<M> {

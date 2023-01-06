@@ -1,16 +1,30 @@
 use super::{Factory, Pair, Router};
 use crate::{errors::Result, Amount, ProtocolType};
 use ethers::prelude::{builders::ContractCall, *};
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
-/// Represents the UniswapV2 protocol.
-#[derive(Clone, Debug)]
+/// A UniswapV2 protocol.
 pub struct Protocol<M> {
     /// The liquidity pair factory.
     factory: Factory<M>,
 
     /// The swap router.
     router: Router<M>,
+}
+
+impl<M> Clone for Protocol<M> {
+    fn clone(&self) -> Self {
+        Self { factory: self.factory.clone(), router: self.router.clone() }
+    }
+}
+
+impl<M> fmt::Debug for Protocol<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Protocol")
+            .field("factory", &self.factory)
+            .field("router", &self.router)
+            .finish()
+    }
 }
 
 impl<M: Middleware> Protocol<M> {

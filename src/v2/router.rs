@@ -7,15 +7,29 @@ use crate::{
     Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 #[cfg(feature = "addresses")]
 use crate::protocol::ProtocolType;
 
 /// Represents a UniswapV2 router.
-#[derive(Clone, Debug)]
-pub struct Router<M>(IUniswapV2Router02<M>);
+pub struct Router<M> {
+    contract: IUniswapV2Router02<M>,
+}
 
+impl<M> Clone for Router<M> {
+    fn clone(&self) -> Self {
+        Self { contract: self.contract.clone() }
+    }
+}
+
+impl<M> fmt::Debug for Router<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Router").field("address", &self.contract.address()).finish()
+    }
+}
+
+// TODO: Remove
 impl<M> std::ops::Deref for Router<M> {
     type Target = IUniswapV2Router02<M>;
 
@@ -27,7 +41,7 @@ impl<M> std::ops::Deref for Router<M> {
 impl<M> Router<M> {
     /// Returns a reference to the router contract.
     pub fn contract(&self) -> &IUniswapV2Router02<M> {
-        &self.0
+        &self.contract
     }
 }
 
@@ -36,7 +50,7 @@ impl<M: Middleware> Router<M> {
     pub fn new(client: Arc<M>, address: Address) -> Self {
         // assert!(protocol.is_v2(), "protocol must be v2");
         let contract = IUniswapV2Router02::new(address, client);
-        Self(contract)
+        Self { contract }
     }
 
     /// Creates a new instance by searching for the required addresses in the [addressbook].

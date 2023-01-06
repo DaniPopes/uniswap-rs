@@ -4,7 +4,7 @@ use crate::{
     Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 pub mod pair_code_hashes;
 
@@ -13,13 +13,30 @@ pub use protocol_type::*;
 
 /// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
 /// swapping of ERC-20 tokens on the Ethereum blockchain.
-#[derive(Clone, Debug)]
 pub enum Protocol<M> {
     /// The UniswapV2 protocol.
     V2(V2Protocol<M>),
 
     /// The UniswapV3 protocol. WIP.
     V3,
+}
+
+impl<M> Clone for Protocol<M> {
+    fn clone(&self) -> Self {
+        match self {
+            Self::V2(v2) => Self::V2(v2.clone()),
+            Self::V3 => Self::V3,
+        }
+    }
+}
+
+impl<M> fmt::Debug for Protocol<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::V2(v2) => f.debug_tuple("V2").field(&v2).finish(),
+            Self::V3 => f.pad("V3"),
+        }
+    }
 }
 
 impl<M: Middleware> Protocol<M> {

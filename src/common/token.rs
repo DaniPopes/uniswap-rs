@@ -14,10 +14,13 @@ const UNKNOWN: &str = "unknown";
 pub struct Erc20<M> {
     /// The token's contract.
     contract: IERC20<M>,
+
     /// The token's name.
     pub name: Option<String>,
+
     /// The token's symbol.
     pub symbol: Option<String>,
+
     /// The token's decimals.
     pub decimals: Option<u8>,
 }
@@ -33,6 +36,7 @@ impl<M> Clone for Erc20<M> {
     }
 }
 
+// TODO: Remove
 impl<M> std::ops::Deref for Erc20<M> {
     type Target = IERC20<M>;
 
