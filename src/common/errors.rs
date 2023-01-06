@@ -18,7 +18,7 @@ pub enum Error {
     #[error("{0}")]
     ContractError(String),
 
-    /// Thrown when interacting with [Multicall][ethers::contract::Multicall].
+    /// Thrown when interacting with [Multicall][ethers_contract::Multicall].
     #[error("{0}")]
     MulticallError(String),
 

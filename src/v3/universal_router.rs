@@ -16,7 +16,8 @@ macro_rules! cmds {
     ($(
         $name:ident => pub fn $fn_name:ident ($($arg:ident : $ty:ty $(,)?)+) ;
     )+) => {$(
-        #[doc = concat!("Add a `", stringify!($name), "` command to the builder.")]
+        #[doc = concat!("Append a [`", stringify!($name), "`][ref] command to the builder.\n\n")]
+        #[doc = concat!("[ref]: https://docs.uniswap.org/contracts/universal-router/technical-reference#", stringify!($fn_name))]
         #[inline]
         pub fn $fn_name(mut self, allow_revert: bool, $($arg: $ty),+) -> Self {
             // concat_idents! workaround to instantiate a struct with braces syntax
@@ -36,6 +37,41 @@ macro_rules! cmds {
 
 contract_struct! {
     /// Represents a UniversalRouter router.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use ethers_core::types::*;
+    /// # use ethers_contract::{builders::*, *};
+    /// # use ethers_providers::*;
+    /// # use uniswap_rs::{
+    /// #     bindings::i_universal_router_commands::V2SwapExactInCall,
+    /// #     constants::NATIVE_ADDRESS,
+    /// #     v3::UniversalRouter,
+    /// # };
+    /// # use std::sync::Arc;
+    /// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
+    /// // construct the router
+    /// let address = Address::repeat_byte(0x11);
+    /// let provider = Arc::new(Provider::<Http>::try_from("https://example.com")?);
+    /// let router = UniversalRouter::new(provider, address);
+    ///
+    /// // construct the call
+    /// let token = Address::repeat_byte(0x22);
+    /// let recipient = Address::repeat_byte(0x33);
+    /// let value = U256::from(5) * U256::exp10(16); // 0.05 ETH
+    /// let call = router
+    ///     .v2_swap_exact_in(false, recipient, value, U256::zero(), vec![NATIVE_ADDRESS, token], true)
+    /// //  .command_name(allow_revert, ...params) ...
+    ///     .call(None)
+    ///     .value(value);
+    ///
+    /// // send the call
+    /// let pending = call.send().await?;
+    /// let receipt = pending.await?.expect("dropped");
+    /// println!("Tx successfully confirmed: {receipt:#?}");
+    /// # Ok(()) }
+    /// ```
     pub struct UniversalRouter<M> {
         /// The router contract.
         contract: IUniversalRouter<M>,

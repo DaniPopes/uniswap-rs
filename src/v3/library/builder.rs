@@ -17,40 +17,41 @@ use ethers_providers::Middleware;
 ///
 /// # Example
 ///
-/// ``` no_run
-/// use ethers::prelude::*;
-/// use uniswap_rs::{
-///     bindings::{i_universal_router_commands::V2SwapExactInCall, i_universal_router::IUniversalRouter},
-///     v3::Builder,
-/// };
-/// use std::{convert::TryFrom, sync::Arc};
-///
-/// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
-/// // construct the router
-/// let router = Address::random();
-/// let provider = Arc::new(Provider::<Http>::try_from("https://example.com")?);
-/// let router = IUniversalRouter::new(router, provider);
-///
+/// ```
+/// # use ethers_core::types::*;
+/// # use ethers_contract::{builders::*, *};
+/// # use ethers_providers::*;
+/// # use uniswap_rs::{
+/// #     bindings::{i_universal_router_commands::V2SwapExactInCall, i_universal_router::IUniversalRouter},
+/// #     constants::NATIVE_ADDRESS,
+/// #     v3::Builder,
+/// # };
+/// # use std::sync::Arc;
+/// # async fn foo<M: Middleware + 'static>(router: IUniversalRouter<M>) -> Result<(), Box<dyn std::error::Error>> {
 /// // construct the commands
 /// let token = Address::repeat_byte(0x11);
-/// let recipient = Address::repeat_byte(0x24);
-/// let value = U256::from(1_000_000_000_u64);
+/// let recipient = Address::repeat_byte(0x22);
+/// let value = U256::from(5) * U256::exp10(16); // 0.05 ETH
 /// let swap = V2SwapExactInCall {
 ///     recipient,
 ///     amount_in: value,
 ///     amount_out_min: U256::zero(),
-///     path: vec![Address::zero(), token],
+///     path: vec![NATIVE_ADDRESS, token],
 ///     payer_is_user: true,
 /// }.into();
 ///
 /// // construct the call
-/// let call = Builder::new().command(swap, false).call(&router, None).value(value);
+/// let call = Builder::new()
+///     .command(swap, false)
+/// //  .command(cmd, allow_revert) ...
+///     .call(&router, None)
+///     .value(value);
 ///
 /// // send the call
 /// let pending = call.send().await?;
-/// let _receipt = pending.await?.expect("dropped");
-/// # Ok(())
-/// # }
+/// let receipt = pending.await?.expect("dropped");
+/// println!("Tx successfully confirmed: {receipt:#?}");
+/// # Ok(()) }
 /// ```
 #[derive(Clone, Debug, Default)]
 pub struct Builder {
