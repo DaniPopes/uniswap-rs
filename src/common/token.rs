@@ -5,7 +5,7 @@ use ethers::{
     providers::Middleware,
     types::{Address, Chain},
 };
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 const UNKNOWN: &str = "unknown";
 
@@ -23,6 +23,19 @@ contract_struct! {
 
         /// The token's decimals.
         pub decimals: Option<u8>,
+    }
+}
+
+impl<M> fmt::Display for Erc20<M> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = self.name();
+        let symbol = self.symbol();
+        f.write_fmt(format_args!("{name} ({symbol})"))?;
+        if f.alternate() {
+            let address = self.contract.address();
+            f.write_fmt(format_args!(" @ {address}"))?;
+        }
+        Ok(())
     }
 }
 
@@ -126,14 +139,28 @@ impl<M: Middleware> Erc20<M> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ethers::providers::MAINNET;
+    use ethers::prelude::*;
+
+    fn default_token() -> Erc20<Provider<Http>> {
+        let address = crate::contracts::addresses::address("WETH", Chain::Mainnet);
+        let provider = Arc::new(MAINNET.provider());
+        Erc20::new(provider, address)
+    }
+
+    #[test]
+    fn test_fmt() {
+        let mut token = default_token();
+        token.name = Some("Wrapped Ether".into());
+        token.symbol = Some("WETH".into());
+
+        assert_eq!(format!("{token}"), "Wrapped Ether (WETH)");
+        assert_eq!(format!("{token:#}"), "Wrapped Ether (WETH) @ 0xc02a…6cc2");
+    }
 
     #[tokio::test]
     #[ignore = "async test"]
     async fn metadata() {
-        let address = crate::contracts::addresses::address("WETH", Chain::Mainnet);
-        let provider = Arc::new(MAINNET.provider());
-        let mut token = Erc20::new(provider, address);
+        let mut token = default_token();
         token.sync(Chain::Mainnet).await.unwrap();
 
         assert_eq!(token.name.unwrap(), "Wrapped Ether");
