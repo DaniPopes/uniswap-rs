@@ -1,3 +1,8 @@
+pub mod pair_code_hashes;
+
+mod protocol_type;
+pub use protocol_type::*;
+
 use crate::{
     errors::Result,
     v2::{Factory as V2Factory, Pair as V2Pair, Protocol as V2Protocol, Router as V2Router},
@@ -6,18 +11,13 @@ use crate::{
 use ethers::prelude::{builders::ContractCall, *};
 use std::{fmt, sync::Arc};
 
-pub mod pair_code_hashes;
-
-mod protocol_type;
-pub use protocol_type::*;
-
 /// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
 /// swapping of ERC-20 tokens on the Ethereum blockchain.
 pub enum Protocol<M> {
-    /// The UniswapV2 protocol.
+    /// A UniswapV2 protocol.
     V2(V2Protocol<M>),
 
-    /// The UniswapV3 protocol. WIP.
+    /// A UniswapV3 protocol. WIP.
     V3,
 }
 
@@ -44,8 +44,8 @@ impl<M: Middleware> Protocol<M> {
     pub fn new(client: Arc<M>, factory: Address, router: Address, protocol: ProtocolType) -> Self {
         match protocol {
             p if p.is_v2() => Self::V2(V2Protocol::new(client, factory, router, protocol)),
-            p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol \"{p:?}\" is neither v2 nor v3"),
+            p if p.is_v3() => todo_v3(),
+            _ => unreachable!(),
         }
     }
 
@@ -56,8 +56,8 @@ impl<M: Middleware> Protocol<M> {
     pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
         match protocol {
             p if p.is_v2() => V2Protocol::new_with_chain(client, chain, protocol).map(Self::V2),
-            p if p.is_v3() => todo!("v3 is not yet implemented"),
-            p => unreachable!("protocol \"{p:?}\" is neither v2 nor v3"),
+            p if p.is_v3() => todo_v3(),
+            _ => unreachable!(),
         }
     }
 
@@ -66,7 +66,7 @@ impl<M: Middleware> Protocol<M> {
     pub fn client(&self) -> Arc<M> {
         match self {
             Self::V2(p) => p.client(),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -77,7 +77,7 @@ impl<M: Middleware> Protocol<M> {
     pub fn factory(&self) -> &V2Factory<M> {
         match self {
             Self::V2(p) => p.factory(),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -86,7 +86,7 @@ impl<M: Middleware> Protocol<M> {
     pub fn pair_codehash(&self, chain: Option<Chain>) -> H256 {
         match self {
             Self::V2(p) => p.pair_codehash(chain),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -95,7 +95,7 @@ impl<M: Middleware> Protocol<M> {
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
         match self {
             Self::V2(p) => p.create_pair(token_a, token_b),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -104,7 +104,7 @@ impl<M: Middleware> Protocol<M> {
     pub fn pair_for(&self, token_a: Address, token_b: Address) -> V2Pair<M> {
         match self {
             Self::V2(p) => p.pair_for(token_a, token_b),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -115,7 +115,7 @@ impl<M: Middleware> Protocol<M> {
     pub fn router(&self) -> &V2Router<M> {
         match self {
             Self::V2(p) => p.router(),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -143,7 +143,7 @@ impl<M: Middleware> Protocol<M> {
                 to,
                 deadline,
             ),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -169,7 +169,7 @@ impl<M: Middleware> Protocol<M> {
                 to,
                 deadline,
             ),
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
 
@@ -186,7 +186,11 @@ impl<M: Middleware> Protocol<M> {
     ) -> Result<ContractCall<M, Vec<U256>>> {
         match self {
             Self::V2(p) => p.swap(amount, slippage_tolerance, path, to, deadline, weth).await,
-            Self::V3 => todo!("v3 is not yet implemented"),
+            Self::V3 => todo_v3(),
         }
     }
+}
+
+fn todo_v3() -> ! {
+    todo!("v3 is not yet implemented")
 }
