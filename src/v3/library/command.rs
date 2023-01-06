@@ -1,3 +1,5 @@
+use crate::bindings::i_universal_router_commands::IUniversalRouterCommandsCalls;
+
 /// Integers that are in the valid command range but are unassigned, and so don't have variants.
 macro_rules! no_variants {
     () => {
@@ -57,6 +59,60 @@ pub enum Command {
     ///
     /// Is always equivalent to [`Command::V3SwapExactIn`] (0x00) when masked.
     Invalid = 0x80,
+}
+
+impl From<&IUniversalRouterCommandsCalls> for Command {
+    fn from(value: &IUniversalRouterCommandsCalls) -> Self {
+        use IUniversalRouterCommandsCalls::*;
+
+        match value {
+            // 0x00..0x08
+            V3SwapExactIn(_) => Self::V3SwapExactIn,
+            V3SwapExactOut(_) => Self::V3SwapExactOut,
+            Permit2TransferFrom(_) => Self::Permit2TransferFrom,
+            Permit2PermitBatch(_) => Self::Permit2PermitBatch,
+            Sweep(_) => Self::Sweep,
+            Transfer(_) => Self::Transfer,
+            PayPortion(_) => Self::PayPortion,
+            // 0x07
+
+            // 0x08..0x10
+            V2SwapExactIn(_) => Self::V2SwapExactIn,
+            V2SwapExactOut(_) => Self::V2SwapExactOut,
+            Permit2Permit(_) => Self::Permit2Permit,
+            WrapEth(_) => Self::WrapEth,
+            UnwrapEth(_) => Self::UnwrapEth,
+            Permit2TransferFromBatch(_) => Self::Permit2TransferFromBatch,
+            // 0x0e
+            // 0x0f
+
+            // 0x10..0x18
+            Seaport(_) => Self::Seaport,
+            LooksRare721(_) => Self::LooksRare721,
+            Nftx(_) => Self::Nftx,
+            CryptoPunks(_) => Self::CryptoPunks,
+            LooksRare1155(_) => Self::LooksRare1155,
+            OwnerCheck721(_) => Self::OwnerCheck721,
+            OwnerCheck1155(_) => Self::OwnerCheck1155,
+            SweepErc721(_) => Self::SweepErc721,
+
+            // 0x18..0x20
+            X2Y2721(_) => Self::X2y2721,
+            SudoSwap(_) => Self::SudoSwap,
+            Nft20(_) => Self::Nft20,
+            X2Y21155(_) => Self::X2y21155,
+            Foundation(_) => Self::Foundation,
+            SweepErc1155(_) => Self::SweepErc1155,
+            // 0x1e
+            // 0x1f
+        }
+    }
+}
+
+impl From<IUniversalRouterCommandsCalls> for Command {
+    fn from(value: IUniversalRouterCommandsCalls) -> Self {
+        From::from(&value)
+    }
 }
 
 impl Command {

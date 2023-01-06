@@ -7,7 +7,10 @@ use crate::{
     utils::get_deadline,
 };
 use ethers::{
-    abi::Tokenize, contract::builders::ContractCall, providers::Middleware, types::Bytes,
+    abi::{self, Tokenize},
+    contract::builders::ContractCall,
+    providers::Middleware,
+    types::Bytes,
 };
 
 /// Builds a call to the UniversalRouter's `execute` function.
@@ -112,49 +115,8 @@ impl Builder {
 
     /// Add a command and whether it is allowed to revert to the call.
     pub fn command(self, command: IUniversalRouterCommandsCalls, allow_revert: bool) -> Self {
-        use IUniversalRouterCommandsCalls::*;
-        let command_type = match &command {
-            // 0x00..0x08
-            V3SwapExactIn(_) => Command::V3SwapExactIn,
-            V3SwapExactOut(_) => Command::V3SwapExactOut,
-            Permit2TransferFrom(_) => Command::Permit2TransferFrom,
-            Permit2PermitBatch(_) => Command::Permit2PermitBatch,
-            Sweep(_) => Command::Sweep,
-            Transfer(_) => Command::Transfer,
-            PayPortion(_) => Command::PayPortion,
-            // 0x07
-
-            // 0x08..0x10
-            V2SwapExactIn(_) => Command::V2SwapExactIn,
-            V2SwapExactOut(_) => Command::V2SwapExactOut,
-            Permit2Permit(_) => Command::Permit2Permit,
-            WrapEth(_) => Command::WrapEth,
-            UnwrapEth(_) => Command::UnwrapEth,
-            Permit2TransferFromBatch(_) => Command::Permit2TransferFromBatch,
-            // 0x0e
-            // 0x0f
-
-            // 0x10..0x18
-            Seaport(_) => Command::Seaport,
-            LooksRare721(_) => Command::LooksRare721,
-            Nftx(_) => Command::Nftx,
-            CryptoPunks(_) => Command::CryptoPunks,
-            LooksRare1155(_) => Command::LooksRare1155,
-            OwnerCheck721(_) => Command::OwnerCheck721,
-            OwnerCheck1155(_) => Command::OwnerCheck1155,
-            SweepErc721(_) => Command::SweepErc721,
-
-            // 0x18..0x20
-            X2Y2721(_) => Command::X2y2721,
-            SudoSwap(_) => Command::SudoSwap,
-            Nft20(_) => Command::Nft20,
-            X2Y21155(_) => Command::X2y21155,
-            Foundation(_) => Command::Foundation,
-            SweepErc1155(_) => Command::SweepErc1155,
-            // 0x1e
-            // 0x1f
-        };
-        let input = ethers::abi::encode(&command.into_tokens()).into();
+        let command_type = Command::from(&command);
+        let input = abi::encode(&command.into_tokens()).into();
         self.command_raw(command_type, allow_revert, input)
     }
 
