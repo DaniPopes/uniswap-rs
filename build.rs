@@ -1,3 +1,5 @@
+#![cfg_attr(windows, allow(unused, clippy::all))]
+
 use ethers_contract_abigen::{Abigen, MultiAbigen};
 use eyre::Result;
 use std::{env, path::PathBuf, process::Command};
