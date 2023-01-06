@@ -49,21 +49,7 @@ impl<M> fmt::Display for Pool<M> {
     }
 }
 
-// TODO: Remove
-impl<M> std::ops::Deref for Pool<M> {
-    type Target = IUniswapV3Pool<M>;
-
-    fn deref(&self) -> &Self::Target {
-        self.contract()
-    }
-}
-
 impl<M> Pool<M> {
-    /// Returns a reference to the pool contract.
-    pub fn contract(&self) -> &IUniswapV3Pool<M> {
-        &self.contract
-    }
-
     /// Returns whether the pool has been deployed.
     ///
     /// Note: this will always be false before syncing.
@@ -123,6 +109,6 @@ impl<M: Middleware> Pool<M> {
 
     /// Returns the contract calls for getting the addresses of the pool's tokens.
     pub fn get_tokens(&self) -> (ContractCall<M, Address>, ContractCall<M, Address>) {
-        (self.token_0(), self.token_1())
+        (self.contract.token_0(), self.contract.token_1())
     }
 }

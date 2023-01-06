@@ -72,7 +72,7 @@ impl<M: Middleware> Protocol<M> {
     /// The factory's `create_pair` method. See documentation of [Factory] for more details.
     #[inline(always)]
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
-        self.factory.create_pair(token_a, token_b)
+        self.factory.contract().create_pair(token_a, token_b)
     }
 
     /// The factory's `pair_for` method. See documentation of [Factory] for more details.

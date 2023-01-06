@@ -39,21 +39,7 @@ impl<M> fmt::Display for Erc20<M> {
     }
 }
 
-// TODO: Remove
-impl<M> std::ops::Deref for Erc20<M> {
-    type Target = IERC20<M>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.contract
-    }
-}
-
 impl<M> Erc20<M> {
-    /// Returns a reference to the token's contract.
-    pub fn contract(&self) -> &IERC20<M> {
-        &self.contract
-    }
-
     /// The token's name.
     ///
     /// Defaults to "unknown" if not synced or not present.

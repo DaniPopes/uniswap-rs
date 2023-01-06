@@ -24,22 +24,6 @@ contract_struct! {
     }
 }
 
-// TODO: Remove
-impl<M> std::ops::Deref for Router<M> {
-    type Target = IUniswapV2Router02<M>;
-
-    fn deref(&self) -> &Self::Target {
-        self.contract()
-    }
-}
-
-impl<M> Router<M> {
-    /// Returns a reference to the router contract.
-    pub fn contract(&self) -> &IUniswapV2Router02<M> {
-        &self.contract
-    }
-}
-
 impl<M: Middleware> Router<M> {
     /// Creates a new instance using the provided address.
     pub fn new(client: Arc<M>, address: Address) -> Self {

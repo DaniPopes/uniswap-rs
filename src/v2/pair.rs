@@ -55,21 +55,7 @@ impl<M> fmt::Display for Pair<M> {
     }
 }
 
-// TODO: Remove
-impl<M> std::ops::Deref for Pair<M> {
-    type Target = IUniswapV2Pair<M>;
-
-    fn deref(&self) -> &Self::Target {
-        self.contract()
-    }
-}
-
 impl<M> Pair<M> {
-    /// Returns a reference to the pair contract.
-    pub fn contract(&self) -> &IUniswapV2Pair<M> {
-        &self.contract
-    }
-
     /// Returns whether the pair has been deployed.
     ///
     /// Note: this will always be false before syncing.
@@ -129,7 +115,7 @@ impl<M: Middleware> Pair<M> {
 
     /// Returns the contract calls for getting the addresses of the pair's tokens.
     pub fn get_tokens(&self) -> (ContractCall<M, Address>, ContractCall<M, Address>) {
-        (self.token_0(), self.token_1())
+        (self.contract.token_0(), self.contract.token_1())
     }
 
     /// Syncs the tokens and reserves of the pair by querying the blockchain.
@@ -149,7 +135,7 @@ impl<M: Middleware> Pair<M> {
         }
 
         if sync_reserves {
-            multicall.add_call(self.get_reserves(), true);
+            multicall.add_call(self.contract.get_reserves(), true);
         }
 
         // Assume any call failure means the contract has not been deployed yet

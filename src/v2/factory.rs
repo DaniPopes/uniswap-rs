@@ -18,21 +18,7 @@ contract_struct! {
     }
 }
 
-// TODO: Remove
-impl<M> std::ops::Deref for Factory<M> {
-    type Target = IUniswapV2Factory<M>;
-
-    fn deref(&self) -> &Self::Target {
-        self.contract()
-    }
-}
-
 impl<M> Factory<M> {
-    /// Returns a reference to the factory contract.
-    pub fn contract(&self) -> &IUniswapV2Factory<M> {
-        &self.contract
-    }
-
     /// Returns the protocol of the factory.
     pub fn protocol(&self) -> ProtocolType {
         self.protocol
