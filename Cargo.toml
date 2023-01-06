@@ -10,7 +10,7 @@ repository = "https://github.com/danipopes/uniswap-rs"
 homepage = "https://docs.rs/uniswap-rs"
 description = "Unofficial Rust SDK library for Uniswap smart contracts."
 keywords = ["dex", "uniswap", "sdk", "ethereum", "eth"]
-exclude = [".github/", "abi/", "scripts/", "build.rs"]
+exclude = [".github/", "abi/", "examples/", "scripts/", "build.rs"]
 
 [build-dependencies]
 ethers-contract-abigen = { version = "1.0", default-features = false }
@@ -31,6 +31,7 @@ eyre = "0.6"
 
 [features]
 default = ["addresses"]
+
 serde = ["dep:serde"]
 addresses = ["serde", "serde_json"]
 
