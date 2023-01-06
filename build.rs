@@ -1,3 +1,6 @@
+// do not run on Windows
+#![cfg(not(windows))]
+
 use ethers_contract_abigen::{Abigen, MultiAbigen};
 use eyre::Result;
 use std::{env, path::PathBuf, process::Command};
