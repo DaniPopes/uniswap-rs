@@ -6,11 +6,15 @@ use crate::{
     utils::{is_native_path, map_native},
     Amount,
 };
-use ethers::prelude::{builders::ContractCall, *};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, U256};
+use ethers_providers::Middleware;
 use std::sync::Arc;
 
 #[cfg(feature = "addresses")]
 use crate::protocol::ProtocolType;
+#[cfg(feature = "addresses")]
+use ethers_core::types::Chain;
 
 contract_struct! {
     /// Represents a UniswapV2 router.

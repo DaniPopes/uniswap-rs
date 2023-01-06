@@ -31,7 +31,8 @@
 //! - Spookyswap: <https://docs.spooky.fi/Resources/contracts>
 //! - Traderjoe: <https://docs.traderjoexyz.com/en/security-and-contracts/contracts>
 
-use ethers::prelude::*;
+use ethers_contract::Lazy;
+use ethers_core::types::{Address, Chain};
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
 

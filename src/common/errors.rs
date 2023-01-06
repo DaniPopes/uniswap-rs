@@ -1,10 +1,8 @@
 //! Errors
 
-use ethers::{
-    abi::InvalidOutputType,
-    contract::{ContractError, MulticallError},
-    providers::{Middleware, ProviderError},
-};
+use ethers_contract::{ContractError, MulticallError};
+use ethers_core::abi::InvalidOutputType;
+use ethers_providers::{Middleware, ProviderError};
 use thiserror::Error as ThisError;
 
 /// Type alias for Result<T, E = Error>

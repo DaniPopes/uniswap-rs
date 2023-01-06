@@ -1,6 +1,13 @@
 use super::{Factory, Library};
 use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::Result, ProtocolType};
-use ethers::{abi::Token, contract::builders::ContractCall, core::abi::Detokenize, prelude::*};
+use ethers_contract::{
+    builders::ContractCall, ContractError, Multicall, MulticallError, MulticallVersion,
+};
+use ethers_core::{
+    abi::{Detokenize, Token},
+    types::{Address, Chain, H256},
+};
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
 type Tokens = (Address, Address);
@@ -278,6 +285,7 @@ fn parse_reserves_result(tokens: Vec<Token>) -> Result<Option<Reserves>> {
 mod tests {
     use super::*;
     use crate::ProtocolType;
+    use ethers_providers::{Http, Provider, MAINNET};
 
     fn default_pair() -> Pair<Provider<Http>> {
         let chain = Chain::Mainnet;

@@ -8,7 +8,9 @@ use crate::{
     v2::{Factory as V2Factory, Pair as V2Pair, Protocol as V2Protocol, Router as V2Router},
     Amount,
 };
-use ethers::prelude::{builders::ContractCall, *};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, Chain, H256, U256};
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
 /// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and

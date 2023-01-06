@@ -5,33 +5,31 @@ pub mod i_universal_router {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::{
-        contract::{
-            builders::{ContractCall, Event},
-            Contract, Lazy,
-        },
-        core::{
-            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-            types::*,
-        },
-        providers::Middleware,
+    use ethers_contract::{
+        builders::{ContractCall, Event},
+        Contract, Lazy,
     };
+    use ethers_core::{
+        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+        types::*,
+    };
+    use ethers_providers::Middleware;
     #[doc = "IUniversalRouter was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     # [rustfmt :: skip] const __ABI : & str = "[{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"permit2\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"weth9\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"seaport\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nftxZap\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"x2y2\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"foundation\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"sudoswap\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"nft20Zap\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"cryptopunks\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"looksRare\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"routerRewardsDistributor\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"looksRareRewardsDistributor\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"looksRareToken\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"v2Factory\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"v3Factory\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"pairInitCodeHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"poolInitCodeHash\",\"type\":\"bytes32\"}],\"internalType\":\"struct RouterParameters\",\"name\":\"params\",\"type\":\"tuple\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ContractLocked\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ETHNotAccepted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"commandIndex\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"message\",\"type\":\"bytes\"}],\"name\":\"ExecutionFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"FromAddressIsNotOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InsufficientETH\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InsufficientToken\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidBips\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"commandType\",\"type\":\"uint256\"}],\"name\":\"InvalidCommandType\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidOwnerERC1155\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidOwnerERC721\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidPath\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidReserves\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"LengthMismatch\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NoSlice\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SliceOutOfBounds\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SliceOverflow\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ToAddressOutOfBounds\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ToAddressOverflow\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ToUint24OutOfBounds\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ToUint24Overflow\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TransactionDeadlinePassed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnableToClaim\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnsafeCast\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V2InvalidPath\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V2TooLittleReceived\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V2TooMuchRequested\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V3InvalidAmountOut\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V3InvalidCaller\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V3InvalidSwap\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V3TooLittleReceived\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"V3TooMuchRequested\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"RewardsSent\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"looksRareClaim\",\"type\":\"bytes\"}],\"name\":\"collectRewards\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"commands\",\"type\":\"bytes\"},{\"internalType\":\"bytes[]\",\"name\":\"inputs\",\"type\":\"bytes[]\"}],\"name\":\"execute\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"commands\",\"type\":\"bytes\"},{\"internalType\":\"bytes[]\",\"name\":\"inputs\",\"type\":\"bytes[]\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"execute\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC1155BatchReceived\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC1155Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"int256\",\"name\":\"amount0Delta\",\"type\":\"int256\"},{\"internalType\":\"int256\",\"name\":\"amount1Delta\",\"type\":\"int256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"uniswapV3SwapCallback\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]\n" ;
     #[doc = r" The parsed JSON-ABI of the contract."]
-    pub static IUNIVERSALROUTER_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
-        ethers::contract::Lazy::new(|| {
-            ethers::core::utils::__serde_json::from_str(__ABI).expect("invalid abi")
+    pub static IUNIVERSALROUTER_ABI: ethers_contract::Lazy<ethers_core::abi::Abi> =
+        ethers_contract::Lazy::new(|| {
+            ethers_core::utils::__serde_json::from_str(__ABI).expect("invalid abi")
         });
-    pub struct IUniversalRouter<M>(ethers::contract::Contract<M>);
+    pub struct IUniversalRouter<M>(ethers_contract::Contract<M>);
     impl<M> Clone for IUniversalRouter<M> {
         fn clone(&self) -> Self {
             IUniversalRouter(self.0.clone())
         }
     }
     impl<M> std::ops::Deref for IUniversalRouter<M> {
-        type Target = ethers::contract::Contract<M>;
+        type Target = ethers_contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
@@ -41,22 +39,22 @@ pub mod i_universal_router {
             f.debug_tuple(stringify!(IUniversalRouter)).field(&self.address()).finish()
         }
     }
-    impl<M: ethers::providers::Middleware> IUniversalRouter<M> {
+    impl<M: ethers_providers::Middleware> IUniversalRouter<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
-        pub fn new<T: Into<ethers::core::types::Address>>(
+        pub fn new<T: Into<ethers_core::types::Address>>(
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            ethers::contract::Contract::new(address.into(), IUNIVERSALROUTER_ABI.clone(), client)
+            ethers_contract::Contract::new(address.into(), IUNIVERSALROUTER_ABI.clone(), client)
                 .into()
         }
         #[doc = "Calls the contract's `collectRewards` (0x709a1cc2) function"]
         pub fn collect_rewards(
             &self,
-            looks_rare_claim: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            looks_rare_claim: ethers_core::types::Bytes,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([112, 154, 28, 194], looks_rare_claim)
                 .expect("method not found (this should never happen)")
@@ -64,9 +62,9 @@ pub mod i_universal_router {
         #[doc = "Calls the contract's `execute` (0x24856bc3) function"]
         pub fn execute(
             &self,
-            commands: ethers::core::types::Bytes,
-            inputs: ::std::vec::Vec<ethers::core::types::Bytes>,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            commands: ethers_core::types::Bytes,
+            inputs: ::std::vec::Vec<ethers_core::types::Bytes>,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([36, 133, 107, 195], (commands, inputs))
                 .expect("method not found (this should never happen)")
@@ -74,10 +72,10 @@ pub mod i_universal_router {
         #[doc = "Calls the contract's `execute` (0x3593564c) function"]
         pub fn execute_with_commands_and_inputs(
             &self,
-            commands: ethers::core::types::Bytes,
-            inputs: ::std::vec::Vec<ethers::core::types::Bytes>,
-            deadline: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            commands: ethers_core::types::Bytes,
+            inputs: ::std::vec::Vec<ethers_core::types::Bytes>,
+            deadline: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([53, 147, 86, 76], (commands, inputs, deadline))
                 .expect("method not found (this should never happen)")
@@ -85,12 +83,12 @@ pub mod i_universal_router {
         #[doc = "Calls the contract's `onERC1155BatchReceived` (0xbc197c81) function"]
         pub fn on_erc1155_batch_received(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-            p2: ::std::vec::Vec<ethers::core::types::U256>,
-            p3: ::std::vec::Vec<ethers::core::types::U256>,
-            p4: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, [u8; 4]> {
+            p0: ethers_core::types::Address,
+            p1: ethers_core::types::Address,
+            p2: ::std::vec::Vec<ethers_core::types::U256>,
+            p3: ::std::vec::Vec<ethers_core::types::U256>,
+            p4: ethers_core::types::Bytes,
+        ) -> ethers_contract::builders::ContractCall<M, [u8; 4]> {
             self.0
                 .method_hash([188, 25, 124, 129], (p0, p1, p2, p3, p4))
                 .expect("method not found (this should never happen)")
@@ -98,12 +96,12 @@ pub mod i_universal_router {
         #[doc = "Calls the contract's `onERC1155Received` (0xf23a6e61) function"]
         pub fn on_erc1155_received(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-            p2: ethers::core::types::U256,
-            p3: ethers::core::types::U256,
-            p4: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, [u8; 4]> {
+            p0: ethers_core::types::Address,
+            p1: ethers_core::types::Address,
+            p2: ethers_core::types::U256,
+            p3: ethers_core::types::U256,
+            p4: ethers_core::types::Bytes,
+        ) -> ethers_contract::builders::ContractCall<M, [u8; 4]> {
             self.0
                 .method_hash([242, 58, 110, 97], (p0, p1, p2, p3, p4))
                 .expect("method not found (this should never happen)")
@@ -111,11 +109,11 @@ pub mod i_universal_router {
         #[doc = "Calls the contract's `onERC721Received` (0x150b7a02) function"]
         pub fn on_erc721_received(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-            p2: ethers::core::types::U256,
-            p3: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, [u8; 4]> {
+            p0: ethers_core::types::Address,
+            p1: ethers_core::types::Address,
+            p2: ethers_core::types::U256,
+            p3: ethers_core::types::Bytes,
+        ) -> ethers_contract::builders::ContractCall<M, [u8; 4]> {
             self.0
                 .method_hash([21, 11, 122, 2], (p0, p1, p2, p3))
                 .expect("method not found (this should never happen)")
@@ -124,7 +122,7 @@ pub mod i_universal_router {
         pub fn supports_interface(
             &self,
             interface_id: [u8; 4],
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([1, 255, 201, 167], interface_id)
                 .expect("method not found (this should never happen)")
@@ -134,8 +132,8 @@ pub mod i_universal_router {
             &self,
             amount_0_delta: I256,
             amount_1_delta: I256,
-            data: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            data: ethers_core::types::Bytes,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([250, 70, 30, 51], (amount_0_delta, amount_1_delta, data))
                 .expect("method not found (this should never happen)")
@@ -143,16 +141,16 @@ pub mod i_universal_router {
         #[doc = "Gets the contract's `RewardsSent` event"]
         pub fn rewards_sent_filter(
             &self,
-        ) -> ethers::contract::builders::Event<M, RewardsSentFilter> {
+        ) -> ethers_contract::builders::Event<M, RewardsSentFilter> {
             self.0.event()
         }
         #[doc = r" Returns an [`Event`](#ethers_contract::builders::Event) builder for all events of this contract"]
-        pub fn events(&self) -> ethers::contract::builders::Event<M, RewardsSentFilter> {
+        pub fn events(&self) -> ethers_contract::builders::Event<M, RewardsSentFilter> {
             self.0.event_with_filter(Default::default())
         }
     }
-    impl<M: ethers::providers::Middleware> From<ethers::contract::Contract<M>> for IUniversalRouter<M> {
-        fn from(contract: ethers::contract::Contract<M>) -> Self {
+    impl<M: ethers_providers::Middleware> From<ethers_contract::Contract<M>> for IUniversalRouter<M> {
+        fn from(contract: ethers_contract::Contract<M>) -> Self {
             Self(contract)
         }
     }
@@ -163,8 +161,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ContractLocked", abi = "ContractLocked()")]
     pub struct ContractLocked;
@@ -175,8 +173,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ETHNotAccepted", abi = "ETHNotAccepted()")]
     pub struct ETHNotAccepted;
@@ -187,13 +185,13 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ExecutionFailed", abi = "ExecutionFailed(uint256,bytes)")]
     pub struct ExecutionFailed {
-        pub command_index: ethers::core::types::U256,
-        pub message: ethers::core::types::Bytes,
+        pub command_index: ethers_core::types::U256,
+        pub message: ethers_core::types::Bytes,
     }
     #[doc = "Custom Error type `FromAddressIsNotOwner` with signature `FromAddressIsNotOwner()` and selector `[231, 0, 40, 119]`"]
     #[derive(
@@ -202,8 +200,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "FromAddressIsNotOwner", abi = "FromAddressIsNotOwner()")]
     pub struct FromAddressIsNotOwner;
@@ -214,8 +212,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InsufficientETH", abi = "InsufficientETH()")]
     pub struct InsufficientETH;
@@ -226,8 +224,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InsufficientToken", abi = "InsufficientToken()")]
     pub struct InsufficientToken;
@@ -238,8 +236,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InvalidBips", abi = "InvalidBips()")]
     pub struct InvalidBips;
@@ -250,12 +248,12 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InvalidCommandType", abi = "InvalidCommandType(uint256)")]
     pub struct InvalidCommandType {
-        pub command_type: ethers::core::types::U256,
+        pub command_type: ethers_core::types::U256,
     }
     #[doc = "Custom Error type `InvalidOwnerERC1155` with signature `InvalidOwnerERC1155()` and selector `[72, 58, 105, 41]`"]
     #[derive(
@@ -264,8 +262,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InvalidOwnerERC1155", abi = "InvalidOwnerERC1155()")]
     pub struct InvalidOwnerERC1155;
@@ -276,8 +274,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InvalidOwnerERC721", abi = "InvalidOwnerERC721()")]
     pub struct InvalidOwnerERC721;
@@ -288,8 +286,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InvalidPath", abi = "InvalidPath()")]
     pub struct InvalidPath;
@@ -300,8 +298,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "InvalidReserves", abi = "InvalidReserves()")]
     pub struct InvalidReserves;
@@ -312,8 +310,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "LengthMismatch", abi = "LengthMismatch()")]
     pub struct LengthMismatch;
@@ -324,8 +322,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "NoSlice", abi = "NoSlice()")]
     pub struct NoSlice;
@@ -336,8 +334,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "SliceOutOfBounds", abi = "SliceOutOfBounds()")]
     pub struct SliceOutOfBounds;
@@ -348,8 +346,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "SliceOverflow", abi = "SliceOverflow()")]
     pub struct SliceOverflow;
@@ -360,8 +358,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ToAddressOutOfBounds", abi = "ToAddressOutOfBounds()")]
     pub struct ToAddressOutOfBounds;
@@ -372,8 +370,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ToAddressOverflow", abi = "ToAddressOverflow()")]
     pub struct ToAddressOverflow;
@@ -384,8 +382,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ToUint24OutOfBounds", abi = "ToUint24OutOfBounds()")]
     pub struct ToUint24OutOfBounds;
@@ -396,8 +394,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "ToUint24Overflow", abi = "ToUint24Overflow()")]
     pub struct ToUint24Overflow;
@@ -408,8 +406,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "TransactionDeadlinePassed", abi = "TransactionDeadlinePassed()")]
     pub struct TransactionDeadlinePassed;
@@ -420,8 +418,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "UnableToClaim", abi = "UnableToClaim()")]
     pub struct UnableToClaim;
@@ -432,8 +430,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "UnsafeCast", abi = "UnsafeCast()")]
     pub struct UnsafeCast;
@@ -444,8 +442,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V2InvalidPath", abi = "V2InvalidPath()")]
     pub struct V2InvalidPath;
@@ -456,8 +454,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V2TooLittleReceived", abi = "V2TooLittleReceived()")]
     pub struct V2TooLittleReceived;
@@ -468,8 +466,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V2TooMuchRequested", abi = "V2TooMuchRequested()")]
     pub struct V2TooMuchRequested;
@@ -480,8 +478,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V3InvalidAmountOut", abi = "V3InvalidAmountOut()")]
     pub struct V3InvalidAmountOut;
@@ -492,8 +490,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V3InvalidCaller", abi = "V3InvalidCaller()")]
     pub struct V3InvalidCaller;
@@ -504,8 +502,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V3InvalidSwap", abi = "V3InvalidSwap()")]
     pub struct V3InvalidSwap;
@@ -516,8 +514,8 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V3TooLittleReceived", abi = "V3TooLittleReceived()")]
     pub struct V3TooLittleReceived;
@@ -528,12 +526,12 @@ pub mod i_universal_router {
         Default,
         Eq,
         PartialEq,
-        ethers :: contract :: EthError,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthError,
+        ethers_contract :: EthDisplay,
     )]
     #[etherror(name = "V3TooMuchRequested", abi = "V3TooMuchRequested()")]
     pub struct V3TooMuchRequested;
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IUniversalRouterErrors {
         ContractLocked(ContractLocked),
         ETHNotAccepted(ETHNotAccepted),
@@ -567,166 +565,164 @@ pub mod i_universal_router {
         V3TooLittleReceived(V3TooLittleReceived),
         V3TooMuchRequested(V3TooMuchRequested),
     }
-    impl ethers::core::abi::AbiDecode for IUniversalRouterErrors {
+    impl ethers_core::abi::AbiDecode for IUniversalRouterErrors {
         fn decode(
             data: impl AsRef<[u8]>,
-        ) -> ::std::result::Result<Self, ethers::core::abi::AbiError> {
+        ) -> ::std::result::Result<Self, ethers_core::abi::AbiError> {
             if let Ok(decoded) =
-                <ContractLocked as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ContractLocked as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ContractLocked(decoded))
             }
             if let Ok(decoded) =
-                <ETHNotAccepted as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ETHNotAccepted as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ETHNotAccepted(decoded))
             }
             if let Ok(decoded) =
-                <ExecutionFailed as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ExecutionFailed as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ExecutionFailed(decoded))
             }
             if let Ok(decoded) =
-                <FromAddressIsNotOwner as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <FromAddressIsNotOwner as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::FromAddressIsNotOwner(decoded))
             }
             if let Ok(decoded) =
-                <InsufficientETH as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InsufficientETH as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InsufficientETH(decoded))
             }
             if let Ok(decoded) =
-                <InsufficientToken as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InsufficientToken as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InsufficientToken(decoded))
             }
-            if let Ok(decoded) =
-                <InvalidBips as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <InvalidBips as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InvalidBips(decoded))
             }
             if let Ok(decoded) =
-                <InvalidCommandType as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InvalidCommandType as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InvalidCommandType(decoded))
             }
             if let Ok(decoded) =
-                <InvalidOwnerERC1155 as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InvalidOwnerERC1155 as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InvalidOwnerERC1155(decoded))
             }
             if let Ok(decoded) =
-                <InvalidOwnerERC721 as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InvalidOwnerERC721 as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InvalidOwnerERC721(decoded))
             }
-            if let Ok(decoded) =
-                <InvalidPath as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <InvalidPath as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InvalidPath(decoded))
             }
             if let Ok(decoded) =
-                <InvalidReserves as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InvalidReserves as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::InvalidReserves(decoded))
             }
             if let Ok(decoded) =
-                <LengthMismatch as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <LengthMismatch as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::LengthMismatch(decoded))
             }
-            if let Ok(decoded) = <NoSlice as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <NoSlice as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniversalRouterErrors::NoSlice(decoded))
             }
             if let Ok(decoded) =
-                <SliceOutOfBounds as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <SliceOutOfBounds as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::SliceOutOfBounds(decoded))
             }
             if let Ok(decoded) =
-                <SliceOverflow as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <SliceOverflow as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::SliceOverflow(decoded))
             }
             if let Ok(decoded) =
-                <ToAddressOutOfBounds as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ToAddressOutOfBounds as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ToAddressOutOfBounds(decoded))
             }
             if let Ok(decoded) =
-                <ToAddressOverflow as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ToAddressOverflow as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ToAddressOverflow(decoded))
             }
             if let Ok(decoded) =
-                <ToUint24OutOfBounds as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ToUint24OutOfBounds as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ToUint24OutOfBounds(decoded))
             }
             if let Ok(decoded) =
-                <ToUint24Overflow as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <ToUint24Overflow as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::ToUint24Overflow(decoded))
             }
             if let Ok(decoded) =
-                <TransactionDeadlinePassed as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TransactionDeadlinePassed as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::TransactionDeadlinePassed(decoded))
             }
             if let Ok(decoded) =
-                <UnableToClaim as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <UnableToClaim as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::UnableToClaim(decoded))
             }
-            if let Ok(decoded) = <UnsafeCast as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <UnsafeCast as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::UnsafeCast(decoded))
             }
             if let Ok(decoded) =
-                <V2InvalidPath as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V2InvalidPath as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V2InvalidPath(decoded))
             }
             if let Ok(decoded) =
-                <V2TooLittleReceived as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V2TooLittleReceived as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V2TooLittleReceived(decoded))
             }
             if let Ok(decoded) =
-                <V2TooMuchRequested as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V2TooMuchRequested as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V2TooMuchRequested(decoded))
             }
             if let Ok(decoded) =
-                <V3InvalidAmountOut as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V3InvalidAmountOut as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V3InvalidAmountOut(decoded))
             }
             if let Ok(decoded) =
-                <V3InvalidCaller as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V3InvalidCaller as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V3InvalidCaller(decoded))
             }
             if let Ok(decoded) =
-                <V3InvalidSwap as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V3InvalidSwap as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V3InvalidSwap(decoded))
             }
             if let Ok(decoded) =
-                <V3TooLittleReceived as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V3TooLittleReceived as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V3TooLittleReceived(decoded))
             }
             if let Ok(decoded) =
-                <V3TooMuchRequested as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <V3TooMuchRequested as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterErrors::V3TooMuchRequested(decoded))
             }
-            Err(ethers::core::abi::Error::InvalidData.into())
+            Err(ethers_core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for IUniversalRouterErrors {
+    impl ethers_core::abi::AbiEncode for IUniversalRouterErrors {
         fn encode(self) -> Vec<u8> {
             match self {
                 IUniversalRouterErrors::ContractLocked(element) => element.encode(),
@@ -960,13 +956,13 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "RewardsSent", abi = "RewardsSent(uint256)")]
     pub struct RewardsSentFilter {
-        pub amount: ethers::core::types::U256,
+        pub amount: ethers_core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `collectRewards` function with signature `collectRewards(bytes)` and selector `[112, 154, 28, 194]`"]
     #[derive(
@@ -974,13 +970,13 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "collectRewards", abi = "collectRewards(bytes)")]
     pub struct CollectRewardsCall {
-        pub looks_rare_claim: ethers::core::types::Bytes,
+        pub looks_rare_claim: ethers_core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `execute` function with signature `execute(bytes,bytes[])` and selector `[36, 133, 107, 195]`"]
     #[derive(
@@ -988,14 +984,14 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "execute", abi = "execute(bytes,bytes[])")]
     pub struct ExecuteCall {
-        pub commands: ethers::core::types::Bytes,
-        pub inputs: ::std::vec::Vec<ethers::core::types::Bytes>,
+        pub commands: ethers_core::types::Bytes,
+        pub inputs: ::std::vec::Vec<ethers_core::types::Bytes>,
     }
     #[doc = "Container type for all input parameters for the `execute` function with signature `execute(bytes,bytes[],uint256)` and selector `[53, 147, 86, 76]`"]
     #[derive(
@@ -1003,15 +999,15 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "execute", abi = "execute(bytes,bytes[],uint256)")]
     pub struct ExecuteWithCommandsAndInputsCall {
-        pub commands: ethers::core::types::Bytes,
-        pub inputs: ::std::vec::Vec<ethers::core::types::Bytes>,
-        pub deadline: ethers::core::types::U256,
+        pub commands: ethers_core::types::Bytes,
+        pub inputs: ::std::vec::Vec<ethers_core::types::Bytes>,
+        pub deadline: ethers_core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `onERC1155BatchReceived` function with signature `onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)` and selector `[188, 25, 124, 129]`"]
     #[derive(
@@ -1019,8 +1015,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(
@@ -1028,11 +1024,11 @@ pub mod i_universal_router {
         abi = "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"
     )]
     pub struct OnERC1155BatchReceivedCall(
-        pub ethers::core::types::Address,
-        pub ethers::core::types::Address,
-        pub ::std::vec::Vec<ethers::core::types::U256>,
-        pub ::std::vec::Vec<ethers::core::types::U256>,
-        pub ethers::core::types::Bytes,
+        pub ethers_core::types::Address,
+        pub ethers_core::types::Address,
+        pub ::std::vec::Vec<ethers_core::types::U256>,
+        pub ::std::vec::Vec<ethers_core::types::U256>,
+        pub ethers_core::types::Bytes,
     );
     #[doc = "Container type for all input parameters for the `onERC1155Received` function with signature `onERC1155Received(address,address,uint256,uint256,bytes)` and selector `[242, 58, 110, 97]`"]
     #[derive(
@@ -1040,8 +1036,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(
@@ -1049,11 +1045,11 @@ pub mod i_universal_router {
         abi = "onERC1155Received(address,address,uint256,uint256,bytes)"
     )]
     pub struct OnERC1155ReceivedCall(
-        pub ethers::core::types::Address,
-        pub ethers::core::types::Address,
-        pub ethers::core::types::U256,
-        pub ethers::core::types::U256,
-        pub ethers::core::types::Bytes,
+        pub ethers_core::types::Address,
+        pub ethers_core::types::Address,
+        pub ethers_core::types::U256,
+        pub ethers_core::types::U256,
+        pub ethers_core::types::Bytes,
     );
     #[doc = "Container type for all input parameters for the `onERC721Received` function with signature `onERC721Received(address,address,uint256,bytes)` and selector `[21, 11, 122, 2]`"]
     #[derive(
@@ -1061,16 +1057,16 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "onERC721Received", abi = "onERC721Received(address,address,uint256,bytes)")]
     pub struct OnERC721ReceivedCall(
-        pub ethers::core::types::Address,
-        pub ethers::core::types::Address,
-        pub ethers::core::types::U256,
-        pub ethers::core::types::Bytes,
+        pub ethers_core::types::Address,
+        pub ethers_core::types::Address,
+        pub ethers_core::types::U256,
+        pub ethers_core::types::Bytes,
     );
     #[doc = "Container type for all input parameters for the `supportsInterface` function with signature `supportsInterface(bytes4)` and selector `[1, 255, 201, 167]`"]
     #[derive(
@@ -1078,8 +1074,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "supportsInterface", abi = "supportsInterface(bytes4)")]
@@ -1092,17 +1088,17 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "uniswapV3SwapCallback", abi = "uniswapV3SwapCallback(int256,int256,bytes)")]
     pub struct UniswapV3SwapCallbackCall {
         pub amount_0_delta: I256,
         pub amount_1_delta: I256,
-        pub data: ethers::core::types::Bytes,
+        pub data: ethers_core::types::Bytes,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IUniversalRouterCalls {
         CollectRewards(CollectRewardsCall),
         Execute(ExecuteCall),
@@ -1113,56 +1109,55 @@ pub mod i_universal_router {
         SupportsInterface(SupportsInterfaceCall),
         UniswapV3SwapCallback(UniswapV3SwapCallbackCall),
     }
-    impl ethers::core::abi::AbiDecode for IUniversalRouterCalls {
+    impl ethers_core::abi::AbiDecode for IUniversalRouterCalls {
         fn decode(
             data: impl AsRef<[u8]>,
-        ) -> ::std::result::Result<Self, ethers::core::abi::AbiError> {
+        ) -> ::std::result::Result<Self, ethers_core::abi::AbiError> {
             if let Ok(decoded) =
-                <CollectRewardsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <CollectRewardsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::CollectRewards(decoded))
             }
-            if let Ok(decoded) =
-                <ExecuteCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <ExecuteCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::Execute(decoded))
             }
             if let Ok(decoded) =
-                <ExecuteWithCommandsAndInputsCall as ethers::core::abi::AbiDecode>::decode(
+                <ExecuteWithCommandsAndInputsCall as ethers_core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
                 return Ok(IUniversalRouterCalls::ExecuteWithCommandsAndInputs(decoded))
             }
             if let Ok(decoded) =
-                <OnERC1155BatchReceivedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <OnERC1155BatchReceivedCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::OnERC1155BatchReceived(decoded))
             }
             if let Ok(decoded) =
-                <OnERC1155ReceivedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <OnERC1155ReceivedCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::OnERC1155Received(decoded))
             }
             if let Ok(decoded) =
-                <OnERC721ReceivedCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <OnERC721ReceivedCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::OnERC721Received(decoded))
             }
             if let Ok(decoded) =
-                <SupportsInterfaceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <SupportsInterfaceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::SupportsInterface(decoded))
             }
             if let Ok(decoded) =
-                <UniswapV3SwapCallbackCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <UniswapV3SwapCallbackCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniversalRouterCalls::UniswapV3SwapCallback(decoded))
             }
-            Err(ethers::core::abi::Error::InvalidData.into())
+            Err(ethers_core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for IUniversalRouterCalls {
+    impl ethers_core::abi::AbiEncode for IUniversalRouterCalls {
         fn encode(self) -> Vec<u8> {
             match self {
                 IUniversalRouterCalls::CollectRewards(element) => element.encode(),
@@ -1236,8 +1231,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct OnERC1155BatchReceivedReturn(pub [u8; 4]);
@@ -1247,8 +1242,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct OnERC1155ReceivedReturn(pub [u8; 4]);
@@ -1258,8 +1253,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct OnERC721ReceivedReturn(pub [u8; 4]);
@@ -1269,8 +1264,8 @@ pub mod i_universal_router {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct SupportsInterfaceReturn(pub bool);

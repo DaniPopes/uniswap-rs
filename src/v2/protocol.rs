@@ -1,6 +1,8 @@
 use super::{Factory, Pair, Router};
 use crate::{errors::Result, Amount, ProtocolType};
-use ethers::prelude::{builders::ContractCall, *};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, Chain, H256, U256};
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
 /// A UniswapV2 protocol.

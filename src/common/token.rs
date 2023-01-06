@@ -1,10 +1,10 @@
 use crate::{bindings::ierc20::IERC20, errors::Result};
-use ethers::{
+use ethers_contract::{builders::ContractCall, Multicall};
+use ethers_core::{
     abi::Tokenizable,
-    prelude::{builders::ContractCall, Multicall},
-    providers::Middleware,
     types::{Address, Chain},
 };
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
 const UNKNOWN: &str = "unknown";
@@ -139,7 +139,7 @@ impl<M: Middleware> Erc20<M> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ethers::prelude::*;
+    use ethers_providers::{Http, Provider, MAINNET};
 
     fn default_token() -> Erc20<Provider<Http>> {
         let address = crate::contracts::addresses::address("WETH", Chain::Mainnet);

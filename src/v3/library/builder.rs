@@ -6,12 +6,12 @@ use crate::{
     },
     utils::get_deadline,
 };
-use ethers::{
+use ethers_contract::builders::ContractCall;
+use ethers_core::{
     abi::{self, Tokenize},
-    contract::builders::ContractCall,
-    providers::Middleware,
     types::Bytes,
 };
+use ethers_providers::Middleware;
 
 /// Builds a call to the UniversalRouter's `execute` function.
 ///
@@ -134,7 +134,7 @@ impl Builder {
 mod tests {
     use super::*;
     use crate::bindings::i_universal_router_commands::SweepCall;
-    use ethers::types::{Address, U256};
+    use ethers_core::types::{Address, U256};
 
     #[test]
     fn builder() {
@@ -144,7 +144,7 @@ mod tests {
         let command = SweepCall { token, recipient, amount_min };
         let allow_revert = false;
 
-        let encoded = ethers::abi::encode(&command.clone().into_tokens());
+        let encoded = ethers_core::abi::encode(&command.clone().into_tokens());
 
         let r = Builder::new().command(command.into(), allow_revert).build(None);
         assert_eq!(r.commands, Bytes::from(vec![Command::Sweep.encode(allow_revert)]));

@@ -1,7 +1,7 @@
 //! Hashes of the deployment bytecode used to deploy pairs by the factory of the protocol. Used to
 //! calculate the CREATE2 address for a pair without making any external calls.
 
-use ethers::core::types::H256;
+use ethers_core::types::H256;
 
 /// [0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f](https://github.com/Uniswap/v2-periphery/blob/0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f/contracts/libraries/UniswapV2Library.sol#L24)
 pub const UNISWAP_V2_PAIR_CODE_HASH: H256 = H256([

@@ -1,5 +1,7 @@
 use crate::{bindings::i_uniswap_v3_pool::IUniswapV3Pool, ProtocolType};
-use ethers::{contract::builders::ContractCall, prelude::*};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, Chain, H256};
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
 type Tokens = (Address, Address);

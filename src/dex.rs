@@ -5,8 +5,13 @@ use crate::{
     v2::{Factory, Pair, Router},
     Amount, Protocol, ProtocolType,
 };
-use ethers::prelude::{builders::ContractCall, *};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, U256};
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
+
+#[cfg(feature = "addresses")]
+use ethers_core::types::Chain;
 
 /// Aggregates common methods to interact with the Uniswap v2 or v3 protocols and other utilities.
 pub struct Dex<M> {
@@ -19,7 +24,7 @@ pub struct Dex<M> {
 
 impl<M> Clone for Dex<M> {
     fn clone(&self) -> Self {
-        Self { protocol: self.protocol.clone(), weth: self.weth.clone() }
+        Self { protocol: self.protocol.clone(), weth: self.weth }
     }
 }
 
@@ -301,10 +306,15 @@ fn path_eq(path: &[Address], weth: &Address) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use crate::{constants::*, v2::Library as V2Library};
-    use ethers::abi::{ParamType, Token, Tokenize};
-
     use super::*;
+    use crate::{constants::*, v2::Library as V2Library};
+    use ethers_core::{
+        abi::{self, ParamType, Token, Tokenize},
+        types::{Bytes, I256},
+    };
+    use ethers_middleware::SignerMiddleware;
+    use ethers_providers::{Http, Provider, MAINNET};
+    use ethers_signers::LocalWallet;
 
     fn assert_approx_eq<A: Into<U256>, B: Into<U256>, C: Into<U256>>(a: A, b: B, c: C) {
         let a = I256::from_raw(a.into());
@@ -312,7 +322,7 @@ mod tests {
         assert!((a - b).abs() < I256::from_raw(c.into()));
     }
 
-    fn default_dex() -> Dex<SignerMiddleware<Provider<Http>, Wallet<k256::ecdsa::SigningKey>>> {
+    fn default_dex() -> Dex<SignerMiddleware<Provider<Http>, LocalWallet>> {
         let provider: Provider<Http> = MAINNET.provider();
         let signer: LocalWallet =
             "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80".parse().unwrap();

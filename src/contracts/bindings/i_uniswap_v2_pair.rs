@@ -5,33 +5,31 @@ pub mod i_uniswap_v2_pair {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::{
-        contract::{
-            builders::{ContractCall, Event},
-            Contract, Lazy,
-        },
-        core::{
-            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-            types::*,
-        },
-        providers::Middleware,
+    use ethers_contract::{
+        builders::{ContractCall, Event},
+        Contract, Lazy,
     };
+    use ethers_core::{
+        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+        types::*,
+    };
+    use ethers_providers::Middleware;
     #[doc = "IUniswapV2Pair was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     # [rustfmt :: skip] const __ABI : & str = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount0\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount1\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"Burn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount0\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount1\",\"type\":\"uint256\"}],\"name\":\"Mint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount0In\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount1In\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount0Out\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount1Out\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"Swap\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint112\",\"name\":\"reserve0\",\"type\":\"uint112\"},{\"indexed\":false,\"internalType\":\"uint112\",\"name\":\"reserve1\",\"type\":\"uint112\"}],\"name\":\"Sync\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DOMAIN_SEPARATOR\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MINIMUM_LIQUIDITY\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"PERMIT_TYPEHASH\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"burn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount0\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount1\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"factory\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getReserves\",\"outputs\":[{\"internalType\":\"uint112\",\"name\":\"reserve0\",\"type\":\"uint112\"},{\"internalType\":\"uint112\",\"name\":\"reserve1\",\"type\":\"uint112\"},{\"internalType\":\"uint32\",\"name\":\"blockTimestampLast\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"kLast\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"liquidity\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"nonces\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"}],\"name\":\"permit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price0CumulativeLast\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"price1CumulativeLast\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"skim\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount0Out\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount1Out\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"swap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"sync\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token0\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token1\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]\n" ;
     #[doc = r" The parsed JSON-ABI of the contract."]
-    pub static IUNISWAPV2PAIR_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
-        ethers::contract::Lazy::new(|| {
-            ethers::core::utils::__serde_json::from_str(__ABI).expect("invalid abi")
+    pub static IUNISWAPV2PAIR_ABI: ethers_contract::Lazy<ethers_core::abi::Abi> =
+        ethers_contract::Lazy::new(|| {
+            ethers_core::utils::__serde_json::from_str(__ABI).expect("invalid abi")
         });
-    pub struct IUniswapV2Pair<M>(ethers::contract::Contract<M>);
+    pub struct IUniswapV2Pair<M>(ethers_contract::Contract<M>);
     impl<M> Clone for IUniswapV2Pair<M> {
         fn clone(&self) -> Self {
             IUniswapV2Pair(self.0.clone())
         }
     }
     impl<M> std::ops::Deref for IUniswapV2Pair<M> {
-        type Target = ethers::contract::Contract<M>;
+        type Target = ethers_contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
@@ -41,19 +39,19 @@ pub mod i_uniswap_v2_pair {
             f.debug_tuple(stringify!(IUniswapV2Pair)).field(&self.address()).finish()
         }
     }
-    impl<M: ethers::providers::Middleware> IUniswapV2Pair<M> {
+    impl<M: ethers_providers::Middleware> IUniswapV2Pair<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
-        pub fn new<T: Into<ethers::core::types::Address>>(
+        pub fn new<T: Into<ethers_core::types::Address>>(
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            ethers::contract::Contract::new(address.into(), IUNISWAPV2PAIR_ABI.clone(), client)
+            ethers_contract::Contract::new(address.into(), IUNISWAPV2PAIR_ABI.clone(), client)
                 .into()
         }
         #[doc = "Calls the contract's `DOMAIN_SEPARATOR` (0x3644e515) function"]
-        pub fn domain_separator(&self) -> ethers::contract::builders::ContractCall<M, [u8; 32]> {
+        pub fn domain_separator(&self) -> ethers_contract::builders::ContractCall<M, [u8; 32]> {
             self.0
                 .method_hash([54, 68, 229, 21], ())
                 .expect("method not found (this should never happen)")
@@ -61,13 +59,13 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `MINIMUM_LIQUIDITY` (0xba9a7a56) function"]
         pub fn minimum_liquidity(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([186, 154, 122, 86], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `PERMIT_TYPEHASH` (0x30adf81f) function"]
-        pub fn permit_typehash(&self) -> ethers::contract::builders::ContractCall<M, [u8; 32]> {
+        pub fn permit_typehash(&self) -> ethers_contract::builders::ContractCall<M, [u8; 32]> {
             self.0
                 .method_hash([48, 173, 248, 31], ())
                 .expect("method not found (this should never happen)")
@@ -75,9 +73,9 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `allowance` (0xdd62ed3e) function"]
         pub fn allowance(
             &self,
-            owner: ethers::core::types::Address,
-            spender: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ethers_core::types::Address,
+            spender: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([221, 98, 237, 62], (owner, spender))
                 .expect("method not found (this should never happen)")
@@ -85,9 +83,9 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `approve` (0x095ea7b3) function"]
         pub fn approve(
             &self,
-            spender: ethers::core::types::Address,
-            value: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            spender: ethers_core::types::Address,
+            value: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([9, 94, 167, 179], (spender, value))
                 .expect("method not found (this should never happen)")
@@ -95,8 +93,8 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `balanceOf` (0x70a08231) function"]
         pub fn balance_of(
             &self,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([112, 160, 130, 49], owner)
                 .expect("method not found (this should never happen)")
@@ -104,17 +102,17 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `burn` (0x89afcb44) function"]
         pub fn burn(
             &self,
-            to: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<
+            to: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<
             M,
-            (ethers::core::types::U256, ethers::core::types::U256),
+            (ethers_core::types::U256, ethers_core::types::U256),
         > {
             self.0
                 .method_hash([137, 175, 203, 68], to)
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `decimals` (0x313ce567) function"]
-        pub fn decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
+        pub fn decimals(&self) -> ethers_contract::builders::ContractCall<M, u8> {
             self.0
                 .method_hash([49, 60, 229, 103], ())
                 .expect("method not found (this should never happen)")
@@ -122,7 +120,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `factory` (0xc45a0155) function"]
         pub fn factory(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::Address> {
             self.0
                 .method_hash([196, 90, 1, 85], ())
                 .expect("method not found (this should never happen)")
@@ -130,7 +128,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `getReserves` (0x0902f1ac) function"]
         pub fn get_reserves(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, (u128, u128, u32)> {
+        ) -> ethers_contract::builders::ContractCall<M, (u128, u128, u32)> {
             self.0
                 .method_hash([9, 2, 241, 172], ())
                 .expect("method not found (this should never happen)")
@@ -138,9 +136,9 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `initialize` (0x485cc955) function"]
         pub fn initialize(
             &self,
-            p0: ethers::core::types::Address,
-            p1: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            p0: ethers_core::types::Address,
+            p1: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([72, 92, 201, 85], (p0, p1))
                 .expect("method not found (this should never happen)")
@@ -148,7 +146,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `kLast` (0x7464fc3d) function"]
         pub fn k_last(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([116, 100, 252, 61], ())
                 .expect("method not found (this should never happen)")
@@ -156,14 +154,14 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `mint` (0x6a627842) function"]
         pub fn mint(
             &self,
-            to: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            to: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([106, 98, 120, 66], to)
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `name` (0x06fdde03) function"]
-        pub fn name(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        pub fn name(&self) -> ethers_contract::builders::ContractCall<M, String> {
             self.0
                 .method_hash([6, 253, 222, 3], ())
                 .expect("method not found (this should never happen)")
@@ -171,8 +169,8 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `nonces` (0x7ecebe00) function"]
         pub fn nonces(
             &self,
-            owner: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([126, 206, 190, 0], owner)
                 .expect("method not found (this should never happen)")
@@ -180,14 +178,14 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `permit` (0xd505accf) function"]
         pub fn permit(
             &self,
-            owner: ethers::core::types::Address,
-            spender: ethers::core::types::Address,
-            value: ethers::core::types::U256,
-            deadline: ethers::core::types::U256,
+            owner: ethers_core::types::Address,
+            spender: ethers_core::types::Address,
+            value: ethers_core::types::U256,
+            deadline: ethers_core::types::U256,
             v: u8,
             r: [u8; 32],
             s: [u8; 32],
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([213, 5, 172, 207], (owner, spender, value, deadline, v, r, s))
                 .expect("method not found (this should never happen)")
@@ -195,7 +193,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `price0CumulativeLast` (0x5909c0d5) function"]
         pub fn price_0_cumulative_last(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([89, 9, 192, 213], ())
                 .expect("method not found (this should never happen)")
@@ -203,7 +201,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `price1CumulativeLast` (0x5a3d5493) function"]
         pub fn price_1_cumulative_last(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([90, 61, 84, 147], ())
                 .expect("method not found (this should never happen)")
@@ -211,8 +209,8 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `skim` (0xbc25cf77) function"]
         pub fn skim(
             &self,
-            to: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            to: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([188, 37, 207, 119], to)
                 .expect("method not found (this should never happen)")
@@ -220,23 +218,23 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `swap` (0x022c0d9f) function"]
         pub fn swap(
             &self,
-            amount_0_out: ethers::core::types::U256,
-            amount_1_out: ethers::core::types::U256,
-            to: ethers::core::types::Address,
-            data: ethers::core::types::Bytes,
-        ) -> ethers::contract::builders::ContractCall<M, ()> {
+            amount_0_out: ethers_core::types::U256,
+            amount_1_out: ethers_core::types::U256,
+            to: ethers_core::types::Address,
+            data: ethers_core::types::Bytes,
+        ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([2, 44, 13, 159], (amount_0_out, amount_1_out, to, data))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `symbol` (0x95d89b41) function"]
-        pub fn symbol(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        pub fn symbol(&self) -> ethers_contract::builders::ContractCall<M, String> {
             self.0
                 .method_hash([149, 216, 155, 65], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `sync` (0xfff6cae9) function"]
-        pub fn sync(&self) -> ethers::contract::builders::ContractCall<M, ()> {
+        pub fn sync(&self) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash([255, 246, 202, 233], ())
                 .expect("method not found (this should never happen)")
@@ -244,7 +242,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `token0` (0x0dfe1681) function"]
         pub fn token_0(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::Address> {
             self.0
                 .method_hash([13, 254, 22, 129], ())
                 .expect("method not found (this should never happen)")
@@ -252,7 +250,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `token1` (0xd21220a7) function"]
         pub fn token_1(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::Address> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::Address> {
             self.0
                 .method_hash([210, 18, 32, 167], ())
                 .expect("method not found (this should never happen)")
@@ -260,7 +258,7 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `totalSupply` (0x18160ddd) function"]
         pub fn total_supply(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([24, 22, 13, 221], ())
                 .expect("method not found (this should never happen)")
@@ -268,9 +266,9 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `transfer` (0xa9059cbb) function"]
         pub fn transfer(
             &self,
-            to: ethers::core::types::Address,
-            value: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            to: ethers_core::types::Address,
+            value: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([169, 5, 156, 187], (to, value))
                 .expect("method not found (this should never happen)")
@@ -278,45 +276,45 @@ pub mod i_uniswap_v2_pair {
         #[doc = "Calls the contract's `transferFrom` (0x23b872dd) function"]
         pub fn transfer_from(
             &self,
-            from: ethers::core::types::Address,
-            to: ethers::core::types::Address,
-            value: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            from: ethers_core::types::Address,
+            to: ethers_core::types::Address,
+            value: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([35, 184, 114, 221], (from, to, value))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Gets the contract's `Approval` event"]
-        pub fn approval_filter(&self) -> ethers::contract::builders::Event<M, ApprovalFilter> {
+        pub fn approval_filter(&self) -> ethers_contract::builders::Event<M, ApprovalFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `Burn` event"]
-        pub fn burn_filter(&self) -> ethers::contract::builders::Event<M, BurnFilter> {
+        pub fn burn_filter(&self) -> ethers_contract::builders::Event<M, BurnFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `Mint` event"]
-        pub fn mint_filter(&self) -> ethers::contract::builders::Event<M, MintFilter> {
+        pub fn mint_filter(&self) -> ethers_contract::builders::Event<M, MintFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `Swap` event"]
-        pub fn swap_filter(&self) -> ethers::contract::builders::Event<M, SwapFilter> {
+        pub fn swap_filter(&self) -> ethers_contract::builders::Event<M, SwapFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `Sync` event"]
-        pub fn sync_filter(&self) -> ethers::contract::builders::Event<M, SyncFilter> {
+        pub fn sync_filter(&self) -> ethers_contract::builders::Event<M, SyncFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `Transfer` event"]
-        pub fn transfer_filter(&self) -> ethers::contract::builders::Event<M, TransferFilter> {
+        pub fn transfer_filter(&self) -> ethers_contract::builders::Event<M, TransferFilter> {
             self.0.event()
         }
         #[doc = r" Returns an [`Event`](#ethers_contract::builders::Event) builder for all events of this contract"]
-        pub fn events(&self) -> ethers::contract::builders::Event<M, IUniswapV2PairEvents> {
+        pub fn events(&self) -> ethers_contract::builders::Event<M, IUniswapV2PairEvents> {
             self.0.event_with_filter(Default::default())
         }
     }
-    impl<M: ethers::providers::Middleware> From<ethers::contract::Contract<M>> for IUniswapV2Pair<M> {
-        fn from(contract: ethers::contract::Contract<M>) -> Self {
+    impl<M: ethers_providers::Middleware> From<ethers_contract::Contract<M>> for IUniswapV2Pair<M> {
+        fn from(contract: ethers_contract::Contract<M>) -> Self {
             Self(contract)
         }
     }
@@ -325,79 +323,79 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Approval", abi = "Approval(address,address,uint256)")]
     pub struct ApprovalFilter {
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
+        pub owner: ethers_core::types::Address,
         #[ethevent(indexed)]
-        pub spender: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub spender: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Burn", abi = "Burn(address,uint256,uint256,address)")]
     pub struct BurnFilter {
         #[ethevent(indexed)]
-        pub sender: ethers::core::types::Address,
-        pub amount_0: ethers::core::types::U256,
-        pub amount_1: ethers::core::types::U256,
+        pub sender: ethers_core::types::Address,
+        pub amount_0: ethers_core::types::U256,
+        pub amount_1: ethers_core::types::U256,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
+        pub to: ethers_core::types::Address,
     }
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Mint", abi = "Mint(address,uint256,uint256)")]
     pub struct MintFilter {
         #[ethevent(indexed)]
-        pub sender: ethers::core::types::Address,
-        pub amount_0: ethers::core::types::U256,
-        pub amount_1: ethers::core::types::U256,
+        pub sender: ethers_core::types::Address,
+        pub amount_0: ethers_core::types::U256,
+        pub amount_1: ethers_core::types::U256,
     }
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Swap", abi = "Swap(address,uint256,uint256,uint256,uint256,address)")]
     pub struct SwapFilter {
         #[ethevent(indexed)]
-        pub sender: ethers::core::types::Address,
-        pub amount_0_in: ethers::core::types::U256,
-        pub amount_1_in: ethers::core::types::U256,
-        pub amount_0_out: ethers::core::types::U256,
-        pub amount_1_out: ethers::core::types::U256,
+        pub sender: ethers_core::types::Address,
+        pub amount_0_in: ethers_core::types::U256,
+        pub amount_1_in: ethers_core::types::U256,
+        pub amount_0_out: ethers_core::types::U256,
+        pub amount_1_out: ethers_core::types::U256,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
+        pub to: ethers_core::types::Address,
     }
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Sync", abi = "Sync(uint112,uint112)")]
@@ -410,19 +408,19 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Transfer", abi = "Transfer(address,address,uint256)")]
     pub struct TransferFilter {
         #[ethevent(indexed)]
-        pub from: ethers::core::types::Address,
+        pub from: ethers_core::types::Address,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub to: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IUniswapV2PairEvents {
         ApprovalFilter(ApprovalFilter),
         BurnFilter(BurnFilter),
@@ -431,10 +429,10 @@ pub mod i_uniswap_v2_pair {
         SyncFilter(SyncFilter),
         TransferFilter(TransferFilter),
     }
-    impl ethers::contract::EthLogDecode for IUniswapV2PairEvents {
+    impl ethers_contract::EthLogDecode for IUniswapV2PairEvents {
         fn decode_log(
-            log: &ethers::core::abi::RawLog,
-        ) -> ::std::result::Result<Self, ethers::core::abi::Error>
+            log: &ethers_core::abi::RawLog,
+        ) -> ::std::result::Result<Self, ethers_core::abi::Error>
         where
             Self: Sized,
         {
@@ -456,7 +454,7 @@ pub mod i_uniswap_v2_pair {
             if let Ok(decoded) = TransferFilter::decode_log(log) {
                 return Ok(IUniswapV2PairEvents::TransferFilter(decoded))
             }
-            Err(ethers::core::abi::Error::InvalidData)
+            Err(ethers_core::abi::Error::InvalidData)
         }
     }
     impl ::std::fmt::Display for IUniswapV2PairEvents {
@@ -477,8 +475,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "DOMAIN_SEPARATOR", abi = "DOMAIN_SEPARATOR()")]
@@ -489,8 +487,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "MINIMUM_LIQUIDITY", abi = "MINIMUM_LIQUIDITY()")]
@@ -501,8 +499,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "PERMIT_TYPEHASH", abi = "PERMIT_TYPEHASH()")]
@@ -513,14 +511,14 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "allowance", abi = "allowance(address,address)")]
     pub struct AllowanceCall {
-        pub owner: ethers::core::types::Address,
-        pub spender: ethers::core::types::Address,
+        pub owner: ethers_core::types::Address,
+        pub spender: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `approve` function with signature `approve(address,uint256)` and selector `[9, 94, 167, 179]`"]
     #[derive(
@@ -528,14 +526,14 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "approve", abi = "approve(address,uint256)")]
     pub struct ApproveCall {
-        pub spender: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub spender: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `balanceOf` function with signature `balanceOf(address)` and selector `[112, 160, 130, 49]`"]
     #[derive(
@@ -543,13 +541,13 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "balanceOf", abi = "balanceOf(address)")]
     pub struct BalanceOfCall {
-        pub owner: ethers::core::types::Address,
+        pub owner: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `burn` function with signature `burn(address)` and selector `[137, 175, 203, 68]`"]
     #[derive(
@@ -557,13 +555,13 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "burn", abi = "burn(address)")]
     pub struct BurnCall {
-        pub to: ethers::core::types::Address,
+        pub to: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `decimals` function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
     #[derive(
@@ -571,8 +569,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "decimals", abi = "decimals()")]
@@ -583,8 +581,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "factory", abi = "factory()")]
@@ -595,8 +593,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "getReserves", abi = "getReserves()")]
@@ -607,20 +605,20 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "initialize", abi = "initialize(address,address)")]
-    pub struct InitializeCall(pub ethers::core::types::Address, pub ethers::core::types::Address);
+    pub struct InitializeCall(pub ethers_core::types::Address, pub ethers_core::types::Address);
     #[doc = "Container type for all input parameters for the `kLast` function with signature `kLast()` and selector `[116, 100, 252, 61]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "kLast", abi = "kLast()")]
@@ -631,13 +629,13 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "mint", abi = "mint(address)")]
     pub struct MintCall {
-        pub to: ethers::core::types::Address,
+        pub to: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `name` function with signature `name()` and selector `[6, 253, 222, 3]`"]
     #[derive(
@@ -645,8 +643,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "name", abi = "name()")]
@@ -657,13 +655,13 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "nonces", abi = "nonces(address)")]
     pub struct NoncesCall {
-        pub owner: ethers::core::types::Address,
+        pub owner: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `permit` function with signature `permit(address,address,uint256,uint256,uint8,bytes32,bytes32)` and selector `[213, 5, 172, 207]`"]
     #[derive(
@@ -671,8 +669,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(
@@ -680,10 +678,10 @@ pub mod i_uniswap_v2_pair {
         abi = "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)"
     )]
     pub struct PermitCall {
-        pub owner: ethers::core::types::Address,
-        pub spender: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
-        pub deadline: ethers::core::types::U256,
+        pub owner: ethers_core::types::Address,
+        pub spender: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
+        pub deadline: ethers_core::types::U256,
         pub v: u8,
         pub r: [u8; 32],
         pub s: [u8; 32],
@@ -694,8 +692,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "price0CumulativeLast", abi = "price0CumulativeLast()")]
@@ -706,8 +704,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "price1CumulativeLast", abi = "price1CumulativeLast()")]
@@ -718,13 +716,13 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "skim", abi = "skim(address)")]
     pub struct SkimCall {
-        pub to: ethers::core::types::Address,
+        pub to: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `swap` function with signature `swap(uint256,uint256,address,bytes)` and selector `[2, 44, 13, 159]`"]
     #[derive(
@@ -732,16 +730,16 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "swap", abi = "swap(uint256,uint256,address,bytes)")]
     pub struct SwapCall {
-        pub amount_0_out: ethers::core::types::U256,
-        pub amount_1_out: ethers::core::types::U256,
-        pub to: ethers::core::types::Address,
-        pub data: ethers::core::types::Bytes,
+        pub amount_0_out: ethers_core::types::U256,
+        pub amount_1_out: ethers_core::types::U256,
+        pub to: ethers_core::types::Address,
+        pub data: ethers_core::types::Bytes,
     }
     #[doc = "Container type for all input parameters for the `symbol` function with signature `symbol()` and selector `[149, 216, 155, 65]`"]
     #[derive(
@@ -749,8 +747,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "symbol", abi = "symbol()")]
@@ -761,8 +759,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "sync", abi = "sync()")]
@@ -773,8 +771,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "token0", abi = "token0()")]
@@ -785,8 +783,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "token1", abi = "token1()")]
@@ -797,8 +795,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "totalSupply", abi = "totalSupply()")]
@@ -809,14 +807,14 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "transfer", abi = "transfer(address,uint256)")]
     pub struct TransferCall {
-        pub to: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub to: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `[35, 184, 114, 221]`"]
     #[derive(
@@ -824,17 +822,17 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "transferFrom", abi = "transferFrom(address,address,uint256)")]
     pub struct TransferFromCall {
-        pub from: ethers::core::types::Address,
-        pub to: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub from: ethers_core::types::Address,
+        pub to: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IUniswapV2PairCalls {
         DomainSeparator(DomainSeparatorCall),
         MinimumLiquidity(MinimumLiquidityCall),
@@ -864,131 +862,128 @@ pub mod i_uniswap_v2_pair {
         Transfer(TransferCall),
         TransferFrom(TransferFromCall),
     }
-    impl ethers::core::abi::AbiDecode for IUniswapV2PairCalls {
+    impl ethers_core::abi::AbiDecode for IUniswapV2PairCalls {
         fn decode(
             data: impl AsRef<[u8]>,
-        ) -> ::std::result::Result<Self, ethers::core::abi::AbiError> {
+        ) -> ::std::result::Result<Self, ethers_core::abi::AbiError> {
             if let Ok(decoded) =
-                <DomainSeparatorCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <DomainSeparatorCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::DomainSeparator(decoded))
             }
             if let Ok(decoded) =
-                <MinimumLiquidityCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <MinimumLiquidityCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::MinimumLiquidity(decoded))
             }
             if let Ok(decoded) =
-                <PermitTypehashCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <PermitTypehashCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::PermitTypehash(decoded))
             }
             if let Ok(decoded) =
-                <AllowanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <AllowanceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Allowance(decoded))
             }
-            if let Ok(decoded) =
-                <ApproveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <ApproveCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Approve(decoded))
             }
             if let Ok(decoded) =
-                <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <BalanceOfCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::BalanceOf(decoded))
             }
-            if let Ok(decoded) = <BurnCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <BurnCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Burn(decoded))
             }
             if let Ok(decoded) =
-                <DecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <DecimalsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Decimals(decoded))
             }
-            if let Ok(decoded) =
-                <FactoryCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <FactoryCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Factory(decoded))
             }
             if let Ok(decoded) =
-                <GetReservesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <GetReservesCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::GetReserves(decoded))
             }
             if let Ok(decoded) =
-                <InitializeCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <InitializeCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Initialize(decoded))
             }
-            if let Ok(decoded) = <KlastCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
-            {
+            if let Ok(decoded) = <KlastCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Klast(decoded))
             }
-            if let Ok(decoded) = <MintCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <MintCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Mint(decoded))
             }
-            if let Ok(decoded) = <NameCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <NameCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Name(decoded))
             }
-            if let Ok(decoded) = <NoncesCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <NoncesCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Nonces(decoded))
             }
-            if let Ok(decoded) = <PermitCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <PermitCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Permit(decoded))
             }
             if let Ok(decoded) =
-                <Price0CumulativeLastCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <Price0CumulativeLastCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Price0CumulativeLast(decoded))
             }
             if let Ok(decoded) =
-                <Price1CumulativeLastCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <Price1CumulativeLastCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Price1CumulativeLast(decoded))
             }
-            if let Ok(decoded) = <SkimCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <SkimCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Skim(decoded))
             }
-            if let Ok(decoded) = <SwapCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <SwapCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Swap(decoded))
             }
-            if let Ok(decoded) = <SymbolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <SymbolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Symbol(decoded))
             }
-            if let Ok(decoded) = <SyncCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <SyncCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniswapV2PairCalls::Sync(decoded))
             }
-            if let Ok(decoded) = <Token0Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <Token0Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Token0(decoded))
             }
-            if let Ok(decoded) = <Token1Call as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <Token1Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Token1(decoded))
             }
             if let Ok(decoded) =
-                <TotalSupplyCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TotalSupplyCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::TotalSupply(decoded))
             }
             if let Ok(decoded) =
-                <TransferCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TransferCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::Transfer(decoded))
             }
             if let Ok(decoded) =
-                <TransferFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TransferFromCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IUniswapV2PairCalls::TransferFrom(decoded))
             }
-            Err(ethers::core::abi::Error::InvalidData.into())
+            Err(ethers_core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for IUniswapV2PairCalls {
+    impl ethers_core::abi::AbiEncode for IUniswapV2PairCalls {
         fn encode(self) -> Vec<u8> {
             match self {
                 IUniswapV2PairCalls::DomainSeparator(element) => element.encode(),
@@ -1195,8 +1190,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct DomainSeparatorReturn(pub [u8; 32]);
@@ -1206,19 +1201,19 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct MinimumLiquidityReturn(pub ethers::core::types::U256);
+    pub struct MinimumLiquidityReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `PERMIT_TYPEHASH` function with signature `PERMIT_TYPEHASH()` and selector `[48, 173, 248, 31]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct PermitTypehashReturn(pub [u8; 32]);
@@ -1228,19 +1223,19 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct AllowanceReturn(pub ethers::core::types::U256);
+    pub struct AllowanceReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `approve` function with signature `approve(address,uint256)` and selector `[9, 94, 167, 179]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct ApproveReturn(pub bool);
@@ -1250,24 +1245,24 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct BalanceOfReturn(pub ethers::core::types::U256);
+    pub struct BalanceOfReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `burn` function with signature `burn(address)` and selector `[137, 175, 203, 68]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct BurnReturn {
-        pub amount_0: ethers::core::types::U256,
-        pub amount_1: ethers::core::types::U256,
+        pub amount_0: ethers_core::types::U256,
+        pub amount_1: ethers_core::types::U256,
     }
     #[doc = "Container type for all return fields from the `decimals` function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
     #[derive(
@@ -1275,8 +1270,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct DecimalsReturn(pub u8);
@@ -1286,19 +1281,19 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct FactoryReturn(pub ethers::core::types::Address);
+    pub struct FactoryReturn(pub ethers_core::types::Address);
     #[doc = "Container type for all return fields from the `getReserves` function with signature `getReserves()` and selector `[9, 2, 241, 172]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct GetReservesReturn {
@@ -1312,23 +1307,23 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct KlastReturn(pub ethers::core::types::U256);
+    pub struct KlastReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `mint` function with signature `mint(address)` and selector `[106, 98, 120, 66]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct MintReturn {
-        pub liquidity: ethers::core::types::U256,
+        pub liquidity: ethers_core::types::U256,
     }
     #[doc = "Container type for all return fields from the `name` function with signature `name()` and selector `[6, 253, 222, 3]`"]
     #[derive(
@@ -1336,8 +1331,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct NameReturn(pub String);
@@ -1347,41 +1342,41 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct NoncesReturn(pub ethers::core::types::U256);
+    pub struct NoncesReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `price0CumulativeLast` function with signature `price0CumulativeLast()` and selector `[89, 9, 192, 213]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct Price0CumulativeLastReturn(pub ethers::core::types::U256);
+    pub struct Price0CumulativeLastReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `price1CumulativeLast` function with signature `price1CumulativeLast()` and selector `[90, 61, 84, 147]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct Price1CumulativeLastReturn(pub ethers::core::types::U256);
+    pub struct Price1CumulativeLastReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `symbol` function with signature `symbol()` and selector `[149, 216, 155, 65]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct SymbolReturn(pub String);
@@ -1391,41 +1386,41 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct Token0Return(pub ethers::core::types::Address);
+    pub struct Token0Return(pub ethers_core::types::Address);
     #[doc = "Container type for all return fields from the `token1` function with signature `token1()` and selector `[210, 18, 32, 167]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct Token1Return(pub ethers::core::types::Address);
+    pub struct Token1Return(pub ethers_core::types::Address);
     #[doc = "Container type for all return fields from the `totalSupply` function with signature `totalSupply()` and selector `[24, 22, 13, 221]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct TotalSupplyReturn(pub ethers::core::types::U256);
+    pub struct TotalSupplyReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `transfer` function with signature `transfer(address,uint256)` and selector `[169, 5, 156, 187]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct TransferReturn(pub bool);
@@ -1435,8 +1430,8 @@ pub mod i_uniswap_v2_pair {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct TransferFromReturn(pub bool);

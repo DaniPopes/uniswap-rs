@@ -1,0 +1,15 @@
+[package]
+name = "uniswap-rs-examples"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.62"
+authors = ["DaniPopes <danipopes1@proton.me>"]
+license = "MIT"
+publish = false
+
+[dependencies]
+uniswap-rs = { path = "../" }
+
+ethers = "1.0"
+tokio = { version = "1", features = ["macros"] }
+eyre = "0.6"

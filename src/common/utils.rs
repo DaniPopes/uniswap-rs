@@ -1,7 +1,7 @@
 //! Utils
 
 use super::constants::NATIVE_ADDRESS;
-use ethers::types::{Address, U256};
+use ethers_core::types::{Address, U256};
 use std::time::{Duration, SystemTime};
 
 /// Returns the [Duration] since the UNIX epoch.

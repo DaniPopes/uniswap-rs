@@ -3,7 +3,12 @@ use crate::{
     bindings::i_uniswap_v2_pair::IUniswapV2Pair,
     errors::{Error, Result},
 };
-use ethers::{core::abi::Tokenizable, prelude::*};
+use ethers_contract::{Multicall, MulticallVersion};
+use ethers_core::{
+    abi::Tokenizable,
+    types::{Address, U256},
+};
+use ethers_providers::Middleware;
 use std::cmp::Ordering;
 
 /// The UniswapV2 library refactored from the official [@Uniswap/v2-periphery].
@@ -32,10 +37,10 @@ impl Library {
 
         let from = factory.address();
         // keccak256(abi.encodePacked(a, b))
-        let salt = ethers::utils::keccak256([a.0, b.0].concat());
+        let salt = ethers_core::utils::keccak256([a.0, b.0].concat());
         let init_code_hash = factory.pair_code_hash(None).0;
 
-        ethers::utils::get_create2_address_from_hash(from, salt, init_code_hash)
+        ethers_core::utils::get_create2_address_from_hash(from, salt, init_code_hash)
     }
 
     /// Fetches and sorts the reserves for a pair.
@@ -180,6 +185,9 @@ impl Library {
 mod tests {
     use super::*;
     use crate::ProtocolType;
+    use ethers_contract::Lazy;
+    use ethers_core::types::Chain;
+    use ethers_providers::{Http, Provider, MAINNET};
 
     static FACTORY: Lazy<Factory<Provider<Http>>> = Lazy::new(|| {
         Factory::new_with_chain(MAINNET.provider().into(), Chain::Mainnet, ProtocolType::UniswapV2)

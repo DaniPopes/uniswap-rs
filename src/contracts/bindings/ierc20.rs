@@ -5,33 +5,31 @@ pub mod ierc20 {
     #![allow(dead_code)]
     #![allow(clippy::type_complexity)]
     #![allow(unused_imports)]
-    use ethers::{
-        contract::{
-            builders::{ContractCall, Event},
-            Contract, Lazy,
-        },
-        core::{
-            abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
-            types::*,
-        },
-        providers::Middleware,
+    use ethers_contract::{
+        builders::{ContractCall, Event},
+        Contract, Lazy,
     };
+    use ethers_core::{
+        abi::{Abi, Detokenize, InvalidOutputType, Token, Tokenizable},
+        types::*,
+    };
+    use ethers_providers::Middleware;
     #[doc = "IERC20 was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
     # [rustfmt :: skip] const __ABI : & str = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]\n" ;
     #[doc = r" The parsed JSON-ABI of the contract."]
-    pub static IERC20_ABI: ethers::contract::Lazy<ethers::core::abi::Abi> =
-        ethers::contract::Lazy::new(|| {
-            ethers::core::utils::__serde_json::from_str(__ABI).expect("invalid abi")
+    pub static IERC20_ABI: ethers_contract::Lazy<ethers_core::abi::Abi> =
+        ethers_contract::Lazy::new(|| {
+            ethers_core::utils::__serde_json::from_str(__ABI).expect("invalid abi")
         });
-    pub struct IERC20<M>(ethers::contract::Contract<M>);
+    pub struct IERC20<M>(ethers_contract::Contract<M>);
     impl<M> Clone for IERC20<M> {
         fn clone(&self) -> Self {
             IERC20(self.0.clone())
         }
     }
     impl<M> std::ops::Deref for IERC20<M> {
-        type Target = ethers::contract::Contract<M>;
+        type Target = ethers_contract::Contract<M>;
         fn deref(&self) -> &Self::Target {
             &self.0
         }
@@ -41,22 +39,22 @@ pub mod ierc20 {
             f.debug_tuple(stringify!(IERC20)).field(&self.address()).finish()
         }
     }
-    impl<M: ethers::providers::Middleware> IERC20<M> {
+    impl<M: ethers_providers::Middleware> IERC20<M> {
         #[doc = r" Creates a new contract instance with the specified `ethers`"]
         #[doc = r" client at the given `Address`. The contract derefs to a `ethers::Contract`"]
         #[doc = r" object"]
-        pub fn new<T: Into<ethers::core::types::Address>>(
+        pub fn new<T: Into<ethers_core::types::Address>>(
             address: T,
             client: ::std::sync::Arc<M>,
         ) -> Self {
-            ethers::contract::Contract::new(address.into(), IERC20_ABI.clone(), client).into()
+            ethers_contract::Contract::new(address.into(), IERC20_ABI.clone(), client).into()
         }
         #[doc = "Calls the contract's `allowance` (0xdd62ed3e) function"]
         pub fn allowance(
             &self,
-            owner: ethers::core::types::Address,
-            spender: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            owner: ethers_core::types::Address,
+            spender: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([221, 98, 237, 62], (owner, spender))
                 .expect("method not found (this should never happen)")
@@ -64,9 +62,9 @@ pub mod ierc20 {
         #[doc = "Calls the contract's `approve` (0x095ea7b3) function"]
         pub fn approve(
             &self,
-            spender: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            spender: ethers_core::types::Address,
+            amount: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([9, 94, 167, 179], (spender, amount))
                 .expect("method not found (this should never happen)")
@@ -74,26 +72,26 @@ pub mod ierc20 {
         #[doc = "Calls the contract's `balanceOf` (0x70a08231) function"]
         pub fn balance_of(
             &self,
-            account: ethers::core::types::Address,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+            account: ethers_core::types::Address,
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([112, 160, 130, 49], account)
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `decimals` (0x313ce567) function"]
-        pub fn decimals(&self) -> ethers::contract::builders::ContractCall<M, u8> {
+        pub fn decimals(&self) -> ethers_contract::builders::ContractCall<M, u8> {
             self.0
                 .method_hash([49, 60, 229, 103], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `name` (0x06fdde03) function"]
-        pub fn name(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        pub fn name(&self) -> ethers_contract::builders::ContractCall<M, String> {
             self.0
                 .method_hash([6, 253, 222, 3], ())
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Calls the contract's `symbol` (0x95d89b41) function"]
-        pub fn symbol(&self) -> ethers::contract::builders::ContractCall<M, String> {
+        pub fn symbol(&self) -> ethers_contract::builders::ContractCall<M, String> {
             self.0
                 .method_hash([149, 216, 155, 65], ())
                 .expect("method not found (this should never happen)")
@@ -101,7 +99,7 @@ pub mod ierc20 {
         #[doc = "Calls the contract's `totalSupply` (0x18160ddd) function"]
         pub fn total_supply(
             &self,
-        ) -> ethers::contract::builders::ContractCall<M, ethers::core::types::U256> {
+        ) -> ethers_contract::builders::ContractCall<M, ethers_core::types::U256> {
             self.0
                 .method_hash([24, 22, 13, 221], ())
                 .expect("method not found (this should never happen)")
@@ -109,9 +107,9 @@ pub mod ierc20 {
         #[doc = "Calls the contract's `transfer` (0xa9059cbb) function"]
         pub fn transfer(
             &self,
-            to: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            to: ethers_core::types::Address,
+            amount: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([169, 5, 156, 187], (to, amount))
                 .expect("method not found (this should never happen)")
@@ -119,29 +117,29 @@ pub mod ierc20 {
         #[doc = "Calls the contract's `transferFrom` (0x23b872dd) function"]
         pub fn transfer_from(
             &self,
-            from: ethers::core::types::Address,
-            to: ethers::core::types::Address,
-            amount: ethers::core::types::U256,
-        ) -> ethers::contract::builders::ContractCall<M, bool> {
+            from: ethers_core::types::Address,
+            to: ethers_core::types::Address,
+            amount: ethers_core::types::U256,
+        ) -> ethers_contract::builders::ContractCall<M, bool> {
             self.0
                 .method_hash([35, 184, 114, 221], (from, to, amount))
                 .expect("method not found (this should never happen)")
         }
         #[doc = "Gets the contract's `Approval` event"]
-        pub fn approval_filter(&self) -> ethers::contract::builders::Event<M, ApprovalFilter> {
+        pub fn approval_filter(&self) -> ethers_contract::builders::Event<M, ApprovalFilter> {
             self.0.event()
         }
         #[doc = "Gets the contract's `Transfer` event"]
-        pub fn transfer_filter(&self) -> ethers::contract::builders::Event<M, TransferFilter> {
+        pub fn transfer_filter(&self) -> ethers_contract::builders::Event<M, TransferFilter> {
             self.0.event()
         }
         #[doc = r" Returns an [`Event`](#ethers_contract::builders::Event) builder for all events of this contract"]
-        pub fn events(&self) -> ethers::contract::builders::Event<M, IERC20Events> {
+        pub fn events(&self) -> ethers_contract::builders::Event<M, IERC20Events> {
             self.0.event_with_filter(Default::default())
         }
     }
-    impl<M: ethers::providers::Middleware> From<ethers::contract::Contract<M>> for IERC20<M> {
-        fn from(contract: ethers::contract::Contract<M>) -> Self {
+    impl<M: ethers_providers::Middleware> From<ethers_contract::Contract<M>> for IERC20<M> {
+        fn from(contract: ethers_contract::Contract<M>) -> Self {
             Self(contract)
         }
     }
@@ -150,44 +148,44 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Approval", abi = "Approval(address,address,uint256)")]
     pub struct ApprovalFilter {
         #[ethevent(indexed)]
-        pub owner: ethers::core::types::Address,
+        pub owner: ethers_core::types::Address,
         #[ethevent(indexed)]
-        pub spender: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub spender: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthEvent,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthEvent,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethevent(name = "Transfer", abi = "Transfer(address,address,uint256)")]
     pub struct TransferFilter {
         #[ethevent(indexed)]
-        pub from: ethers::core::types::Address,
+        pub from: ethers_core::types::Address,
         #[ethevent(indexed)]
-        pub to: ethers::core::types::Address,
-        pub value: ethers::core::types::U256,
+        pub to: ethers_core::types::Address,
+        pub value: ethers_core::types::U256,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IERC20Events {
         ApprovalFilter(ApprovalFilter),
         TransferFilter(TransferFilter),
     }
-    impl ethers::contract::EthLogDecode for IERC20Events {
+    impl ethers_contract::EthLogDecode for IERC20Events {
         fn decode_log(
-            log: &ethers::core::abi::RawLog,
-        ) -> ::std::result::Result<Self, ethers::core::abi::Error>
+            log: &ethers_core::abi::RawLog,
+        ) -> ::std::result::Result<Self, ethers_core::abi::Error>
         where
             Self: Sized,
         {
@@ -197,7 +195,7 @@ pub mod ierc20 {
             if let Ok(decoded) = TransferFilter::decode_log(log) {
                 return Ok(IERC20Events::TransferFilter(decoded))
             }
-            Err(ethers::core::abi::Error::InvalidData)
+            Err(ethers_core::abi::Error::InvalidData)
         }
     }
     impl ::std::fmt::Display for IERC20Events {
@@ -214,14 +212,14 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "allowance", abi = "allowance(address,address)")]
     pub struct AllowanceCall {
-        pub owner: ethers::core::types::Address,
-        pub spender: ethers::core::types::Address,
+        pub owner: ethers_core::types::Address,
+        pub spender: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `approve` function with signature `approve(address,uint256)` and selector `[9, 94, 167, 179]`"]
     #[derive(
@@ -229,14 +227,14 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "approve", abi = "approve(address,uint256)")]
     pub struct ApproveCall {
-        pub spender: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub spender: ethers_core::types::Address,
+        pub amount: ethers_core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `balanceOf` function with signature `balanceOf(address)` and selector `[112, 160, 130, 49]`"]
     #[derive(
@@ -244,13 +242,13 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "balanceOf", abi = "balanceOf(address)")]
     pub struct BalanceOfCall {
-        pub account: ethers::core::types::Address,
+        pub account: ethers_core::types::Address,
     }
     #[doc = "Container type for all input parameters for the `decimals` function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
     #[derive(
@@ -258,8 +256,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "decimals", abi = "decimals()")]
@@ -270,8 +268,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "name", abi = "name()")]
@@ -282,8 +280,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "symbol", abi = "symbol()")]
@@ -294,8 +292,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "totalSupply", abi = "totalSupply()")]
@@ -306,14 +304,14 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "transfer", abi = "transfer(address,uint256)")]
     pub struct TransferCall {
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub to: ethers_core::types::Address,
+        pub amount: ethers_core::types::U256,
     }
     #[doc = "Container type for all input parameters for the `transferFrom` function with signature `transferFrom(address,address,uint256)` and selector `[35, 184, 114, 221]`"]
     #[derive(
@@ -321,17 +319,17 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthCall,
-        ethers :: contract :: EthDisplay,
+        ethers_contract :: EthCall,
+        ethers_contract :: EthDisplay,
         Default,
     )]
     #[ethcall(name = "transferFrom", abi = "transferFrom(address,address,uint256)")]
     pub struct TransferFromCall {
-        pub from: ethers::core::types::Address,
-        pub to: ethers::core::types::Address,
-        pub amount: ethers::core::types::U256,
+        pub from: ethers_core::types::Address,
+        pub to: ethers_core::types::Address,
+        pub amount: ethers_core::types::U256,
     }
-    #[derive(Debug, Clone, PartialEq, Eq, ethers :: contract :: EthAbiType)]
+    #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IERC20Calls {
         Allowance(AllowanceCall),
         Approve(ApproveCall),
@@ -343,56 +341,55 @@ pub mod ierc20 {
         Transfer(TransferCall),
         TransferFrom(TransferFromCall),
     }
-    impl ethers::core::abi::AbiDecode for IERC20Calls {
+    impl ethers_core::abi::AbiDecode for IERC20Calls {
         fn decode(
             data: impl AsRef<[u8]>,
-        ) -> ::std::result::Result<Self, ethers::core::abi::AbiError> {
+        ) -> ::std::result::Result<Self, ethers_core::abi::AbiError> {
             if let Ok(decoded) =
-                <AllowanceCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <AllowanceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::Allowance(decoded))
             }
-            if let Ok(decoded) =
-                <ApproveCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <ApproveCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::Approve(decoded))
             }
             if let Ok(decoded) =
-                <BalanceOfCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <BalanceOfCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::BalanceOf(decoded))
             }
             if let Ok(decoded) =
-                <DecimalsCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <DecimalsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::Decimals(decoded))
             }
-            if let Ok(decoded) = <NameCall as ethers::core::abi::AbiDecode>::decode(data.as_ref()) {
+            if let Ok(decoded) = <NameCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IERC20Calls::Name(decoded))
             }
-            if let Ok(decoded) = <SymbolCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+            if let Ok(decoded) = <SymbolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::Symbol(decoded))
             }
             if let Ok(decoded) =
-                <TotalSupplyCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TotalSupplyCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::TotalSupply(decoded))
             }
             if let Ok(decoded) =
-                <TransferCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TransferCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::Transfer(decoded))
             }
             if let Ok(decoded) =
-                <TransferFromCall as ethers::core::abi::AbiDecode>::decode(data.as_ref())
+                <TransferFromCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
                 return Ok(IERC20Calls::TransferFrom(decoded))
             }
-            Err(ethers::core::abi::Error::InvalidData.into())
+            Err(ethers_core::abi::Error::InvalidData.into())
         }
     }
-    impl ethers::core::abi::AbiEncode for IERC20Calls {
+    impl ethers_core::abi::AbiEncode for IERC20Calls {
         fn encode(self) -> Vec<u8> {
             match self {
                 IERC20Calls::Allowance(element) => element.encode(),
@@ -473,19 +470,19 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct AllowanceReturn(pub ethers::core::types::U256);
+    pub struct AllowanceReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `approve` function with signature `approve(address,uint256)` and selector `[9, 94, 167, 179]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct ApproveReturn(pub bool);
@@ -495,19 +492,19 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct BalanceOfReturn(pub ethers::core::types::U256);
+    pub struct BalanceOfReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `decimals` function with signature `decimals()` and selector `[49, 60, 229, 103]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct DecimalsReturn(pub u8);
@@ -517,8 +514,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct NameReturn(pub String);
@@ -528,8 +525,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct SymbolReturn(pub String);
@@ -539,19 +536,19 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
-    pub struct TotalSupplyReturn(pub ethers::core::types::U256);
+    pub struct TotalSupplyReturn(pub ethers_core::types::U256);
     #[doc = "Container type for all return fields from the `transfer` function with signature `transfer(address,uint256)` and selector `[169, 5, 156, 187]`"]
     #[derive(
         Clone,
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct TransferReturn(pub bool);
@@ -561,8 +558,8 @@ pub mod ierc20 {
         Debug,
         Eq,
         PartialEq,
-        ethers :: contract :: EthAbiType,
-        ethers :: contract :: EthAbiCodec,
+        ethers_contract :: EthAbiType,
+        ethers_contract :: EthAbiCodec,
         Default,
     )]
     pub struct TransferFromReturn(pub bool);

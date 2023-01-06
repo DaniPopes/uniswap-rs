@@ -1,6 +1,6 @@
 //! Constants
 
-use ethers::core::types::{Address, U256};
+use ethers_core::types::{Address, U256};
 
 // Convenience re-export of the pair code hash constants
 #[doc(hidden)]

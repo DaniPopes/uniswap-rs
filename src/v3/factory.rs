@@ -1,5 +1,6 @@
 use crate::{bindings::i_uniswap_v3_factory::IUniswapV3Factory, ProtocolType};
-use ethers::prelude::*;
+use ethers_core::types::{Address, Chain, H256};
+use ethers_providers::Middleware;
 use std::sync::Arc;
 
 contract_struct! {

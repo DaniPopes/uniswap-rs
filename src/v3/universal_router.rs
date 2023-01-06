@@ -1,14 +1,16 @@
 use super::Builder;
-use crate::{
-    contracts::bindings::{i_universal_router::IUniversalRouter, i_universal_router_commands::*},
-    ProtocolType,
+use crate::contracts::bindings::{
+    i_universal_router::IUniversalRouter, i_universal_router_commands::*,
 };
-use ethers::{
-    contract::builders::ContractCall,
-    providers::Middleware,
-    types::{Address, Bytes, Chain, U256},
-};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, Bytes, U256};
+use ethers_providers::Middleware;
 use std::sync::Arc;
+
+#[cfg(feature = "addresses")]
+use crate::protocol::ProtocolType;
+#[cfg(feature = "addresses")]
+use ethers_core::types::Chain;
 
 macro_rules! cmds {
     ($(

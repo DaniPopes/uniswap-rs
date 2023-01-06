@@ -1,7 +1,9 @@
 #![allow(unreachable_pub, unused)]
 
 use crate::bindings::i_swap_router::*;
-use ethers::prelude::{builders::ContractCall, *};
+use ethers_contract::builders::ContractCall;
+use ethers_core::types::{Address, Bytes, Chain, H256, I256, U256};
+use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
 contract_struct! {

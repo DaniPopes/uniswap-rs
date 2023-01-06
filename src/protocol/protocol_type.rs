@@ -1,5 +1,5 @@
 use super::pair_code_hashes::*;
-use ethers::prelude::*;
+use ethers_core::types::{Address, Chain, H256};
 use std::fmt;
 
 #[cfg(feature = "addresses")]
