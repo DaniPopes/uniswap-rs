@@ -179,7 +179,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn command_encoding() {
+    fn test_command_encoding() {
         for byte in 0..=u8::MAX {
             let allow_revert = (byte >> 7) == 1;
             let (command, r_allow_revert) = Command::decode(byte);

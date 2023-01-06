@@ -9,7 +9,7 @@ use crate::{
 use ethers_contract::builders::ContractCall;
 use ethers_core::{
     abi::{self, Tokenize},
-    types::Bytes,
+    types::{Bytes, U256},
 };
 use ethers_providers::Middleware;
 
@@ -79,13 +79,9 @@ impl Builder {
     }
 
     /// Consumes `self` to build into [`ExecuteWithCommandsAndInputsCall`].
-    pub fn build(self, deadline: Option<u64>) -> ExecuteWithCommandsAndInputsCall {
+    pub fn build(self, deadline: U256) -> ExecuteWithCommandsAndInputsCall {
         let Self { commands, inputs } = self;
-        ExecuteWithCommandsAndInputsCall {
-            commands: commands.into(),
-            inputs,
-            deadline: get_deadline(deadline),
-        }
+        ExecuteWithCommandsAndInputsCall { commands: commands.into(), inputs, deadline }
     }
 
     /// Consumes `self` to build into [`ExecuteCall`].
@@ -101,9 +97,9 @@ impl Builder {
         deadline: Option<u64>,
     ) -> ContractCall<M, ()> {
         match deadline {
-            Some(deadline) => {
-                let ExecuteWithCommandsAndInputsCall { commands, inputs, deadline } =
-                    self.build(Some(deadline));
+            Some(_) => {
+                let ExecuteCall { commands, inputs } = self.build_no_deadline();
+                let deadline = get_deadline(deadline);
                 router.execute_with_commands_and_inputs(commands, inputs, deadline)
             }
             None => {
@@ -137,7 +133,7 @@ mod tests {
     use ethers_core::types::{Address, U256};
 
     #[test]
-    fn builder() {
+    fn test_builder() {
         let token = Address::from_low_u64_be(1);
         let recipient = Address::from_low_u64_be(2);
         let amount_min = U256::from(3);
@@ -146,7 +142,7 @@ mod tests {
 
         let encoded = ethers_core::abi::encode(&command.clone().into_tokens());
 
-        let r = Builder::new().command(command.into(), allow_revert).build(None);
+        let r = Builder::new().command(command.into(), allow_revert).build_no_deadline();
         assert_eq!(r.commands, Bytes::from(vec![Command::Sweep.encode(allow_revert)]));
         assert_eq!(r.inputs, vec![Bytes::from(encoded)]);
     }
