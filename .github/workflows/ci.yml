@@ -6,29 +6,63 @@ on:
     pull_request:
 
 env:
-    ABIGEN_CHECK: true
     RUSTFLAGS: "-D warnings"
 
 jobs:
     test:
-        name: test +${{ matrix.toolchain }} @ ${{ matrix.os }}
-        runs-on: ${{ matrix.os }}
+        name: test +${{ matrix.toolchain }} (${{ matrix.job.target }})
+        runs-on: ${{ matrix.job.os }}
         strategy:
             fail-fast: false
             matrix:
-                os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+                job:
+                    - os: ubuntu-latest
+                      target: x86_64-unknown-linux-gnu
+                    - os: ubuntu-latest
+                      target: aarch64-unknown-linux-gnu
+                    - os: macos-latest
+                      target: x86_64-apple-darwin
+                    - os: macos-latest
+                      target: aarch64-apple-darwin
+                    - os: windows-latest
+                      target: x86_64-pc-windows-msvc
                 toolchain: ["stable", "nightly"]
         steps:
             - uses: actions/checkout@v3
             - uses: dtolnay/rust-toolchain@master
               with:
                   toolchain: ${{ matrix.toolchain }}
+                  targets: ${{ matrix.job.target }}
                   components: rustfmt
             - uses: Swatinem/rust-cache@v2
-              with:
-                  cache-on-failure: true
             - name: test
               run: cargo test --all-features
+
+    features:
+        name: features
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: dtolnay/rust-toolchain@nightly
+            - uses: Swatinem/rust-cache@v2
+            - uses: taiki-e/install-action@cargo-hack
+            - name: check --feature-powerset
+              run:
+                  cargo hack check --all --feature-powerset --depth 2 -Z avoid-dev-deps --keep-going
+
+    abigen:
+        name: abigen
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: dtolnay/rust-toolchain@nightly
+              with:
+                  components: rustfmt
+            - uses: Swatinem/rust-cache@v2
+            - name: build
+              env:
+                  ABIGEN_CHECK: true
+              run: cargo build --tests
 
     clippy:
         name: clippy
@@ -37,10 +71,8 @@ jobs:
             - uses: actions/checkout@v3
             - uses: dtolnay/rust-toolchain@nightly
               with:
-                  components: clippy, rustfmt
+                  components: clippy
             - uses: Swatinem/rust-cache@v2
-              with:
-                  cache-on-failure: true
             - name: clippy
               run: cargo clippy --tests --all-features
 
@@ -51,10 +83,8 @@ jobs:
             - uses: actions/checkout@v3
             - uses: dtolnay/rust-toolchain@nightly
               with:
-                  components: rust-docs, rustfmt
+                  components: rust-docs
             - uses: Swatinem/rust-cache@v2
-              with:
-                  cache-on-failure: true
             - name: doc
               run: cargo doc --all-features
 
@@ -66,8 +96,5 @@ jobs:
             - uses: dtolnay/rust-toolchain@nightly
               with:
                   components: rustfmt
-            - uses: Swatinem/rust-cache@v2
-              with:
-                  cache-on-failure: true
             - name: fmt --check
               run: cargo fmt --check
