@@ -6,45 +6,23 @@ use std::{fmt, sync::Arc};
 type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
-/// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
-pub struct Pair<M> {
-    /// The pair contract.
-    contract: IUniswapV2Pair<M>,
+contract_struct! {
+    /// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
+    pub struct Pair<M> {
+        /// The pair contract.
+        contract: IUniswapV2Pair<M>,
 
-    /// The ordered tokens of the pair.
-    tokens: Option<Tokens>,
+        /// The ordered tokens of the pair.
+        tokens: Option<Tokens>,
 
-    /// Whether the pair is currently deployed in the client's network.
-    deployed: bool,
+        /// Whether the pair is currently deployed in the client's network.
+        deployed: bool,
 
-    /// The token reserves of the pair.
-    reserves: Option<Reserves>,
+        /// The token reserves of the pair.
+        reserves: Option<Reserves>,
 
-    /// The protocol of the pair.
-    pub protocol: ProtocolType,
-}
-
-impl<M> Clone for Pair<M> {
-    fn clone(&self) -> Self {
-        Self {
-            contract: self.contract.clone(),
-            tokens: self.tokens.clone(),
-            deployed: self.deployed,
-            reserves: self.reserves.clone(),
-            protocol: self.protocol,
-        }
-    }
-}
-
-impl<M> fmt::Debug for Pair<M> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Pair")
-            .field("address", &self.contract.address())
-            .field("tokens", &self.tokens)
-            .field("deployed", &self.deployed)
-            .field("reserves", &self.reserves)
-            .field("protocol", &self.protocol)
-            .finish()
+        /// The protocol of the pair.
+        pub protocol: ProtocolType,
     }
 }
 

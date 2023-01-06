@@ -9,30 +9,20 @@ use std::sync::Arc;
 
 const UNKNOWN: &str = "unknown";
 
-/// An ERC20 token.
-#[derive(Debug)]
-pub struct Erc20<M> {
-    /// The token's contract.
-    contract: IERC20<M>,
+contract_struct! {
+    /// An ERC20 token.
+    pub struct Erc20<M> {
+        /// The token's contract.
+        contract: IERC20<M>,
 
-    /// The token's name.
-    pub name: Option<String>,
+        /// The token's name.
+        pub name: Option<String>,
 
-    /// The token's symbol.
-    pub symbol: Option<String>,
+        /// The token's symbol.
+        pub symbol: Option<String>,
 
-    /// The token's decimals.
-    pub decimals: Option<u8>,
-}
-
-impl<M> Clone for Erc20<M> {
-    fn clone(&self) -> Self {
-        Self {
-            contract: self.contract.clone(),
-            name: self.name.clone(),
-            symbol: self.symbol.clone(),
-            decimals: self.decimals,
-        }
+        /// The token's decimals.
+        pub decimals: Option<u8>,
     }
 }
 

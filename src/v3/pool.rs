@@ -5,45 +5,23 @@ use std::{fmt, sync::Arc};
 type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
-/// Represents a UniswapV3 liquidity pool, composed of 2 different ERC20 tokens.
-pub struct Pool<M> {
-    /// The pool contract.
-    contract: IUniswapV3Pool<M>,
+contract_struct! {
+    /// Represents a UniswapV3 liquidity pool, composed of 2 different ERC20 tokens.
+    pub struct Pool<M> {
+        /// The pool contract.
+        contract: IUniswapV3Pool<M>,
 
-    /// The ordered tokens of the pool.
-    tokens: Option<Tokens>,
+        /// The ordered tokens of the pool.
+        tokens: Option<Tokens>,
 
-    /// Whether the pool is currently deployed in the client's network.
-    deployed: bool,
+        /// Whether the pool is currently deployed in the client's network.
+        deployed: bool,
 
-    /// The token reserves of the pool.
-    reserves: Option<Reserves>,
+        /// The token reserves of the pool.
+        reserves: Option<Reserves>,
 
-    /// The protocol of the pool.
-    pub protocol: ProtocolType,
-}
-
-impl<M> Clone for Pool<M> {
-    fn clone(&self) -> Self {
-        Self {
-            contract: self.contract.clone(),
-            tokens: self.tokens.clone(),
-            deployed: self.deployed,
-            reserves: self.reserves.clone(),
-            protocol: self.protocol,
-        }
-    }
-}
-
-impl<M> fmt::Debug for Pool<M> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Pool")
-            .field("address", &self.contract.address())
-            .field("tokens", &self.tokens)
-            .field("deployed", &self.deployed)
-            .field("reserves", &self.reserves)
-            .field("protocol", &self.protocol)
-            .finish()
+        /// The protocol of the pool.
+        pub protocol: ProtocolType,
     }
 }
 

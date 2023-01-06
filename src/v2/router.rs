@@ -7,25 +7,16 @@ use crate::{
     Amount,
 };
 use ethers::prelude::{builders::ContractCall, *};
-use std::{fmt, sync::Arc};
+use std::sync::Arc;
 
 #[cfg(feature = "addresses")]
 use crate::protocol::ProtocolType;
 
-/// Represents a UniswapV2 router.
-pub struct Router<M> {
-    contract: IUniswapV2Router02<M>,
-}
-
-impl<M> Clone for Router<M> {
-    fn clone(&self) -> Self {
-        Self { contract: self.contract.clone() }
-    }
-}
-
-impl<M> fmt::Debug for Router<M> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Router").field("address", &self.contract.address()).finish()
+contract_struct! {
+    /// Represents a UniswapV2 router.
+    pub struct Router<M> {
+        /// The router contract.
+        contract: IUniswapV2Router02<M>,
     }
 }
 

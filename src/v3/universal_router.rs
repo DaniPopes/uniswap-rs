@@ -8,7 +8,7 @@ use ethers::{
     providers::Middleware,
     types::{Address, Bytes, Chain, U256},
 };
-use std::{fmt, sync::Arc};
+use std::sync::Arc;
 
 macro_rules! cmds {
     ($(
@@ -32,24 +32,14 @@ macro_rules! cmds {
     )+};
 }
 
-/// Represents a UniversalRouter router.
-pub struct UniversalRouter<M> {
-    contract: IUniversalRouter<M>,
-    builder: Builder,
-}
+contract_struct! {
+    /// Represents a UniversalRouter router.
+    pub struct UniversalRouter<M> {
+        /// The router contract.
+        contract: IUniversalRouter<M>,
 
-impl<M> Clone for UniversalRouter<M> {
-    fn clone(&self) -> Self {
-        Self { contract: self.contract.clone(), builder: self.builder.clone() }
-    }
-}
-
-impl<M> fmt::Debug for UniversalRouter<M> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("UniversalRouter")
-            .field("address", &self.contract.address())
-            .field("builder", &self.builder)
-            .finish()
+        /// The command builder.
+        builder: Builder,
     }
 }
 

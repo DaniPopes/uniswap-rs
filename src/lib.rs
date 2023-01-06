@@ -6,6 +6,10 @@
 #![warn(missing_docs, unreachable_pub)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
+#[macro_use]
+#[doc(hidden)]
+mod macros;
+
 mod common;
 mod dex;
 mod protocol;
