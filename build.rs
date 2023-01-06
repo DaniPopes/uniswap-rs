@@ -1,6 +1,3 @@
-// do not run on Windows
-#![cfg(not(windows))]
-
 use ethers_contract_abigen::{Abigen, MultiAbigen};
 use eyre::Result;
 use std::{env, path::PathBuf, process::Command};
@@ -19,11 +16,17 @@ macro_rules! warn {
     };
 }
 
+// do not run on Windows due to failing in CI
+// presumably due to rustfmt not working / not behaving the same
+#[cfg(windows)]
+fn main() {}
+
+#[cfg(not(windows))]
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed={ABI_PATH}");
     println!("cargo:rerun-if-env-changed={ABIGEN_CHECK}");
     match env::var_os(ABIGEN_CHECK) {
-        Some(x) if !x.is_empty() && (x == "1" || x == "true") => abigen(true),
+        Some(x) if x == "1" || x == "true" => abigen(true),
         _ => {
             // ignore fails, eg for docs.rs builds
             abigen(false).unwrap_or_else(|e| warn!("Failed to build bindings: {}", e));
