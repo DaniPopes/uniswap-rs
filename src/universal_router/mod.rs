@@ -1,4 +1,6 @@
-use super::Command;
+mod command;
+pub use command::Command;
+
 use crate::{
     contracts::bindings::{
         i_universal_router::{ExecuteCall, ExecuteWithCommandsAndInputsCall, IUniversalRouter},

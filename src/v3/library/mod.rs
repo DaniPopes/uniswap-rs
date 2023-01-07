@@ -1,7 +1,3 @@
-mod command;
-
-pub use command::Command;
-
 /// The default factory enabled fee amounts, denominated in hundredths of bips.
 #[allow(missing_docs)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]

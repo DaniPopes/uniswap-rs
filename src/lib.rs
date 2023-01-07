@@ -13,6 +13,7 @@ mod macros;
 mod common;
 mod dex;
 mod protocol;
+mod universal_router;
 
 pub mod contracts;
 pub mod v2;
@@ -27,11 +28,12 @@ pub use protocol::*;
 pub mod prelude {
     pub use super::{
         constants::*,
+        universal_router::{Command, UniversalRouter},
         v2::{
             Factory as V2Factory, Library as V2Library, Pair as V2Pair, Protocol as V2Protocol,
             Router as V2Router,
         },
-        v3::{Command, Factory as V3Factory, FeeAmount, Pool as V3Pool, UniversalRouter},
+        v3::{Factory as V3Factory, FeeAmount, Pool as V3Pool},
     };
 
     #[cfg(feature = "addresses")]

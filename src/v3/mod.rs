@@ -4,9 +4,8 @@ mod factory;
 mod library;
 mod pool;
 mod router;
-mod universal_router;
 
 pub use factory::Factory;
-pub use library::{Command, FeeAmount};
+pub use library::FeeAmount;
 pub use pool::Pool;
-pub use universal_router::UniversalRouter;
+pub use router::Router;

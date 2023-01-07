@@ -1,10 +1,10 @@
-#![allow(unreachable_pub, unused)]
+#![allow(missing_docs)]
 
 use crate::contracts::bindings::i_swap_router::*;
 use ethers_contract::builders::ContractCall;
-use ethers_core::types::{Address, Bytes, Chain, H256, I256, U256};
+use ethers_core::types::{Address, Bytes, I256, U256};
 use ethers_providers::Middleware;
-use std::{fmt, sync::Arc};
+use std::sync::Arc;
 
 contract_struct! {
     /// Represents a UniswapV3 SwapRouter.
