@@ -1,5 +1,5 @@
 use crate::{
-    bindings::iweth::IWETH,
+    contracts::bindings::iweth::IWETH,
     errors::{Error, Result},
     utils::*,
     v2::{Factory, Pair, Router},
@@ -101,7 +101,7 @@ impl<M: Middleware> Dex<M> {
         let sender = self.client().default_sender();
         let to = self.get_to(to);
 
-        let deadline = get_deadline(deadline);
+        let deadline = get_deadline_opt(deadline);
 
         // TODO: Maths
 
@@ -137,7 +137,7 @@ impl<M: Middleware> Dex<M> {
         to: Option<Address>,
         deadline: Option<u64>,
     ) -> Result<ContractCall<M, (U256, U256)>> {
-        let deadline = get_deadline(deadline);
+        let deadline = get_deadline_opt(deadline);
 
         let sender = self.client().default_sender();
         let to = self.get_to(to);
@@ -208,7 +208,7 @@ impl<M: Middleware> Dex<M> {
             return Err(Error::SwapToSelf)
         }
 
-        let deadline = get_deadline(deadline);
+        let deadline = get_deadline_opt(deadline);
 
         let mut call =
             self.protocol.swap(amount, slippage_tolerance, path, to, deadline, weth).await?;
