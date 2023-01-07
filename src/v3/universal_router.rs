@@ -398,19 +398,19 @@ mod tests {
         let tokens = command.clone().into_tokens();
         let encoded = ethers_core::abi::encode(&tokens);
 
-        let provider = Provider::new(MockProvider::new()).into();
-        let mut router = UniversalRouter::new(provider, Address::zero());
-
         let e_commands = Bytes::from(vec![Command::Sweep.encode(allow_revert)]);
         let e_inputs = vec![Bytes::from(encoded.clone())];
 
-        router.add_command(Command::Sweep, allow_revert, &tokens).build_no_deadline();
+        let provider = Provider::new(MockProvider::new()).into();
+        let mut router = UniversalRouter::new(provider, Address::zero());
+
+        router.add_command(Command::Sweep, allow_revert, &tokens);
         assert_eq!(router.commands, e_commands);
         assert_eq!(router.inputs, e_inputs);
 
         router.clear();
 
-        router.add_command_from_bindings(command.clone().into(), allow_revert).build_no_deadline();
+        router.add_command_from_bindings(command.clone().into(), allow_revert);
         assert_eq!(router.commands, e_commands);
         assert_eq!(router.inputs, e_inputs);
     }
