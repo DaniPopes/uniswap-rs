@@ -65,17 +65,38 @@ pub enum Command {
     // (unassigned) 0x20.. 0x40
     // (unused)     0x40.. 0x80
     // (invalid)    0x80..=0xff
-    /// Placeholder for the currently unassigned commands.
+    /// Placeholder for any unassigned, unused or invalid command integers.
     ///
-    /// Is always equivalent to [`Command::V3SwapExactIn`] (0x00) when masked.
+    /// It is always equivalent to [`Command::V3SwapExactIn`] (0x00) when masked because it will
+    /// always occupy an invalid bit.
     Invalid = 0x80,
 }
 
 impl From<&IUniversalRouterCommandsCalls> for Command {
     fn from(value: &IUniversalRouterCommandsCalls) -> Self {
+        Self::from_bindings(value)
+    }
+}
+
+impl From<IUniversalRouterCommandsCalls> for Command {
+    fn from(value: IUniversalRouterCommandsCalls) -> Self {
+        Self::from_bindings(&value)
+    }
+}
+
+impl Command {
+    /// The first 6 bits; the command value.
+    pub const MASK: u8 = 0b00111111;
+    /// The 6th bit; currently unused and will be ignored.
+    pub const UNUSED_BITS: u8 = 0b01000000;
+    /// The last bit; the `allow_revert` flag.
+    pub const FLAG_ALLOW_REVERT: u8 = 0b10000000;
+
+    /// Converts a [`IUniversalRouterCommandsCalls`] from the contract bindings into a [`Command`].
+    pub fn from_bindings(command: &IUniversalRouterCommandsCalls) -> Self {
         use IUniversalRouterCommandsCalls::*;
 
-        match value {
+        match command {
             // 0x00..0x08
             V3SwapExactIn(_) => Self::V3SwapExactIn,
             V3SwapExactOut(_) => Self::V3SwapExactOut,
@@ -117,21 +138,6 @@ impl From<&IUniversalRouterCommandsCalls> for Command {
             // 0x1f
         }
     }
-}
-
-impl From<IUniversalRouterCommandsCalls> for Command {
-    fn from(value: IUniversalRouterCommandsCalls) -> Self {
-        From::from(&value)
-    }
-}
-
-impl Command {
-    /// The first 6 bits; the command value.
-    pub const MASK: u8 = 0b00111111;
-    /// The 6th bit; currently unused and will be ignored.
-    pub const UNUSED_BITS: u8 = 0b01000000;
-    /// The last bit; the `allow_revert` flag.
-    pub const FLAG_ALLOW_REVERT: u8 = 0b10000000;
 
     /// Encodes the command to a single byte.
     ///
