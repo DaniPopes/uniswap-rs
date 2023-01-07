@@ -1,4 +1,4 @@
-use crate::{bindings::i_uniswap_v3_pool::IUniswapV3Pool, ProtocolType};
+use crate::{contracts::bindings::i_uniswap_v3_pool::IUniswapV3Pool, ProtocolType};
 use ethers_contract::builders::ContractCall;
 use ethers_core::types::{Address, Chain, H256};
 use ethers_providers::Middleware;

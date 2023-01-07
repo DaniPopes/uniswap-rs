@@ -1,7 +1,7 @@
 use super::{Factory, Library};
 use crate::{
-    bindings::i_uniswap_v2_router_02::IUniswapV2Router02,
     constants::BPS_U256,
+    contracts::bindings::i_uniswap_v2_router_02::IUniswapV2Router02,
     errors::{Error, Result},
     utils::{is_native_path, map_native},
     Amount,

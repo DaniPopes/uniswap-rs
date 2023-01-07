@@ -19,7 +19,7 @@ pub mod bindings {
         i_uniswap_v3_factory, i_uniswap_v3_pool, i_universal_router, ierc20, iweth,
     };
 
-    // should not be used directly
+    // should not be used directly as it's not a valid contract
     #[doc(hidden)]
     pub use _bindings::i_universal_router_commands;
 }

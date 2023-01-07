@@ -1,5 +1,5 @@
 use super::{Factory, Library};
-use crate::{bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::Result, ProtocolType};
+use crate::{contracts::bindings::i_uniswap_v2_pair::IUniswapV2Pair, errors::Result, ProtocolType};
 use ethers_contract::{
     builders::ContractCall, ContractError, Multicall, MulticallError, MulticallVersion,
 };

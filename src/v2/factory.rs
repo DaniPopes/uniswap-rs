@@ -1,5 +1,5 @@
 use super::{Library, Pair};
-use crate::{bindings::i_uniswap_v2_factory::IUniswapV2Factory, ProtocolType};
+use crate::{contracts::bindings::i_uniswap_v2_factory::IUniswapV2Factory, ProtocolType};
 use ethers_core::types::{Address, Chain, H256};
 use ethers_providers::Middleware;
 use std::sync::Arc;

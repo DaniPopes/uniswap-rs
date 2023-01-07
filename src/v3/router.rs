@@ -1,6 +1,6 @@
 #![allow(unreachable_pub, unused)]
 
-use crate::bindings::i_swap_router::*;
+use crate::contracts::bindings::i_swap_router::*;
 use ethers_contract::builders::ContractCall;
 use ethers_core::types::{Address, Bytes, Chain, H256, I256, U256};
 use ethers_providers::Middleware;

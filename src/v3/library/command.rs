@@ -1,4 +1,4 @@
-use crate::bindings::i_universal_router_commands::IUniversalRouterCommandsCalls;
+use crate::contracts::bindings::i_universal_router_commands::IUniversalRouterCommandsCalls;
 
 const MAX_COMMAND: u8 = Command::MASK + 1;
 

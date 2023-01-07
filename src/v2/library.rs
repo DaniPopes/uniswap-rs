@@ -1,6 +1,6 @@
 use super::factory::Factory;
 use crate::{
-    bindings::i_uniswap_v2_pair::IUniswapV2Pair,
+    contracts::bindings::i_uniswap_v2_pair::IUniswapV2Pair,
     errors::{Error, Result},
 };
 use ethers_contract::{Multicall, MulticallVersion};

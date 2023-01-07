@@ -22,6 +22,30 @@ pub use common::*;
 pub use dex::*;
 pub use protocol::*;
 
-// Re-export from contracts
+/// Easy imports of frequently used type definitions and traits.
 #[doc(hidden)]
-pub use contracts::bindings;
+pub mod prelude {
+    pub use super::{
+        constants::*,
+        v2::{
+            Factory as V2Factory, Library as V2Library, Pair as V2Pair, Protocol as V2Protocol,
+            Router as V2Router,
+        },
+        v3::{Command, Factory as V3Factory, FeeAmount, Pool as V3Pool, UniversalRouter},
+    };
+
+    #[cfg(feature = "addresses")]
+    pub use super::contracts::addresses::{address, contract, try_address, try_contract};
+
+    // convenience re-export of all ethers_* as one module.
+    #[doc(hidden)]
+    pub mod ethers {
+        pub use ethers_contract::{self as contract, builders::*, *};
+        pub use ethers_core::{
+            self as core, abi,
+            types::{self, *},
+            *,
+        };
+        pub use ethers_providers::{self as providers, *};
+    }
+}

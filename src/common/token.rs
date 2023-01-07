@@ -1,4 +1,4 @@
-use crate::{bindings::ierc20::IERC20, errors::Result};
+use crate::{contracts::bindings::ierc20::IERC20, errors::Result};
 use ethers_contract::{builders::ContractCall, Multicall};
 use ethers_core::{
     abi::Tokenizable,
