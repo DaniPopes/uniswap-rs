@@ -38,8 +38,12 @@ Examples can be found [here][examples].
     -   [ ] Implementation
     -   [ ] Documentation
     -   [ ] Tests
+-   [x] [UniversalRouter](https://github.com/Uniswap/universal-router)
+    -   [x] Implementation
+    -   [x] Documentation
+    -   [x] Tests
 -   [x] Contract addresses
-    -   [x] Uniswap v2 and v3
+    -   [x] Uniswap
     -   [x] Sushiswap
     -   [x] Pancakeswap
     -   [x] Quickswap
