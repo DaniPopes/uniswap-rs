@@ -16,7 +16,7 @@ pub mod i_universal_router_commands {
     use ethers_providers::Middleware;
     #[doc = "IUniversalRouterCommands was auto-generated with ethers-rs Abigen. More information at: https://github.com/gakonst/ethers-rs"]
     use std::sync::Arc;
-    # [rustfmt :: skip] const __ABI : & str = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"punkId\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"CryptoPunks\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Foundation\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"LooksRare1155\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"LooksRare721\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Nft20\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Nftx\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"OwnerCheck1155\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"OwnerCheck721\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"bips\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"PayPortion\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"struct IAllowanceTransfer.PermitSingle\",\"name\":\"permitSingle\",\"type\":\"tuple\",\"components\":[{\"internalType\":\"struct IAllowanceTransfer.PermitDetails\",\"name\":\"details\",\"type\":\"tuple\",\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\",\"components\":[]},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\",\"components\":[]},{\"internalType\":\"uint48\",\"name\":\"nonce\",\"type\":\"uint48\",\"components\":[]}]},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"sigDeadline\",\"type\":\"uint256\",\"components\":[]}]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Permit2Permit\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"struct IAllowanceTransfer.PermitBatch\",\"name\":\"permitBatch\",\"type\":\"tuple\",\"components\":[{\"internalType\":\"struct IAllowanceTransfer.PermitDetails[]\",\"name\":\"details\",\"type\":\"tuple[]\",\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\",\"components\":[]},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\",\"components\":[]},{\"internalType\":\"uint48\",\"name\":\"nonce\",\"type\":\"uint48\",\"components\":[]}]},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"sigDeadline\",\"type\":\"uint256\",\"components\":[]}]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Permit2PermitBatch\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Permit2TransferFrom\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"struct IAllowanceTransfer.AllowanceTransferDetails[]\",\"name\":\"batchDetails\",\"type\":\"tuple[]\",\"components\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]}]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Permit2TransferFromBatch\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Seaport\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"SudoSwap\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountMin\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Sweep\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"SweepErc1155\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"SweepErc721\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"Transfer\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountMin\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"UnwrapEth\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountOutMin\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"address[]\",\"name\":\"path\",\"type\":\"address[]\",\"components\":[]},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"V2SwapExactIn\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountInMax\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"address[]\",\"name\":\"path\",\"type\":\"address[]\",\"components\":[]},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"V2SwapExactOut\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountOutMin\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"path\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"V3SwapExactIn\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountInMax\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"path\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"V3SwapExactOut\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amountMin\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"WrapEth\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"X2y21155\",\"outputs\":[]},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\",\"components\":[]},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\",\"components\":[]},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\",\"components\":[]}],\"stateMutability\":\"nonpayable\",\"type\":\"function\",\"name\":\"X2y2721\",\"outputs\":[]}]" ;
+    # [rustfmt :: skip] const __ABI : & str = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"punkId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"cryptopunks\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"foundation\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"looksRare1155\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"looksRare721\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"nft20\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"nftx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minBalance\",\"type\":\"uint256\"}],\"name\":\"ownerCheck1155\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"ownerCheck721\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"bips\",\"type\":\"uint256\"}],\"name\":\"payPortion\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\"},{\"internalType\":\"uint48\",\"name\":\"nonce\",\"type\":\"uint48\"}],\"internalType\":\"struct IAllowanceTransfer.PermitDetails\",\"name\":\"details\",\"type\":\"tuple\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"sigDeadline\",\"type\":\"uint256\"}],\"internalType\":\"struct IAllowanceTransfer.PermitSingle\",\"name\":\"permitSingle\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"permit2Permit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"uint48\",\"name\":\"expiration\",\"type\":\"uint48\"},{\"internalType\":\"uint48\",\"name\":\"nonce\",\"type\":\"uint48\"}],\"internalType\":\"struct IAllowanceTransfer.PermitDetails[]\",\"name\":\"details\",\"type\":\"tuple[]\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"sigDeadline\",\"type\":\"uint256\"}],\"internalType\":\"struct IAllowanceTransfer.PermitBatch\",\"name\":\"permitBatch\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"permit2PermitBatch\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"}],\"name\":\"permit2TransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint160\",\"name\":\"amount\",\"type\":\"uint160\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"internalType\":\"struct IAllowanceTransfer.AllowanceTransferDetails[]\",\"name\":\"batchDetails\",\"type\":\"tuple[]\"}],\"name\":\"permit2TransferFromBatch\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"seaport\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"sudoswap\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountMin\",\"type\":\"uint256\"}],\"name\":\"sweep\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"sweepErc1155\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"sweepErc721\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountMin\",\"type\":\"uint256\"}],\"name\":\"unwrapWeth\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountOutMin\",\"type\":\"uint256\"},{\"internalType\":\"address[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\"}],\"name\":\"v2SwapExactIn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountInMax\",\"type\":\"uint256\"},{\"internalType\":\"address[]\",\"name\":\"path\",\"type\":\"address[]\"},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\"}],\"name\":\"v2SwapExactOut\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountIn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountOutMin\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"path\",\"type\":\"bytes\"},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\"}],\"name\":\"v3SwapExactIn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountOut\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amountInMax\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"path\",\"type\":\"bytes\"},{\"internalType\":\"bool\",\"name\":\"payerIsUser\",\"type\":\"bool\"}],\"name\":\"v3SwapExactOut\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountMin\",\"type\":\"uint256\"}],\"name\":\"wrapEth\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"x2y21155\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"x2y2721\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]" ;
     #[doc = r" The parsed JSON-ABI of the contract."]
     pub static IUNIVERSALROUTERCOMMANDS_ABI: ethers_contract::Lazy<ethers_core::abi::Abi> =
         ethers_contract::Lazy::new(|| {
@@ -54,18 +54,18 @@ pub mod i_universal_router_commands {
             )
             .into()
         }
-        #[doc = "Calls the contract's `CryptoPunks` (0x75f8cf32) function"]
-        pub fn crypto_punks(
+        #[doc = "Calls the contract's `cryptopunks` (0xeda3083f) function"]
+        pub fn cryptopunks(
             &self,
             punk_id: ethers_core::types::U256,
             recipient: ethers_core::types::Address,
             value: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([117, 248, 207, 50], (punk_id, recipient, value))
+                .method_hash([237, 163, 8, 63], (punk_id, recipient, value))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Foundation` (0x3bdef733) function"]
+        #[doc = "Calls the contract's `foundation` (0xa5c51c5c) function"]
         pub fn foundation(
             &self,
             value: ethers_core::types::U256,
@@ -75,10 +75,10 @@ pub mod i_universal_router_commands {
             id: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([59, 222, 247, 51], (value, data, recipient, token, id))
+                .method_hash([165, 197, 28, 92], (value, data, recipient, token, id))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `LooksRare1155` (0xa337dfa0) function"]
+        #[doc = "Calls the contract's `looksRare1155` (0x564c2f7e) function"]
         pub fn looks_rare_1155(
             &self,
             value: ethers_core::types::U256,
@@ -89,10 +89,10 @@ pub mod i_universal_router_commands {
             amount: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([163, 55, 223, 160], (value, data, recipient, token, id, amount))
+                .method_hash([86, 76, 47, 126], (value, data, recipient, token, id, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `LooksRare721` (0x4adcff0f) function"]
+        #[doc = "Calls the contract's `looksRare721` (0x9289a6bd) function"]
         pub fn looks_rare_721(
             &self,
             value: ethers_core::types::U256,
@@ -102,41 +102,42 @@ pub mod i_universal_router_commands {
             id: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([74, 220, 255, 15], (value, data, recipient, token, id))
+                .method_hash([146, 137, 166, 189], (value, data, recipient, token, id))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Nft20` (0x099841d4) function"]
+        #[doc = "Calls the contract's `nft20` (0x7bf8e837) function"]
         pub fn nft_20(
             &self,
             value: ethers_core::types::U256,
             data: ethers_core::types::Bytes,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([9, 152, 65, 212], (value, data))
+                .method_hash([123, 248, 232, 55], (value, data))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Nftx` (0x44f7c1e2) function"]
+        #[doc = "Calls the contract's `nftx` (0x9d49b90a) function"]
         pub fn nftx(
             &self,
             value: ethers_core::types::U256,
             data: ethers_core::types::Bytes,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([68, 247, 193, 226], (value, data))
+                .method_hash([157, 73, 185, 10], (value, data))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `OwnerCheck1155` (0x0d574dd0) function"]
+        #[doc = "Calls the contract's `ownerCheck1155` (0x3e148b68) function"]
         pub fn owner_check_1155(
             &self,
             owner: ethers_core::types::Address,
             token: ethers_core::types::Address,
             id: ethers_core::types::U256,
+            min_balance: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([13, 87, 77, 208], (owner, token, id))
+                .method_hash([62, 20, 139, 104], (owner, token, id, min_balance))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `OwnerCheck721` (0x44ae5a7d) function"]
+        #[doc = "Calls the contract's `ownerCheck721` (0xe0d26a5a) function"]
         pub fn owner_check_721(
             &self,
             owner: ethers_core::types::Address,
@@ -144,10 +145,10 @@ pub mod i_universal_router_commands {
             id: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([68, 174, 90, 125], (owner, token, id))
+                .method_hash([224, 210, 106, 90], (owner, token, id))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `PayPortion` (0xdbed2b0b) function"]
+        #[doc = "Calls the contract's `payPortion` (0xd5092a81) function"]
         pub fn pay_portion(
             &self,
             token: ethers_core::types::Address,
@@ -155,30 +156,30 @@ pub mod i_universal_router_commands {
             bips: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([219, 237, 43, 11], (token, recipient, bips))
+                .method_hash([213, 9, 42, 129], (token, recipient, bips))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Permit2Permit` (0xaafbb189) function"]
+        #[doc = "Calls the contract's `permit2Permit` (0x9d8e5ab3) function"]
         pub fn permit_2_permit(
             &self,
             permit_single: PermitSingle,
             data: ethers_core::types::Bytes,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([170, 251, 177, 137], (permit_single, data))
+                .method_hash([157, 142, 90, 179], (permit_single, data))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Permit2PermitBatch` (0xe1b9e849) function"]
+        #[doc = "Calls the contract's `permit2PermitBatch` (0x5b9f25d3) function"]
         pub fn permit_2_permit_batch(
             &self,
             permit_batch: PermitBatch,
             data: ethers_core::types::Bytes,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([225, 185, 232, 73], (permit_batch, data))
+                .method_hash([91, 159, 37, 211], (permit_batch, data))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Permit2TransferFrom` (0xaa2ab1aa) function"]
+        #[doc = "Calls the contract's `permit2TransferFrom` (0xf7223d79) function"]
         pub fn permit_2_transfer_from(
             &self,
             token: ethers_core::types::Address,
@@ -186,39 +187,39 @@ pub mod i_universal_router_commands {
             amount: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([170, 42, 177, 170], (token, recipient, amount))
+                .method_hash([247, 34, 61, 121], (token, recipient, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Permit2TransferFromBatch` (0xaa8ea976) function"]
+        #[doc = "Calls the contract's `permit2TransferFromBatch` (0x812a07a3) function"]
         pub fn permit_2_transfer_from_batch(
             &self,
             batch_details: ::std::vec::Vec<AllowanceTransferDetails>,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([170, 142, 169, 118], batch_details)
+                .method_hash([129, 42, 7, 163], batch_details)
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Seaport` (0xe20ffbf6) function"]
+        #[doc = "Calls the contract's `seaport` (0x41cd3002) function"]
         pub fn seaport(
             &self,
             value: ethers_core::types::U256,
             data: ethers_core::types::Bytes,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([226, 15, 251, 246], (value, data))
+                .method_hash([65, 205, 48, 2], (value, data))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `SudoSwap` (0x3ac0f445) function"]
-        pub fn sudo_swap(
+        #[doc = "Calls the contract's `sudoswap` (0x9211495f) function"]
+        pub fn sudoswap(
             &self,
             value: ethers_core::types::U256,
             data: ethers_core::types::Bytes,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([58, 192, 244, 69], (value, data))
+                .method_hash([146, 17, 73, 95], (value, data))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Sweep` (0xed679328) function"]
+        #[doc = "Calls the contract's `sweep` (0x62c06767) function"]
         pub fn sweep(
             &self,
             token: ethers_core::types::Address,
@@ -226,21 +227,22 @@ pub mod i_universal_router_commands {
             amount_min: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([237, 103, 147, 40], (token, recipient, amount_min))
+                .method_hash([98, 192, 103, 103], (token, recipient, amount_min))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `SweepErc1155` (0xbc5a8260) function"]
+        #[doc = "Calls the contract's `sweepErc1155` (0xb930d445) function"]
         pub fn sweep_erc_1155(
             &self,
             token: ethers_core::types::Address,
             recipient: ethers_core::types::Address,
             id: ethers_core::types::U256,
+            amount: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([188, 90, 130, 96], (token, recipient, id))
+                .method_hash([185, 48, 212, 69], (token, recipient, id, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `SweepErc721` (0xf34604aa) function"]
+        #[doc = "Calls the contract's `sweepErc721` (0x40e2cf43) function"]
         pub fn sweep_erc_721(
             &self,
             token: ethers_core::types::Address,
@@ -248,10 +250,10 @@ pub mod i_universal_router_commands {
             id: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([243, 70, 4, 170], (token, recipient, id))
+                .method_hash([64, 226, 207, 67], (token, recipient, id))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `Transfer` (0xddf252ad) function"]
+        #[doc = "Calls the contract's `transfer` (0xbeabacc8) function"]
         pub fn transfer(
             &self,
             token: ethers_core::types::Address,
@@ -259,21 +261,21 @@ pub mod i_universal_router_commands {
             value: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([221, 242, 82, 173], (token, recipient, value))
+                .method_hash([190, 171, 172, 200], (token, recipient, value))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `UnwrapEth` (0xdc13a81f) function"]
-        pub fn unwrap_eth(
+        #[doc = "Calls the contract's `unwrapWeth` (0x521b6390) function"]
+        pub fn unwrap_weth(
             &self,
             recipient: ethers_core::types::Address,
             amount_min: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([220, 19, 168, 31], (recipient, amount_min))
+                .method_hash([82, 27, 99, 144], (recipient, amount_min))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `V2SwapExactIn` (0x7b3c1767) function"]
-        pub fn v2_swap_exact_in(
+        #[doc = "Calls the contract's `v2SwapExactIn` (0xdcd5db1f) function"]
+        pub fn v_2_swap_exact_in(
             &self,
             recipient: ethers_core::types::Address,
             amount_in: ethers_core::types::U256,
@@ -283,13 +285,13 @@ pub mod i_universal_router_commands {
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [123, 60, 23, 103],
+                    [220, 213, 219, 31],
                     (recipient, amount_in, amount_out_min, path, payer_is_user),
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `V2SwapExactOut` (0xf6ec5868) function"]
-        pub fn v2_swap_exact_out(
+        #[doc = "Calls the contract's `v2SwapExactOut` (0xe868b367) function"]
+        pub fn v_2_swap_exact_out(
             &self,
             recipient: ethers_core::types::Address,
             amount_out: ethers_core::types::U256,
@@ -299,13 +301,13 @@ pub mod i_universal_router_commands {
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [246, 236, 88, 104],
+                    [232, 104, 179, 103],
                     (recipient, amount_out, amount_in_max, path, payer_is_user),
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `V3SwapExactIn` (0xfa920a5d) function"]
-        pub fn v3_swap_exact_in(
+        #[doc = "Calls the contract's `v3SwapExactIn` (0x5a58ec2d) function"]
+        pub fn v_3_swap_exact_in(
             &self,
             recipient: ethers_core::types::Address,
             amount_in: ethers_core::types::U256,
@@ -315,13 +317,13 @@ pub mod i_universal_router_commands {
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [250, 146, 10, 93],
+                    [90, 88, 236, 45],
                     (recipient, amount_in, amount_out_min, path, payer_is_user),
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `V3SwapExactOut` (0x2c9b3a91) function"]
-        pub fn v3_swap_exact_out(
+        #[doc = "Calls the contract's `v3SwapExactOut` (0x14cd4424) function"]
+        pub fn v_3_swap_exact_out(
             &self,
             recipient: ethers_core::types::Address,
             amount_out: ethers_core::types::U256,
@@ -331,22 +333,22 @@ pub mod i_universal_router_commands {
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [44, 155, 58, 145],
+                    [20, 205, 68, 36],
                     (recipient, amount_out, amount_in_max, path, payer_is_user),
                 )
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `WrapEth` (0xfae3e7b4) function"]
+        #[doc = "Calls the contract's `wrapEth` (0xb3bc1a13) function"]
         pub fn wrap_eth(
             &self,
             recipient: ethers_core::types::Address,
             amount_min: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([250, 227, 231, 180], (recipient, amount_min))
+                .method_hash([179, 188, 26, 19], (recipient, amount_min))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `X2y21155` (0x613afcee) function"]
+        #[doc = "Calls the contract's `x2y21155` (0x108ccf02) function"]
         pub fn x_2y_21155(
             &self,
             value: ethers_core::types::U256,
@@ -357,10 +359,10 @@ pub mod i_universal_router_commands {
             amount: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([97, 58, 252, 238], (value, data, recipient, token, id, amount))
+                .method_hash([16, 140, 207, 2], (value, data, recipient, token, id, amount))
                 .expect("method not found (this should never happen)")
         }
-        #[doc = "Calls the contract's `X2y2721` (0x05059058) function"]
+        #[doc = "Calls the contract's `x2y2721` (0xc059e681) function"]
         pub fn x_2y_2721(
             &self,
             value: ethers_core::types::U256,
@@ -370,7 +372,7 @@ pub mod i_universal_router_commands {
             id: ethers_core::types::U256,
         ) -> ethers_contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([5, 5, 144, 88], (value, data, recipient, token, id))
+                .method_hash([192, 89, 230, 129], (value, data, recipient, token, id))
                 .expect("method not found (this should never happen)")
         }
     }
@@ -381,7 +383,7 @@ pub mod i_universal_router_commands {
             Self(contract)
         }
     }
-    #[doc = "Container type for all input parameters for the `CryptoPunks` function with signature `CryptoPunks(uint256,address,uint256)` and selector `[117, 248, 207, 50]`"]
+    #[doc = "Container type for all input parameters for the `cryptopunks` function with signature `cryptopunks(uint256,address,uint256)` and selector `[237, 163, 8, 63]`"]
     #[derive(
         Clone,
         Debug,
@@ -391,13 +393,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "CryptoPunks", abi = "CryptoPunks(uint256,address,uint256)")]
-    pub struct CryptoPunksCall {
+    #[ethcall(name = "cryptopunks", abi = "cryptopunks(uint256,address,uint256)")]
+    pub struct CryptopunksCall {
         pub punk_id: ethers_core::types::U256,
         pub recipient: ethers_core::types::Address,
         pub value: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `Foundation` function with signature `Foundation(uint256,bytes,address,address,uint256)` and selector `[59, 222, 247, 51]`"]
+    #[doc = "Container type for all input parameters for the `foundation` function with signature `foundation(uint256,bytes,address,address,uint256)` and selector `[165, 197, 28, 92]`"]
     #[derive(
         Clone,
         Debug,
@@ -407,7 +409,7 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Foundation", abi = "Foundation(uint256,bytes,address,address,uint256)")]
+    #[ethcall(name = "foundation", abi = "foundation(uint256,bytes,address,address,uint256)")]
     pub struct FoundationCall {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
@@ -415,7 +417,7 @@ pub mod i_universal_router_commands {
         pub token: ethers_core::types::Address,
         pub id: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `LooksRare1155` function with signature `LooksRare1155(uint256,bytes,address,address,uint256,uint256)` and selector `[163, 55, 223, 160]`"]
+    #[doc = "Container type for all input parameters for the `looksRare1155` function with signature `looksRare1155(uint256,bytes,address,address,uint256,uint256)` and selector `[86, 76, 47, 126]`"]
     #[derive(
         Clone,
         Debug,
@@ -426,8 +428,8 @@ pub mod i_universal_router_commands {
         Default,
     )]
     #[ethcall(
-        name = "LooksRare1155",
-        abi = "LooksRare1155(uint256,bytes,address,address,uint256,uint256)"
+        name = "looksRare1155",
+        abi = "looksRare1155(uint256,bytes,address,address,uint256,uint256)"
     )]
     pub struct LooksRare1155Call {
         pub value: ethers_core::types::U256,
@@ -437,7 +439,7 @@ pub mod i_universal_router_commands {
         pub id: ethers_core::types::U256,
         pub amount: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `LooksRare721` function with signature `LooksRare721(uint256,bytes,address,address,uint256)` and selector `[74, 220, 255, 15]`"]
+    #[doc = "Container type for all input parameters for the `looksRare721` function with signature `looksRare721(uint256,bytes,address,address,uint256)` and selector `[146, 137, 166, 189]`"]
     #[derive(
         Clone,
         Debug,
@@ -447,7 +449,7 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "LooksRare721", abi = "LooksRare721(uint256,bytes,address,address,uint256)")]
+    #[ethcall(name = "looksRare721", abi = "looksRare721(uint256,bytes,address,address,uint256)")]
     pub struct LooksRare721Call {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
@@ -455,7 +457,7 @@ pub mod i_universal_router_commands {
         pub token: ethers_core::types::Address,
         pub id: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `Nft20` function with signature `Nft20(uint256,bytes)` and selector `[9, 152, 65, 212]`"]
+    #[doc = "Container type for all input parameters for the `nft20` function with signature `nft20(uint256,bytes)` and selector `[123, 248, 232, 55]`"]
     #[derive(
         Clone,
         Debug,
@@ -465,12 +467,12 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Nft20", abi = "Nft20(uint256,bytes)")]
+    #[ethcall(name = "nft20", abi = "nft20(uint256,bytes)")]
     pub struct Nft20Call {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `Nftx` function with signature `Nftx(uint256,bytes)` and selector `[68, 247, 193, 226]`"]
+    #[doc = "Container type for all input parameters for the `nftx` function with signature `nftx(uint256,bytes)` and selector `[157, 73, 185, 10]`"]
     #[derive(
         Clone,
         Debug,
@@ -480,12 +482,12 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Nftx", abi = "Nftx(uint256,bytes)")]
+    #[ethcall(name = "nftx", abi = "nftx(uint256,bytes)")]
     pub struct NftxCall {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `OwnerCheck1155` function with signature `OwnerCheck1155(address,address,uint256)` and selector `[13, 87, 77, 208]`"]
+    #[doc = "Container type for all input parameters for the `ownerCheck1155` function with signature `ownerCheck1155(address,address,uint256,uint256)` and selector `[62, 20, 139, 104]`"]
     #[derive(
         Clone,
         Debug,
@@ -495,13 +497,14 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "OwnerCheck1155", abi = "OwnerCheck1155(address,address,uint256)")]
+    #[ethcall(name = "ownerCheck1155", abi = "ownerCheck1155(address,address,uint256,uint256)")]
     pub struct OwnerCheck1155Call {
         pub owner: ethers_core::types::Address,
         pub token: ethers_core::types::Address,
         pub id: ethers_core::types::U256,
+        pub min_balance: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `OwnerCheck721` function with signature `OwnerCheck721(address,address,uint256)` and selector `[68, 174, 90, 125]`"]
+    #[doc = "Container type for all input parameters for the `ownerCheck721` function with signature `ownerCheck721(address,address,uint256)` and selector `[224, 210, 106, 90]`"]
     #[derive(
         Clone,
         Debug,
@@ -511,13 +514,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "OwnerCheck721", abi = "OwnerCheck721(address,address,uint256)")]
+    #[ethcall(name = "ownerCheck721", abi = "ownerCheck721(address,address,uint256)")]
     pub struct OwnerCheck721Call {
         pub owner: ethers_core::types::Address,
         pub token: ethers_core::types::Address,
         pub id: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `PayPortion` function with signature `PayPortion(address,address,uint256)` and selector `[219, 237, 43, 11]`"]
+    #[doc = "Container type for all input parameters for the `payPortion` function with signature `payPortion(address,address,uint256)` and selector `[213, 9, 42, 129]`"]
     #[derive(
         Clone,
         Debug,
@@ -527,13 +530,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "PayPortion", abi = "PayPortion(address,address,uint256)")]
+    #[ethcall(name = "payPortion", abi = "payPortion(address,address,uint256)")]
     pub struct PayPortionCall {
         pub token: ethers_core::types::Address,
         pub recipient: ethers_core::types::Address,
         pub bips: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `Permit2Permit` function with signature `Permit2Permit(((address,uint160,uint48,uint48),address,uint256),bytes)` and selector `[170, 251, 177, 137]`"]
+    #[doc = "Container type for all input parameters for the `permit2Permit` function with signature `permit2Permit(((address,uint160,uint48,uint48),address,uint256),bytes)` and selector `[157, 142, 90, 179]`"]
     #[derive(
         Clone,
         Debug,
@@ -544,14 +547,14 @@ pub mod i_universal_router_commands {
         Default,
     )]
     #[ethcall(
-        name = "Permit2Permit",
-        abi = "Permit2Permit(((address,uint160,uint48,uint48),address,uint256),bytes)"
+        name = "permit2Permit",
+        abi = "permit2Permit(((address,uint160,uint48,uint48),address,uint256),bytes)"
     )]
     pub struct Permit2PermitCall {
         pub permit_single: PermitSingle,
         pub data: ethers_core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `Permit2PermitBatch` function with signature `Permit2PermitBatch(((address,uint160,uint48,uint48)[],address,uint256),bytes)` and selector `[225, 185, 232, 73]`"]
+    #[doc = "Container type for all input parameters for the `permit2PermitBatch` function with signature `permit2PermitBatch(((address,uint160,uint48,uint48)[],address,uint256),bytes)` and selector `[91, 159, 37, 211]`"]
     #[derive(
         Clone,
         Debug,
@@ -562,14 +565,14 @@ pub mod i_universal_router_commands {
         Default,
     )]
     #[ethcall(
-        name = "Permit2PermitBatch",
-        abi = "Permit2PermitBatch(((address,uint160,uint48,uint48)[],address,uint256),bytes)"
+        name = "permit2PermitBatch",
+        abi = "permit2PermitBatch(((address,uint160,uint48,uint48)[],address,uint256),bytes)"
     )]
     pub struct Permit2PermitBatchCall {
         pub permit_batch: PermitBatch,
         pub data: ethers_core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `Permit2TransferFrom` function with signature `Permit2TransferFrom(address,address,uint256)` and selector `[170, 42, 177, 170]`"]
+    #[doc = "Container type for all input parameters for the `permit2TransferFrom` function with signature `permit2TransferFrom(address,address,uint160)` and selector `[247, 34, 61, 121]`"]
     #[derive(
         Clone,
         Debug,
@@ -579,13 +582,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Permit2TransferFrom", abi = "Permit2TransferFrom(address,address,uint256)")]
+    #[ethcall(name = "permit2TransferFrom", abi = "permit2TransferFrom(address,address,uint160)")]
     pub struct Permit2TransferFromCall {
         pub token: ethers_core::types::Address,
         pub recipient: ethers_core::types::Address,
         pub amount: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `Permit2TransferFromBatch` function with signature `Permit2TransferFromBatch((address,address,uint160,address)[])` and selector `[170, 142, 169, 118]`"]
+    #[doc = "Container type for all input parameters for the `permit2TransferFromBatch` function with signature `permit2TransferFromBatch((address,address,uint160,address)[])` and selector `[129, 42, 7, 163]`"]
     #[derive(
         Clone,
         Debug,
@@ -596,13 +599,13 @@ pub mod i_universal_router_commands {
         Default,
     )]
     #[ethcall(
-        name = "Permit2TransferFromBatch",
-        abi = "Permit2TransferFromBatch((address,address,uint160,address)[])"
+        name = "permit2TransferFromBatch",
+        abi = "permit2TransferFromBatch((address,address,uint160,address)[])"
     )]
     pub struct Permit2TransferFromBatchCall {
         pub batch_details: ::std::vec::Vec<AllowanceTransferDetails>,
     }
-    #[doc = "Container type for all input parameters for the `Seaport` function with signature `Seaport(uint256,bytes)` and selector `[226, 15, 251, 246]`"]
+    #[doc = "Container type for all input parameters for the `seaport` function with signature `seaport(uint256,bytes)` and selector `[65, 205, 48, 2]`"]
     #[derive(
         Clone,
         Debug,
@@ -612,12 +615,12 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Seaport", abi = "Seaport(uint256,bytes)")]
+    #[ethcall(name = "seaport", abi = "seaport(uint256,bytes)")]
     pub struct SeaportCall {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `SudoSwap` function with signature `SudoSwap(uint256,bytes)` and selector `[58, 192, 244, 69]`"]
+    #[doc = "Container type for all input parameters for the `sudoswap` function with signature `sudoswap(uint256,bytes)` and selector `[146, 17, 73, 95]`"]
     #[derive(
         Clone,
         Debug,
@@ -627,12 +630,12 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "SudoSwap", abi = "SudoSwap(uint256,bytes)")]
-    pub struct SudoSwapCall {
+    #[ethcall(name = "sudoswap", abi = "sudoswap(uint256,bytes)")]
+    pub struct SudoswapCall {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
     }
-    #[doc = "Container type for all input parameters for the `Sweep` function with signature `Sweep(address,address,uint256)` and selector `[237, 103, 147, 40]`"]
+    #[doc = "Container type for all input parameters for the `sweep` function with signature `sweep(address,address,uint256)` and selector `[98, 192, 103, 103]`"]
     #[derive(
         Clone,
         Debug,
@@ -642,13 +645,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Sweep", abi = "Sweep(address,address,uint256)")]
+    #[ethcall(name = "sweep", abi = "sweep(address,address,uint256)")]
     pub struct SweepCall {
         pub token: ethers_core::types::Address,
         pub recipient: ethers_core::types::Address,
         pub amount_min: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `SweepErc1155` function with signature `SweepErc1155(address,address,uint256)` and selector `[188, 90, 130, 96]`"]
+    #[doc = "Container type for all input parameters for the `sweepErc1155` function with signature `sweepErc1155(address,address,uint256,uint256)` and selector `[185, 48, 212, 69]`"]
     #[derive(
         Clone,
         Debug,
@@ -658,13 +661,14 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "SweepErc1155", abi = "SweepErc1155(address,address,uint256)")]
+    #[ethcall(name = "sweepErc1155", abi = "sweepErc1155(address,address,uint256,uint256)")]
     pub struct SweepErc1155Call {
         pub token: ethers_core::types::Address,
         pub recipient: ethers_core::types::Address,
         pub id: ethers_core::types::U256,
+        pub amount: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `SweepErc721` function with signature `SweepErc721(address,address,uint256)` and selector `[243, 70, 4, 170]`"]
+    #[doc = "Container type for all input parameters for the `sweepErc721` function with signature `sweepErc721(address,address,uint256)` and selector `[64, 226, 207, 67]`"]
     #[derive(
         Clone,
         Debug,
@@ -674,13 +678,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "SweepErc721", abi = "SweepErc721(address,address,uint256)")]
+    #[ethcall(name = "sweepErc721", abi = "sweepErc721(address,address,uint256)")]
     pub struct SweepErc721Call {
         pub token: ethers_core::types::Address,
         pub recipient: ethers_core::types::Address,
         pub id: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `Transfer` function with signature `Transfer(address,address,uint256)` and selector `[221, 242, 82, 173]`"]
+    #[doc = "Container type for all input parameters for the `transfer` function with signature `transfer(address,address,uint256)` and selector `[190, 171, 172, 200]`"]
     #[derive(
         Clone,
         Debug,
@@ -690,13 +694,13 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "Transfer", abi = "Transfer(address,address,uint256)")]
+    #[ethcall(name = "transfer", abi = "transfer(address,address,uint256)")]
     pub struct TransferCall {
         pub token: ethers_core::types::Address,
         pub recipient: ethers_core::types::Address,
         pub value: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `UnwrapEth` function with signature `UnwrapEth(address,uint256)` and selector `[220, 19, 168, 31]`"]
+    #[doc = "Container type for all input parameters for the `unwrapWeth` function with signature `unwrapWeth(address,uint256)` and selector `[82, 27, 99, 144]`"]
     #[derive(
         Clone,
         Debug,
@@ -706,12 +710,12 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "UnwrapEth", abi = "UnwrapEth(address,uint256)")]
-    pub struct UnwrapEthCall {
+    #[ethcall(name = "unwrapWeth", abi = "unwrapWeth(address,uint256)")]
+    pub struct UnwrapWethCall {
         pub recipient: ethers_core::types::Address,
         pub amount_min: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `V2SwapExactIn` function with signature `V2SwapExactIn(address,uint256,uint256,address[],bool)` and selector `[123, 60, 23, 103]`"]
+    #[doc = "Container type for all input parameters for the `v2SwapExactIn` function with signature `v2SwapExactIn(address,uint256,uint256,address[],bool)` and selector `[220, 213, 219, 31]`"]
     #[derive(
         Clone,
         Debug,
@@ -722,8 +726,8 @@ pub mod i_universal_router_commands {
         Default,
     )]
     #[ethcall(
-        name = "V2SwapExactIn",
-        abi = "V2SwapExactIn(address,uint256,uint256,address[],bool)"
+        name = "v2SwapExactIn",
+        abi = "v2SwapExactIn(address,uint256,uint256,address[],bool)"
     )]
     pub struct V2SwapExactInCall {
         pub recipient: ethers_core::types::Address,
@@ -732,7 +736,7 @@ pub mod i_universal_router_commands {
         pub path: ::std::vec::Vec<ethers_core::types::Address>,
         pub payer_is_user: bool,
     }
-    #[doc = "Container type for all input parameters for the `V2SwapExactOut` function with signature `V2SwapExactOut(address,uint256,uint256,address[],bool)` and selector `[246, 236, 88, 104]`"]
+    #[doc = "Container type for all input parameters for the `v2SwapExactOut` function with signature `v2SwapExactOut(address,uint256,uint256,address[],bool)` and selector `[232, 104, 179, 103]`"]
     #[derive(
         Clone,
         Debug,
@@ -743,8 +747,8 @@ pub mod i_universal_router_commands {
         Default,
     )]
     #[ethcall(
-        name = "V2SwapExactOut",
-        abi = "V2SwapExactOut(address,uint256,uint256,address[],bool)"
+        name = "v2SwapExactOut",
+        abi = "v2SwapExactOut(address,uint256,uint256,address[],bool)"
     )]
     pub struct V2SwapExactOutCall {
         pub recipient: ethers_core::types::Address,
@@ -753,7 +757,7 @@ pub mod i_universal_router_commands {
         pub path: ::std::vec::Vec<ethers_core::types::Address>,
         pub payer_is_user: bool,
     }
-    #[doc = "Container type for all input parameters for the `V3SwapExactIn` function with signature `V3SwapExactIn(address,uint256,uint256,bytes,bool)` and selector `[250, 146, 10, 93]`"]
+    #[doc = "Container type for all input parameters for the `v3SwapExactIn` function with signature `v3SwapExactIn(address,uint256,uint256,bytes,bool)` and selector `[90, 88, 236, 45]`"]
     #[derive(
         Clone,
         Debug,
@@ -763,7 +767,7 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "V3SwapExactIn", abi = "V3SwapExactIn(address,uint256,uint256,bytes,bool)")]
+    #[ethcall(name = "v3SwapExactIn", abi = "v3SwapExactIn(address,uint256,uint256,bytes,bool)")]
     pub struct V3SwapExactInCall {
         pub recipient: ethers_core::types::Address,
         pub amount_in: ethers_core::types::U256,
@@ -771,7 +775,7 @@ pub mod i_universal_router_commands {
         pub path: ethers_core::types::Bytes,
         pub payer_is_user: bool,
     }
-    #[doc = "Container type for all input parameters for the `V3SwapExactOut` function with signature `V3SwapExactOut(address,uint256,uint256,bytes,bool)` and selector `[44, 155, 58, 145]`"]
+    #[doc = "Container type for all input parameters for the `v3SwapExactOut` function with signature `v3SwapExactOut(address,uint256,uint256,bytes,bool)` and selector `[20, 205, 68, 36]`"]
     #[derive(
         Clone,
         Debug,
@@ -781,7 +785,7 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "V3SwapExactOut", abi = "V3SwapExactOut(address,uint256,uint256,bytes,bool)")]
+    #[ethcall(name = "v3SwapExactOut", abi = "v3SwapExactOut(address,uint256,uint256,bytes,bool)")]
     pub struct V3SwapExactOutCall {
         pub recipient: ethers_core::types::Address,
         pub amount_out: ethers_core::types::U256,
@@ -789,7 +793,7 @@ pub mod i_universal_router_commands {
         pub path: ethers_core::types::Bytes,
         pub payer_is_user: bool,
     }
-    #[doc = "Container type for all input parameters for the `WrapEth` function with signature `WrapEth(address,uint256)` and selector `[250, 227, 231, 180]`"]
+    #[doc = "Container type for all input parameters for the `wrapEth` function with signature `wrapEth(address,uint256)` and selector `[179, 188, 26, 19]`"]
     #[derive(
         Clone,
         Debug,
@@ -799,12 +803,12 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "WrapEth", abi = "WrapEth(address,uint256)")]
+    #[ethcall(name = "wrapEth", abi = "wrapEth(address,uint256)")]
     pub struct WrapEthCall {
         pub recipient: ethers_core::types::Address,
         pub amount_min: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `X2y21155` function with signature `X2y21155(uint256,bytes,address,address,uint256,uint256)` and selector `[97, 58, 252, 238]`"]
+    #[doc = "Container type for all input parameters for the `x2y21155` function with signature `x2y21155(uint256,bytes,address,address,uint256,uint256)` and selector `[16, 140, 207, 2]`"]
     #[derive(
         Clone,
         Debug,
@@ -814,7 +818,7 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "X2y21155", abi = "X2y21155(uint256,bytes,address,address,uint256,uint256)")]
+    #[ethcall(name = "x2y21155", abi = "x2y21155(uint256,bytes,address,address,uint256,uint256)")]
     pub struct X2Y21155Call {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
@@ -823,7 +827,7 @@ pub mod i_universal_router_commands {
         pub id: ethers_core::types::U256,
         pub amount: ethers_core::types::U256,
     }
-    #[doc = "Container type for all input parameters for the `X2y2721` function with signature `X2y2721(uint256,bytes,address,address,uint256)` and selector `[5, 5, 144, 88]`"]
+    #[doc = "Container type for all input parameters for the `x2y2721` function with signature `x2y2721(uint256,bytes,address,address,uint256)` and selector `[192, 89, 230, 129]`"]
     #[derive(
         Clone,
         Debug,
@@ -833,7 +837,7 @@ pub mod i_universal_router_commands {
         ethers_contract :: EthDisplay,
         Default,
     )]
-    #[ethcall(name = "X2y2721", abi = "X2y2721(uint256,bytes,address,address,uint256)")]
+    #[ethcall(name = "x2y2721", abi = "x2y2721(uint256,bytes,address,address,uint256)")]
     pub struct X2Y2721Call {
         pub value: ethers_core::types::U256,
         pub data: ethers_core::types::Bytes,
@@ -843,7 +847,7 @@ pub mod i_universal_router_commands {
     }
     #[derive(Debug, Clone, PartialEq, Eq, ethers_contract :: EthAbiType)]
     pub enum IUniversalRouterCommandsCalls {
-        CryptoPunks(CryptoPunksCall),
+        Cryptopunks(CryptopunksCall),
         Foundation(FoundationCall),
         LooksRare1155(LooksRare1155Call),
         LooksRare721(LooksRare721Call),
@@ -857,12 +861,12 @@ pub mod i_universal_router_commands {
         Permit2TransferFrom(Permit2TransferFromCall),
         Permit2TransferFromBatch(Permit2TransferFromBatchCall),
         Seaport(SeaportCall),
-        SudoSwap(SudoSwapCall),
+        Sudoswap(SudoswapCall),
         Sweep(SweepCall),
         SweepErc1155(SweepErc1155Call),
         SweepErc721(SweepErc721Call),
         Transfer(TransferCall),
-        UnwrapEth(UnwrapEthCall),
+        UnwrapWeth(UnwrapWethCall),
         V2SwapExactIn(V2SwapExactInCall),
         V2SwapExactOut(V2SwapExactOutCall),
         V3SwapExactIn(V3SwapExactInCall),
@@ -876,9 +880,9 @@ pub mod i_universal_router_commands {
             data: impl AsRef<[u8]>,
         ) -> ::std::result::Result<Self, ethers_core::abi::AbiError> {
             if let Ok(decoded) =
-                <CryptoPunksCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
+                <CryptopunksCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::CryptoPunks(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Cryptopunks(decoded))
             }
             if let Ok(decoded) =
                 <FoundationCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
@@ -941,9 +945,9 @@ pub mod i_universal_router_commands {
                 return Ok(IUniversalRouterCommandsCalls::Seaport(decoded))
             }
             if let Ok(decoded) =
-                <SudoSwapCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
+                <SudoswapCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::SudoSwap(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Sudoswap(decoded))
             }
             if let Ok(decoded) = <SweepCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
                 return Ok(IUniversalRouterCommandsCalls::Sweep(decoded))
@@ -964,9 +968,9 @@ pub mod i_universal_router_commands {
                 return Ok(IUniversalRouterCommandsCalls::Transfer(decoded))
             }
             if let Ok(decoded) =
-                <UnwrapEthCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
+                <UnwrapWethCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::UnwrapEth(decoded))
+                return Ok(IUniversalRouterCommandsCalls::UnwrapWeth(decoded))
             }
             if let Ok(decoded) =
                 <V2SwapExactInCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
@@ -1007,7 +1011,7 @@ pub mod i_universal_router_commands {
     impl ethers_core::abi::AbiEncode for IUniversalRouterCommandsCalls {
         fn encode(self) -> Vec<u8> {
             match self {
-                IUniversalRouterCommandsCalls::CryptoPunks(element) => element.encode(),
+                IUniversalRouterCommandsCalls::Cryptopunks(element) => element.encode(),
                 IUniversalRouterCommandsCalls::Foundation(element) => element.encode(),
                 IUniversalRouterCommandsCalls::LooksRare1155(element) => element.encode(),
                 IUniversalRouterCommandsCalls::LooksRare721(element) => element.encode(),
@@ -1023,12 +1027,12 @@ pub mod i_universal_router_commands {
                     element.encode()
                 }
                 IUniversalRouterCommandsCalls::Seaport(element) => element.encode(),
-                IUniversalRouterCommandsCalls::SudoSwap(element) => element.encode(),
+                IUniversalRouterCommandsCalls::Sudoswap(element) => element.encode(),
                 IUniversalRouterCommandsCalls::Sweep(element) => element.encode(),
                 IUniversalRouterCommandsCalls::SweepErc1155(element) => element.encode(),
                 IUniversalRouterCommandsCalls::SweepErc721(element) => element.encode(),
                 IUniversalRouterCommandsCalls::Transfer(element) => element.encode(),
-                IUniversalRouterCommandsCalls::UnwrapEth(element) => element.encode(),
+                IUniversalRouterCommandsCalls::UnwrapWeth(element) => element.encode(),
                 IUniversalRouterCommandsCalls::V2SwapExactIn(element) => element.encode(),
                 IUniversalRouterCommandsCalls::V2SwapExactOut(element) => element.encode(),
                 IUniversalRouterCommandsCalls::V3SwapExactIn(element) => element.encode(),
@@ -1042,7 +1046,7 @@ pub mod i_universal_router_commands {
     impl ::std::fmt::Display for IUniversalRouterCommandsCalls {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
-                IUniversalRouterCommandsCalls::CryptoPunks(element) => element.fmt(f),
+                IUniversalRouterCommandsCalls::Cryptopunks(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::Foundation(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::LooksRare1155(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::LooksRare721(element) => element.fmt(f),
@@ -1056,12 +1060,12 @@ pub mod i_universal_router_commands {
                 IUniversalRouterCommandsCalls::Permit2TransferFrom(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::Permit2TransferFromBatch(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::Seaport(element) => element.fmt(f),
-                IUniversalRouterCommandsCalls::SudoSwap(element) => element.fmt(f),
+                IUniversalRouterCommandsCalls::Sudoswap(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::Sweep(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::SweepErc1155(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::SweepErc721(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::Transfer(element) => element.fmt(f),
-                IUniversalRouterCommandsCalls::UnwrapEth(element) => element.fmt(f),
+                IUniversalRouterCommandsCalls::UnwrapWeth(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::V2SwapExactIn(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::V2SwapExactOut(element) => element.fmt(f),
                 IUniversalRouterCommandsCalls::V3SwapExactIn(element) => element.fmt(f),
@@ -1072,9 +1076,9 @@ pub mod i_universal_router_commands {
             }
         }
     }
-    impl ::std::convert::From<CryptoPunksCall> for IUniversalRouterCommandsCalls {
-        fn from(var: CryptoPunksCall) -> Self {
-            IUniversalRouterCommandsCalls::CryptoPunks(var)
+    impl ::std::convert::From<CryptopunksCall> for IUniversalRouterCommandsCalls {
+        fn from(var: CryptopunksCall) -> Self {
+            IUniversalRouterCommandsCalls::Cryptopunks(var)
         }
     }
     impl ::std::convert::From<FoundationCall> for IUniversalRouterCommandsCalls {
@@ -1142,9 +1146,9 @@ pub mod i_universal_router_commands {
             IUniversalRouterCommandsCalls::Seaport(var)
         }
     }
-    impl ::std::convert::From<SudoSwapCall> for IUniversalRouterCommandsCalls {
-        fn from(var: SudoSwapCall) -> Self {
-            IUniversalRouterCommandsCalls::SudoSwap(var)
+    impl ::std::convert::From<SudoswapCall> for IUniversalRouterCommandsCalls {
+        fn from(var: SudoswapCall) -> Self {
+            IUniversalRouterCommandsCalls::Sudoswap(var)
         }
     }
     impl ::std::convert::From<SweepCall> for IUniversalRouterCommandsCalls {
@@ -1167,9 +1171,9 @@ pub mod i_universal_router_commands {
             IUniversalRouterCommandsCalls::Transfer(var)
         }
     }
-    impl ::std::convert::From<UnwrapEthCall> for IUniversalRouterCommandsCalls {
-        fn from(var: UnwrapEthCall) -> Self {
-            IUniversalRouterCommandsCalls::UnwrapEth(var)
+    impl ::std::convert::From<UnwrapWethCall> for IUniversalRouterCommandsCalls {
+        fn from(var: UnwrapWethCall) -> Self {
+            IUniversalRouterCommandsCalls::UnwrapWeth(var)
         }
     }
     impl ::std::convert::From<V2SwapExactInCall> for IUniversalRouterCommandsCalls {

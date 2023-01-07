@@ -1,9 +1,18 @@
 use crate::bindings::i_universal_router_commands::IUniversalRouterCommandsCalls;
 
-/// Integers that are in the valid command range but are unassigned, and so don't have variants.
+const MAX_COMMAND: u8 = Command::MASK + 1;
+
+/// Integers that are in the valid command range but don't have variants.
 macro_rules! no_variants {
     () => {
-        0x07 | 0x0e | 0x0f | 0x1e | 0x1f
+        0x07 | 0x0e | 0x0f | 0x1e..=Command::MASK
+    };
+}
+
+/// Integers that are outside the valid command range.
+macro_rules! invalid {
+    () => {
+        MAX_COMMAND..
     };
 }
 
@@ -28,7 +37,7 @@ pub enum Command {
     V2SwapExactOut,
     Permit2Permit,
     WrapEth,
-    UnwrapEth,
+    UnwrapWeth,
     Permit2TransferFromBatch,
     // 0x0e
     // 0x0f
@@ -37,24 +46,25 @@ pub enum Command {
     Seaport = 0x10,
     LooksRare721,
     Nftx,
-    CryptoPunks,
+    Cryptopunks,
     LooksRare1155,
     OwnerCheck721,
     OwnerCheck1155,
     SweepErc721,
 
     // 0x18..0x20
-    X2y2721 = 0x18,
-    SudoSwap,
+    X2Y2721 = 0x18,
+    Sudoswap,
     Nft20,
-    X2y21155,
+    X2Y21155,
     Foundation,
     SweepErc1155,
     // 0x1e
     // 0x1f
 
-    // (unused)  0x20..0x80
-    // (invalid) 0x80..=0xff
+    // (unassigned) 0x20.. 0x40
+    // (unused)     0x40.. 0x80
+    // (invalid)    0x80..=0xff
     /// Placeholder for the currently unassigned commands.
     ///
     /// Is always equivalent to [`Command::V3SwapExactIn`] (0x00) when masked.
@@ -81,7 +91,7 @@ impl From<&IUniversalRouterCommandsCalls> for Command {
             V2SwapExactOut(_) => Self::V2SwapExactOut,
             Permit2Permit(_) => Self::Permit2Permit,
             WrapEth(_) => Self::WrapEth,
-            UnwrapEth(_) => Self::UnwrapEth,
+            UnwrapWeth(_) => Self::UnwrapWeth,
             Permit2TransferFromBatch(_) => Self::Permit2TransferFromBatch,
             // 0x0e
             // 0x0f
@@ -90,17 +100,17 @@ impl From<&IUniversalRouterCommandsCalls> for Command {
             Seaport(_) => Self::Seaport,
             LooksRare721(_) => Self::LooksRare721,
             Nftx(_) => Self::Nftx,
-            CryptoPunks(_) => Self::CryptoPunks,
+            Cryptopunks(_) => Self::Cryptopunks,
             LooksRare1155(_) => Self::LooksRare1155,
             OwnerCheck721(_) => Self::OwnerCheck721,
             OwnerCheck1155(_) => Self::OwnerCheck1155,
             SweepErc721(_) => Self::SweepErc721,
 
             // 0x18..0x20
-            X2Y2721(_) => Self::X2y2721,
-            SudoSwap(_) => Self::SudoSwap,
+            X2Y2721(_) => Self::X2Y2721,
+            Sudoswap(_) => Self::Sudoswap,
             Nft20(_) => Self::Nft20,
-            X2Y21155(_) => Self::X2y21155,
+            X2Y21155(_) => Self::X2Y21155,
             Foundation(_) => Self::Foundation,
             SweepErc1155(_) => Self::SweepErc1155,
             // 0x1e
@@ -116,17 +126,12 @@ impl From<IUniversalRouterCommandsCalls> for Command {
 }
 
 impl Command {
-    /// The first 5 bits, the command value.
-    pub const MASK: u8 = 0b00011111;
-    /// The 5th and 6th bit, currently unused and will be ignored.
-    pub const UNUSED_BITS: u8 = 0b01100000;
-    /// The last bit, the `allow_revert` flag.
+    /// The first 6 bits; the command value.
+    pub const MASK: u8 = 0b00111111;
+    /// The 6th bit; currently unused and will be ignored.
+    pub const UNUSED_BITS: u8 = 0b01000000;
+    /// The last bit; the `allow_revert` flag.
     pub const FLAG_ALLOW_REVERT: u8 = 0b10000000;
-
-    /// ?
-    pub const NFT_TYPE_MASK: u8 = 0b00010000;
-    /// ?
-    pub const SUB_IF_BRANCH_MASK: u8 = 0b00001000;
 
     /// Encodes the command to a single byte.
     ///
@@ -143,12 +148,11 @@ impl Command {
     pub fn decode(byte: u8) -> (Self, bool) {
         // last bit
         let allow_revert = (byte >> 7) == 1;
-        const MAX: u8 = Command::MASK + 1;
         let command = match byte {
             // no variants yet
             no_variants!() => Self::Invalid,
             // outside of valid range
-            MAX.. => Self::Invalid,
+            invalid!() => Self::Invalid,
             // SAFETY: All invalid values are covered in the match arms above.
             _ => unsafe { std::mem::transmute(byte) },
         };
@@ -184,10 +188,9 @@ mod tests {
             let allow_revert = (byte >> 7) == 1;
             let (command, r_allow_revert) = Command::decode(byte);
             assert_eq!(r_allow_revert, allow_revert);
-            const MAX: u8 = Command::MASK + 1;
             match byte {
                 no_variants!() => assert_eq!(command, Command::Invalid),
-                MAX.. => assert_eq!(command, Command::Invalid),
+                invalid!() => assert_eq!(command, Command::Invalid),
                 _ => {
                     assert_ne!(command, Command::Invalid);
                     assert_eq!(command.encode(allow_revert), byte & !Command::UNUSED_BITS);

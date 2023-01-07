@@ -101,7 +101,10 @@ impl<M: Middleware> UniversalRouter<M> {
         let builder = std::mem::take(&mut self.builder);
         builder.call(&self.contract, deadline)
     }
+}
 
+// implement commands in a new block so as to not "pollute" docs
+impl<M: Middleware> UniversalRouter<M> {
     cmds! {
         V3SwapExactIn => pub fn v3_swap_exact_in(
             recipient: Address,
@@ -141,8 +144,6 @@ impl<M: Middleware> UniversalRouter<M> {
             recipient: Address,
             bips: U256
         );
-
-        // 0x08..0x10
         V2SwapExactIn => pub fn v2_swap_exact_in(
             recipient: Address,
             amount_in: U256,
@@ -165,22 +166,18 @@ impl<M: Middleware> UniversalRouter<M> {
             recipient: Address,
             amount_min: U256
         );
-        UnwrapEth => pub fn unwrap_eth(
+        UnwrapWeth => pub fn unwrap_weth(
             recipient: Address,
             amount_min: U256
         );
         Permit2TransferFromBatch => pub fn permit2_transfer_from_batch(
             batch_details: Vec<AllowanceTransferDetails>
         );
-        // 0x0e
-        // 0x0f
-
-        // 0x10..0x18
         Seaport => pub fn seaport(
             value: U256,
             data: Bytes
         );
-        LooksRare721 => pub fn looks_rare721(
+        LooksRare721 => pub fn looks_rare_721(
             value: U256,
             data: Bytes,
             recipient: Address,
@@ -191,12 +188,12 @@ impl<M: Middleware> UniversalRouter<M> {
             value: U256,
             data: Bytes
         );
-        CryptoPunks => pub fn crypto_punks(
+        Cryptopunks => pub fn cryptopunks(
             punk_id: U256,
             recipient: Address,
             value: U256
         );
-        LooksRare1155 => pub fn looks_rare1155(
+        LooksRare1155 => pub fn looks_rare_1155(
             value: U256,
             data: Bytes,
             recipient: Address,
@@ -204,23 +201,22 @@ impl<M: Middleware> UniversalRouter<M> {
             id: U256,
             amount: U256
         );
-        OwnerCheck721 => pub fn owner_check721(
+        OwnerCheck721 => pub fn owner_check_721(
             owner: Address,
             token: Address,
             id: U256
         );
-        OwnerCheck1155 => pub fn owner_check1155(
-            owner: Address
+        OwnerCheck1155 => pub fn owner_check_1155(
+            owner: Address,
             token: Address,
-            id: U256
+            id: U256,
+            min_balance: U256
         );
         SweepErc721 => pub fn sweep_erc721(
             token: Address,
             recipient: Address,
             id: U256
         );
-
-        // 0x18..0x20
         X2Y2721 => pub fn x2y2_721(
             value: U256,
             data: Bytes,
@@ -228,7 +224,7 @@ impl<M: Middleware> UniversalRouter<M> {
             token: Address,
             id: U256
         );
-        SudoSwap => pub fn sudo_swap(
+        Sudoswap => pub fn sudoswap(
             value: U256,
             data: Bytes
         );
@@ -254,7 +250,8 @@ impl<M: Middleware> UniversalRouter<M> {
         SweepErc1155 => pub fn sweep_erc1155(
             token: Address,
             recipient: Address,
-            id: U256
+            id: U256,
+            amount: U256
         );
     }
 }
