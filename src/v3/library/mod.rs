@@ -1,7 +1,5 @@
-mod builder;
 mod command;
 
-pub use builder::Builder;
 pub use command::Command;
 
 /// The default factory enabled fee amounts, denominated in hundredths of bips.

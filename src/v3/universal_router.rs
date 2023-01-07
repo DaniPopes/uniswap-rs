@@ -1,36 +1,37 @@
-use super::Builder;
-use crate::contracts::bindings::{
-    i_universal_router::IUniversalRouter, i_universal_router_commands::*,
+use super::Command;
+use crate::{
+    contracts::bindings::{
+        i_universal_router::{ExecuteCall, ExecuteWithCommandsAndInputsCall, IUniversalRouter},
+        i_universal_router_commands::*,
+    },
+    utils::get_deadline,
 };
 use ethers_contract::builders::ContractCall;
-use ethers_core::types::{Address, Bytes, U256};
+use ethers_core::{
+    abi::{self, Token, Tokenizable, Tokenize},
+    types::{Address, Bytes, U256},
+};
 use ethers_providers::Middleware;
-use std::sync::Arc;
+use std::{mem, sync::Arc};
 
 #[cfg(feature = "addresses")]
 use crate::protocol::ProtocolType;
 #[cfg(feature = "addresses")]
 use ethers_core::types::Chain;
 
-macro_rules! cmds {
+macro_rules! add_command_fns {
     ($(
         $name:ident => pub fn $fn_name:ident ($($arg:ident : $ty:ty $(,)?)+) ;
     )+) => {$(
         #[doc = concat!("Append a [`", stringify!($name), "`][ref] command to the builder.\n\n")]
         #[doc = concat!("[ref]: https://docs.uniswap.org/contracts/universal-router/technical-reference#", stringify!($fn_name))]
         #[inline]
-        pub fn $fn_name(mut self, allow_revert: bool, $($arg: $ty),+) -> Self {
-            // concat_idents! workaround to instantiate a struct with braces syntax
-            // #[cfg(feature = "nightly")]
-            // type __Command = concat_idents!($name, Call);
-
-            // #[cfg(not(feature = "nightly"))]
-            type __Command = paste::paste!([<$name Call>]);
-
-            let command = __Command { $($arg),+ };
-            let command = IUniversalRouterCommandsCalls::$name(command);
-            self.builder = self.builder.command(command, allow_revert);
-            self
+        pub fn $fn_name(&mut self, allow_revert: bool, $($arg: $ty),+) -> &mut Self {
+            let __command = Command::$name;
+            let __args = [$(
+                Tokenizable::into_token($arg),
+            )+];
+            self.add_command(__command, allow_revert, &__args)
         }
     )+};
 }
@@ -41,20 +42,16 @@ contract_struct! {
     /// # Example
     ///
     /// ```
-    /// # use ethers_core::types::*;
-    /// # use ethers_contract::{builders::*, *};
-    /// # use ethers_providers::*;
+    /// # use uniswap_rs::prelude::{*, ethers::*};
     /// # use uniswap_rs::{
-    /// #     bindings::i_universal_router_commands::V2SwapExactInCall,
-    /// #     constants::NATIVE_ADDRESS,
-    /// #     v3::UniversalRouter,
+    /// #     contracts::bindings::i_universal_router_commands::V2SwapExactInCall,
     /// # };
     /// # use std::sync::Arc;
     /// # async fn foo() -> Result<(), Box<dyn std::error::Error>> {
     /// // construct the router
     /// let address = Address::repeat_byte(0x11);
     /// let provider = Arc::new(Provider::<Http>::try_from("https://example.com")?);
-    /// let router = UniversalRouter::new(provider, address);
+    /// let mut router = UniversalRouter::new(provider, address);
     ///
     /// // construct the call
     /// let token = Address::repeat_byte(0x22);
@@ -76,8 +73,11 @@ contract_struct! {
         /// The router contract.
         contract: IUniversalRouter<M>,
 
-        /// The command builder.
-        builder: Builder,
+        /// The raw command bytes.
+        commands: Vec<u8>,
+
+        /// The raw command inputs.
+        inputs: Vec<Bytes>,
     }
 }
 
@@ -85,7 +85,7 @@ impl<M: Middleware> UniversalRouter<M> {
     /// Creates a new instance using the provided address.
     pub fn new(client: Arc<M>, address: Address) -> Self {
         let contract = IUniversalRouter::new(address, client);
-        Self { contract, builder: Builder::with_capacity(3) }
+        Self { contract, commands: Default::default(), inputs: Default::default() }
     }
 
     /// Creates a new instance by searching for the required addresses in the [addressbook].
@@ -96,16 +96,137 @@ impl<M: Middleware> UniversalRouter<M> {
         protocol.try_addresses(chain).1.map(|address| Self::new(client, address))
     }
 
-    /// Consumes the builder to create a call to the `execute` function.
+    /// Reserves capacity for at least additional more elements to be inserted.
+    ///
+    /// After calling `reserve`, capacity will be greater than or equal to `self.len() +
+    /// additional`. Does nothing if capacity is already sufficient.
+    pub fn reserve(&mut self, additional: usize) -> &mut Self {
+        self.commands.reserve(additional);
+        self.inputs.reserve(additional);
+        self
+    }
+
+    /// Clears the internal buffers, removing all values.
+    ///
+    /// Note that this method has no effect on the allocated capacity of the buffers.
+    pub fn clear(&mut self) -> &mut Self {
+        self.commands.clear();
+        self.inputs.clear();
+        self
+    }
+
+    /// Add a command binding, and whether it is allowed to revert to the call.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use ethers_core::abi::Token;
+    /// # let mut router = UniversalRouter::new(Provider::<Http>::try_from("http://example.com").unwrap().into(), Address::zero());
+    /// let address = Address::zero();
+    /// let amount = U256::zero();
+    /// router.add_command(Command::WrapEth, false, &[Token::Address(address), Token::Uint(amount)]);
+    /// // equivalent to:
+    /// router.wrap_eth(false, address, amount);
+    /// # Ok::<_, Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn add_command_from_bindings(
+        &mut self,
+        command: IUniversalRouterCommandsCalls,
+        allow_revert: bool,
+    ) -> &mut Self {
+        let command_type = Command::from(&command);
+        let tokens = command.into_tokens();
+        self.add_command(command_type, allow_revert, &tokens)
+    }
+
+    /// Add a command, its arguments, and whether it is allowed to revert to the call.
+    ///
+    /// **Important**: this method is not type-safe. It is recommended to use the `command_name`
+    /// methods instead. See [this type's documentation][UniversalRouter] on how to do this.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use ethers_core::abi::Token;
+    /// # let mut router = UniversalRouter::new(Provider::<Http>::try_from("http://example.com").unwrap().into(), Address::zero());
+    /// let address = Token::Address(Address::zero());
+    /// let amount = Token::Uint(U256::zero());
+    /// router.add_command(Command::WrapEth, false, &[address, amount]);
+    /// # Ok::<_, Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn add_command(
+        &mut self,
+        command: Command,
+        allow_revert: bool,
+        args: &[Token],
+    ) -> &mut Self {
+        let command_byte = command.encode(allow_revert);
+        let input = abi::encode(args).into();
+        self.add_command_raw(command_byte, input)
+    }
+
+    /// Add a command, its input bytes, and whether it is allowed to revert to the call.
+    ///
+    /// **Important**: this method is not type-safe. It is recommended to use the `command_name`
+    /// methods instead. See [this type's documentation][UniversalRouter] on how to do this.
+    pub fn add_command_raw(&mut self, command_byte: u8, input: Bytes) -> &mut Self {
+        self.commands.push(command_byte);
+        self.inputs.push(input);
+        self
+    }
+
+    /// Consumes the internal buffers to build into [`ExecuteWithCommandsAndInputsCall`].
+    pub fn build(&mut self, deadline: U256) -> ExecuteWithCommandsAndInputsCall {
+        let commands = mem::take(&mut self.commands);
+        let inputs = mem::take(&mut self.inputs);
+        ExecuteWithCommandsAndInputsCall { commands: commands.into(), inputs, deadline }
+    }
+
+    /// Consumes the internal buffers to build into [`ExecuteCall`].
+    pub fn build_no_deadline(&mut self) -> ExecuteCall {
+        let commands = mem::take(&mut self.commands);
+        let inputs = mem::take(&mut self.inputs);
+        ExecuteCall { commands: commands.into(), inputs }
+    }
+
+    /// Consumes the internal buffers to create a call to the [`router`][IUniversalRouter]'s
+    /// `execute` function.
+    ///
+    /// `deadline` is measured in seconds from when this method is called.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use ethers_core::abi::Token;
+    /// # let mut router = UniversalRouter::new(Provider::<Http>::try_from("http://example.com").unwrap().into(), Address::zero());
+    /// let address = Token::Address(Address::zero());
+    /// let amount = Token::Uint(U256::zero());
+    /// let deadline = Some(300);
+    /// router.add_command(Command::WrapEth, false, &[address, amount]);
+    /// let call = router.call(deadline);
+    /// // send or simulate the call ...
+    /// // call.value(amount).send().await?;
+    /// # Ok::<_, Box<dyn std::error::Error>>(())
+    /// ```
     pub fn call(&mut self, deadline: Option<u64>) -> ContractCall<M, ()> {
-        let builder = std::mem::take(&mut self.builder);
-        builder.call(&self.contract, deadline)
+        let commands: Bytes = mem::take(&mut self.commands).into();
+        let inputs = mem::take(&mut self.inputs);
+        match deadline {
+            Some(deadline) => {
+                let deadline = get_deadline(deadline);
+                self.contract.execute_with_commands_and_inputs(commands, inputs, deadline)
+            }
+            None => self.contract.execute(commands, inputs),
+        }
     }
 }
 
 // implement commands in a new block so as to not "pollute" docs
 impl<M: Middleware> UniversalRouter<M> {
-    cmds! {
+    add_command_fns! {
         V3SwapExactIn => pub fn v3_swap_exact_in(
             recipient: Address,
             amount_in: U256,
@@ -253,5 +374,44 @@ impl<M: Middleware> UniversalRouter<M> {
             id: U256,
             amount: U256
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::contracts::bindings::i_universal_router_commands::SweepCall;
+    use ethers_core::{
+        abi::Tokenize,
+        types::{Address, U256},
+    };
+    use ethers_providers::{MockProvider, Provider};
+
+    #[test]
+    fn test_builder() {
+        let token = Address::from_low_u64_be(1);
+        let recipient = Address::from_low_u64_be(2);
+        let amount_min = U256::from(3);
+        let command = SweepCall { token, recipient, amount_min };
+        let allow_revert = false;
+
+        let tokens = command.clone().into_tokens();
+        let encoded = ethers_core::abi::encode(&tokens);
+
+        let provider = Provider::new(MockProvider::new()).into();
+        let mut router = UniversalRouter::new(provider, Address::zero());
+
+        let e_commands = Bytes::from(vec![Command::Sweep.encode(allow_revert)]);
+        let e_inputs = vec![Bytes::from(encoded.clone())];
+
+        router.add_command(Command::Sweep, allow_revert, &tokens).build_no_deadline();
+        assert_eq!(router.commands, e_commands);
+        assert_eq!(router.inputs, e_inputs);
+
+        router.clear();
+
+        router.add_command_from_bindings(command.clone().into(), allow_revert).build_no_deadline();
+        assert_eq!(router.commands, e_commands);
+        assert_eq!(router.inputs, e_inputs);
     }
 }
