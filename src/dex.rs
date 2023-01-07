@@ -305,6 +305,7 @@ fn path_eq(path: &[Address], weth: &Address) -> bool {
 }
 
 #[cfg(test)]
+#[allow(unused)]
 mod tests {
     use super::*;
     use crate::{constants::*, v2::Library as V2Library};
@@ -322,6 +323,7 @@ mod tests {
         assert!((a - b).abs() < I256::from_raw(c.into()));
     }
 
+    #[cfg(feature = "addresses")]
     fn default_dex() -> Dex<SignerMiddleware<Provider<Http>, LocalWallet>> {
         let provider: Provider<Http> = MAINNET.provider();
         let signer: LocalWallet =
@@ -348,7 +350,6 @@ mod tests {
         .unwrap()
     }
 
-    #[allow(unused)]
     fn decode_call_with_value(calldata: &Bytes) -> Vec<Token> {
         abi::decode(
             &[
@@ -386,6 +387,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "async test"]
+    #[cfg(feature = "addresses")]
     async fn can_swap_infinite_slippage() {
         let mut dex = default_dex();
 
@@ -428,6 +430,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "async test"]
+    #[cfg(feature = "addresses")]
     async fn can_swap_no_slippage() {
         let mut dex = default_dex();
 
@@ -453,6 +456,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "async test"]
+    #[cfg(feature = "addresses")]
     async fn can_swap_slippage() {
         let mut dex = default_dex();
 

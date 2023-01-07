@@ -122,7 +122,7 @@ impl<M: Middleware> Erc20<M> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "addresses"))]
 mod tests {
     use super::*;
     use ethers_providers::{Http, Provider, MAINNET};

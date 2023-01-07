@@ -169,6 +169,7 @@ const fn chain_or(c1: Option<Chain>, c2: Chain, hash: H256, default: H256) -> H2
 }
 
 #[cfg(test)]
+#[allow(unused)]
 mod tests {
     use super::*;
     use Chain::*;
@@ -191,6 +192,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "addresses")]
     fn test_addresses() {
         let protocols = ProtocolType::all();
 

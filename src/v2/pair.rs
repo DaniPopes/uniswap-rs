@@ -270,9 +270,12 @@ fn parse_reserves_result(tokens: Vec<Token>) -> Result<Option<Reserves>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[allow(unused)]
     use crate::ProtocolType;
+    #[allow(unused)]
     use ethers_providers::{Http, Provider, MAINNET};
 
+    #[cfg(feature = "addresses")]
     fn default_pair() -> Pair<Provider<Http>> {
         let chain = Chain::Mainnet;
         let weth: Address = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2".parse().unwrap();
@@ -357,6 +360,7 @@ mod tests {
 
     #[tokio::test]
     #[ignore = "async test"]
+    #[cfg(feature = "addresses")]
     async fn test_sync() {
         let mut pair = default_pair();
 

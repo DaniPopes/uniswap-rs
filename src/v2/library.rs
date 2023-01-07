@@ -181,7 +181,7 @@ impl Library {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "addresses"))]
 mod tests {
     use super::*;
     use crate::ProtocolType;
