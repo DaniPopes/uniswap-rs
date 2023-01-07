@@ -41,7 +41,7 @@ pub mod prelude {
 
     // convenience re-export of all ethers_* as one module.
     #[doc(hidden)]
-    pub mod ethers {
+    pub mod _ethers {
         pub use ethers_contract::{self as contract, builders::*, *};
         pub use ethers_core::{
             self as core, abi,

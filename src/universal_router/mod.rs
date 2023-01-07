@@ -44,7 +44,7 @@ contract_struct! {
     /// # Example
     ///
     /// ```
-    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use uniswap_rs::prelude::{*, _ethers::*};
     /// # use uniswap_rs::{
     /// #     contracts::bindings::i_universal_router_commands::V2SwapExactInCall,
     /// # };
@@ -122,7 +122,7 @@ impl<M: Middleware> UniversalRouter<M> {
     /// # Example
     ///
     /// ```
-    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use uniswap_rs::prelude::{*, _ethers::*};
     /// # use ethers_core::abi::Token;
     /// # let mut router = UniversalRouter::new(Provider::<Http>::try_from("http://example.com").unwrap().into(), Address::zero());
     /// let address = Address::zero();
@@ -150,7 +150,7 @@ impl<M: Middleware> UniversalRouter<M> {
     /// # Example
     ///
     /// ```
-    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use uniswap_rs::prelude::{*, _ethers::*};
     /// # use ethers_core::abi::Token;
     /// # let mut router = UniversalRouter::new(Provider::<Http>::try_from("http://example.com").unwrap().into(), Address::zero());
     /// let address = Token::Address(Address::zero());
@@ -201,7 +201,7 @@ impl<M: Middleware> UniversalRouter<M> {
     /// # Example
     ///
     /// ```
-    /// # use uniswap_rs::prelude::{*, ethers::*};
+    /// # use uniswap_rs::prelude::{*, _ethers::*};
     /// # use ethers_core::abi::Token;
     /// # let mut router = UniversalRouter::new(Provider::<Http>::try_from("http://example.com").unwrap().into(), Address::zero());
     /// let address = Token::Address(Address::zero());
