@@ -72,7 +72,7 @@ impl Library {
                 // avoid multicall for only 1 call
                 let (a, b) = (path[0], path[1]);
                 let res = Self::get_reserves(factory, a, b).await?;
-                return Ok(vec![res])
+                return Ok(vec![res]);
             }
             l => l - 1,
         };
@@ -112,7 +112,7 @@ impl Library {
     /// asset.
     pub fn quote(amount_a: U256, reserve_a: U256, reserve_b: U256) -> Result<U256> {
         if reserve_a.is_zero() || reserve_b.is_zero() {
-            return Err(Error::InsufficientLiquidity)
+            return Err(Error::InsufficientLiquidity);
         }
         Ok((amount_a * reserve_b) / reserve_a)
     }
@@ -121,7 +121,7 @@ impl Library {
     /// the other asset.
     pub fn get_amount_out(amount_in: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if reserve_in.is_zero() || reserve_out.is_zero() {
-            return Err(Error::InsufficientLiquidity)
+            return Err(Error::InsufficientLiquidity);
         }
         let amount_in_with_fee = amount_in * 997;
         let numerator = amount_in_with_fee * reserve_out;
@@ -133,7 +133,7 @@ impl Library {
     /// other asset.
     pub fn get_amount_in(amount_out: U256, reserve_in: U256, reserve_out: U256) -> Result<U256> {
         if reserve_in.is_zero() || reserve_out.is_zero() {
-            return Err(Error::InsufficientLiquidity)
+            return Err(Error::InsufficientLiquidity);
         }
         let numerator = reserve_in * amount_out * 1000;
         let denominator = (reserve_out - amount_out) * 997;
@@ -148,7 +148,7 @@ impl Library {
     ) -> Result<Vec<U256>> {
         let len = path.len();
         if len < 2 {
-            return Err(Error::InvalidPath)
+            return Err(Error::InvalidPath);
         }
 
         let reserves = Self::get_reserves_multi(factory, path).await?;
@@ -168,7 +168,7 @@ impl Library {
     ) -> Result<Vec<U256>> {
         let len = path.len();
         if len < 2 {
-            return Err(Error::InvalidPath)
+            return Err(Error::InvalidPath);
         }
 
         let reserves = Self::get_reserves_multi(factory, path).await?;

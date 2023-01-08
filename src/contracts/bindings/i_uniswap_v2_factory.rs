@@ -275,39 +275,39 @@ pub mod i_uniswap_v2_factory {
             if let Ok(decoded) =
                 <AllPairsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::AllPairs(decoded))
+                return Ok(IUniswapV2FactoryCalls::AllPairs(decoded));
             }
             if let Ok(decoded) =
                 <AllPairsLengthCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::AllPairsLength(decoded))
+                return Ok(IUniswapV2FactoryCalls::AllPairsLength(decoded));
             }
             if let Ok(decoded) =
                 <CreatePairCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::CreatePair(decoded))
+                return Ok(IUniswapV2FactoryCalls::CreatePair(decoded));
             }
             if let Ok(decoded) = <FeeToCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2FactoryCalls::FeeTo(decoded))
+                return Ok(IUniswapV2FactoryCalls::FeeTo(decoded));
             }
             if let Ok(decoded) =
                 <FeeToSetterCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::FeeToSetter(decoded))
+                return Ok(IUniswapV2FactoryCalls::FeeToSetter(decoded));
             }
             if let Ok(decoded) = <GetPairCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::GetPair(decoded))
+                return Ok(IUniswapV2FactoryCalls::GetPair(decoded));
             }
             if let Ok(decoded) =
                 <SetFeeToCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::SetFeeTo(decoded))
+                return Ok(IUniswapV2FactoryCalls::SetFeeTo(decoded));
             }
             if let Ok(decoded) =
                 <SetFeeToSetterCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2FactoryCalls::SetFeeToSetter(decoded))
+                return Ok(IUniswapV2FactoryCalls::SetFeeToSetter(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

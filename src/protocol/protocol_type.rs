@@ -162,7 +162,7 @@ impl ProtocolType {
 const fn chain_or(c1: Option<Chain>, c2: Chain, hash: H256, default: H256) -> H256 {
     if let Some(c1) = c1 {
         if c1 as u64 == c2 as u64 {
-            return hash
+            return hash;
         }
     }
     default

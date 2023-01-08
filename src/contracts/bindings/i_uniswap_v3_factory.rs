@@ -202,13 +202,13 @@ pub mod i_uniswap_v3_factory {
             Self: Sized,
         {
             if let Ok(decoded) = FeeAmountEnabledFilter::decode_log(log) {
-                return Ok(IUniswapV3FactoryEvents::FeeAmountEnabledFilter(decoded))
+                return Ok(IUniswapV3FactoryEvents::FeeAmountEnabledFilter(decoded));
             }
             if let Ok(decoded) = OwnerChangedFilter::decode_log(log) {
-                return Ok(IUniswapV3FactoryEvents::OwnerChangedFilter(decoded))
+                return Ok(IUniswapV3FactoryEvents::OwnerChangedFilter(decoded));
             }
             if let Ok(decoded) = PoolCreatedFilter::decode_log(log) {
-                return Ok(IUniswapV3FactoryEvents::PoolCreatedFilter(decoded))
+                return Ok(IUniswapV3FactoryEvents::PoolCreatedFilter(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData)
         }
@@ -325,29 +325,29 @@ pub mod i_uniswap_v3_factory {
             if let Ok(decoded) =
                 <CreatePoolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::CreatePool(decoded))
+                return Ok(IUniswapV3FactoryCalls::CreatePool(decoded));
             }
             if let Ok(decoded) =
                 <EnableFeeAmountCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::EnableFeeAmount(decoded))
+                return Ok(IUniswapV3FactoryCalls::EnableFeeAmount(decoded));
             }
             if let Ok(decoded) =
                 <FeeAmountTickSpacingCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::FeeAmountTickSpacing(decoded))
+                return Ok(IUniswapV3FactoryCalls::FeeAmountTickSpacing(decoded));
             }
             if let Ok(decoded) = <GetPoolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::GetPool(decoded))
+                return Ok(IUniswapV3FactoryCalls::GetPool(decoded));
             }
             if let Ok(decoded) = <OwnerCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV3FactoryCalls::Owner(decoded))
+                return Ok(IUniswapV3FactoryCalls::Owner(decoded));
             }
             if let Ok(decoded) =
                 <SetOwnerCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV3FactoryCalls::SetOwner(decoded))
+                return Ok(IUniswapV3FactoryCalls::SetOwner(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

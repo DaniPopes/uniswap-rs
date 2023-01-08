@@ -882,128 +882,128 @@ pub mod i_universal_router_commands {
             if let Ok(decoded) =
                 <CryptopunksCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Cryptopunks(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Cryptopunks(decoded));
             }
             if let Ok(decoded) =
                 <FoundationCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Foundation(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Foundation(decoded));
             }
             if let Ok(decoded) =
                 <LooksRare1155Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::LooksRare1155(decoded))
+                return Ok(IUniversalRouterCommandsCalls::LooksRare1155(decoded));
             }
             if let Ok(decoded) =
                 <LooksRare721Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::LooksRare721(decoded))
+                return Ok(IUniversalRouterCommandsCalls::LooksRare721(decoded));
             }
             if let Ok(decoded) = <Nft20Call as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniversalRouterCommandsCalls::Nft20(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Nft20(decoded));
             }
             if let Ok(decoded) = <NftxCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniversalRouterCommandsCalls::Nftx(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Nftx(decoded));
             }
             if let Ok(decoded) =
                 <OwnerCheck1155Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::OwnerCheck1155(decoded))
+                return Ok(IUniversalRouterCommandsCalls::OwnerCheck1155(decoded));
             }
             if let Ok(decoded) =
                 <OwnerCheck721Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::OwnerCheck721(decoded))
+                return Ok(IUniversalRouterCommandsCalls::OwnerCheck721(decoded));
             }
             if let Ok(decoded) =
                 <PayPortionCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::PayPortion(decoded))
+                return Ok(IUniversalRouterCommandsCalls::PayPortion(decoded));
             }
             if let Ok(decoded) =
                 <Permit2PermitCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Permit2Permit(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Permit2Permit(decoded));
             }
             if let Ok(decoded) =
                 <Permit2PermitBatchCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Permit2PermitBatch(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Permit2PermitBatch(decoded));
             }
             if let Ok(decoded) =
                 <Permit2TransferFromCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Permit2TransferFrom(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Permit2TransferFrom(decoded));
             }
             if let Ok(decoded) =
                 <Permit2TransferFromBatchCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Permit2TransferFromBatch(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Permit2TransferFromBatch(decoded));
             }
             if let Ok(decoded) = <SeaportCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Seaport(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Seaport(decoded));
             }
             if let Ok(decoded) =
                 <SudoswapCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Sudoswap(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Sudoswap(decoded));
             }
             if let Ok(decoded) = <SweepCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniversalRouterCommandsCalls::Sweep(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Sweep(decoded));
             }
             if let Ok(decoded) =
                 <SweepErc1155Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::SweepErc1155(decoded))
+                return Ok(IUniversalRouterCommandsCalls::SweepErc1155(decoded));
             }
             if let Ok(decoded) =
                 <SweepErc721Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::SweepErc721(decoded))
+                return Ok(IUniversalRouterCommandsCalls::SweepErc721(decoded));
             }
             if let Ok(decoded) =
                 <TransferCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::Transfer(decoded))
+                return Ok(IUniversalRouterCommandsCalls::Transfer(decoded));
             }
             if let Ok(decoded) =
                 <UnwrapWethCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::UnwrapWeth(decoded))
+                return Ok(IUniversalRouterCommandsCalls::UnwrapWeth(decoded));
             }
             if let Ok(decoded) =
                 <V2SwapExactInCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::V2SwapExactIn(decoded))
+                return Ok(IUniversalRouterCommandsCalls::V2SwapExactIn(decoded));
             }
             if let Ok(decoded) =
                 <V2SwapExactOutCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::V2SwapExactOut(decoded))
+                return Ok(IUniversalRouterCommandsCalls::V2SwapExactOut(decoded));
             }
             if let Ok(decoded) =
                 <V3SwapExactInCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::V3SwapExactIn(decoded))
+                return Ok(IUniversalRouterCommandsCalls::V3SwapExactIn(decoded));
             }
             if let Ok(decoded) =
                 <V3SwapExactOutCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::V3SwapExactOut(decoded))
+                return Ok(IUniversalRouterCommandsCalls::V3SwapExactOut(decoded));
             }
             if let Ok(decoded) = <WrapEthCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::WrapEth(decoded))
+                return Ok(IUniversalRouterCommandsCalls::WrapEth(decoded));
             }
             if let Ok(decoded) =
                 <X2Y21155Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::X2Y21155(decoded))
+                return Ok(IUniversalRouterCommandsCalls::X2Y21155(decoded));
             }
             if let Ok(decoded) = <X2Y2721Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCommandsCalls::X2Y2721(decoded))
+                return Ok(IUniversalRouterCommandsCalls::X2Y2721(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

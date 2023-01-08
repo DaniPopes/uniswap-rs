@@ -982,54 +982,54 @@ pub mod i_uniswap_v2_router_02 {
             data: impl AsRef<[u8]>,
         ) -> ::std::result::Result<Self, ethers_core::abi::AbiError> {
             if let Ok(decoded) = <WethCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2Router02Calls::Weth(decoded))
+                return Ok(IUniswapV2Router02Calls::Weth(decoded));
             }
             if let Ok(decoded) =
                 <AddLiquidityCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::AddLiquidity(decoded))
+                return Ok(IUniswapV2Router02Calls::AddLiquidity(decoded));
             }
             if let Ok(decoded) =
                 <AddLiquidityETHCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::AddLiquidityETH(decoded))
+                return Ok(IUniswapV2Router02Calls::AddLiquidityETH(decoded));
             }
             if let Ok(decoded) = <FactoryCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::Factory(decoded))
+                return Ok(IUniswapV2Router02Calls::Factory(decoded));
             }
             if let Ok(decoded) =
                 <GetAmountInCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountIn(decoded))
+                return Ok(IUniswapV2Router02Calls::GetAmountIn(decoded));
             }
             if let Ok(decoded) =
                 <GetAmountOutCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountOut(decoded))
+                return Ok(IUniswapV2Router02Calls::GetAmountOut(decoded));
             }
             if let Ok(decoded) =
                 <GetAmountsInCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountsIn(decoded))
+                return Ok(IUniswapV2Router02Calls::GetAmountsIn(decoded));
             }
             if let Ok(decoded) =
                 <GetAmountsOutCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::GetAmountsOut(decoded))
+                return Ok(IUniswapV2Router02Calls::GetAmountsOut(decoded));
             }
             if let Ok(decoded) = <QuoteCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2Router02Calls::Quote(decoded))
+                return Ok(IUniswapV2Router02Calls::Quote(decoded));
             }
             if let Ok(decoded) =
                 <RemoveLiquidityCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidity(decoded))
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidity(decoded));
             }
             if let Ok(decoded) =
                 <RemoveLiquidityETHCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETH(decoded))
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETH(decoded));
             }
             if let Ok (decoded) = < RemoveLiquidityETHSupportingFeeOnTransferTokensCall as ethers_core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: RemoveLiquidityETHSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
@@ -1037,7 +1037,7 @@ pub mod i_uniswap_v2_router_02 {
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETHWithPermit(decoded))
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidityETHWithPermit(decoded));
             }
             if let Ok (decoded) = < RemoveLiquidityETHWithPermitSupportingFeeOnTransferTokensCall as ethers_core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: RemoveLiquidityETHWithPermitSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
@@ -1045,40 +1045,40 @@ pub mod i_uniswap_v2_router_02 {
                     data.as_ref(),
                 )
             {
-                return Ok(IUniswapV2Router02Calls::RemoveLiquidityWithPermit(decoded))
+                return Ok(IUniswapV2Router02Calls::RemoveLiquidityWithPermit(decoded));
             }
             if let Ok(decoded) =
                 <SwapETHForExactTokensCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapETHForExactTokens(decoded))
+                return Ok(IUniswapV2Router02Calls::SwapETHForExactTokens(decoded));
             }
             if let Ok(decoded) =
                 <SwapExactETHForTokensCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapExactETHForTokens(decoded))
+                return Ok(IUniswapV2Router02Calls::SwapExactETHForTokens(decoded));
             }
             if let Ok (decoded) = < SwapExactETHForTokensSupportingFeeOnTransferTokensCall as ethers_core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: SwapExactETHForTokensSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
                 <SwapExactTokensForETHCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapExactTokensForETH(decoded))
+                return Ok(IUniswapV2Router02Calls::SwapExactTokensForETH(decoded));
             }
             if let Ok (decoded) = < SwapExactTokensForETHSupportingFeeOnTransferTokensCall as ethers_core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: SwapExactTokensForETHSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
                 <SwapExactTokensForTokensCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapExactTokensForTokens(decoded))
+                return Ok(IUniswapV2Router02Calls::SwapExactTokensForTokens(decoded));
             }
             if let Ok (decoded) = < SwapExactTokensForTokensSupportingFeeOnTransferTokensCall as ethers_core :: abi :: AbiDecode > :: decode (data . as_ref ()) { return Ok (IUniswapV2Router02Calls :: SwapExactTokensForTokensSupportingFeeOnTransferTokens (decoded)) }
             if let Ok(decoded) =
                 <SwapTokensForExactETHCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapTokensForExactETH(decoded))
+                return Ok(IUniswapV2Router02Calls::SwapTokensForExactETH(decoded));
             }
             if let Ok(decoded) =
                 <SwapTokensForExactTokensCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2Router02Calls::SwapTokensForExactTokens(decoded))
+                return Ok(IUniswapV2Router02Calls::SwapTokensForExactTokens(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

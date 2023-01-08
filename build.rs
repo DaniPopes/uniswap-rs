@@ -49,7 +49,7 @@ fn abigen(check: bool) -> Result<()> {
         }
     };
     if !rustfmt {
-        return Err(eyre::eyre!("Cannot build bindings without rustfmt nightly."))
+        return Err(eyre::eyre!("Cannot build bindings without rustfmt nightly."));
     }
 
     // temp: manually build abigens to set rustfmt value

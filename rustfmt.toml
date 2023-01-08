@@ -1,9 +1,8 @@
-reorder_imports = true
-imports_granularity = "Crate"
 use_small_heuristics = "Max"
-comment_width = 100
-wrap_comments = true
-binop_separator = "Back"
-trailing_comma = "Vertical"
-trailing_semicolon = false
 use_field_init_shorthand = true
+
+# unstable
+imports_granularity = "Crate"
+wrap_comments = true
+comment_width = 100
+ignore = ["src/contracts/bindings"]

@@ -185,14 +185,14 @@ impl<M: Middleware> Dex<M> {
         deadline: Option<u64>,
     ) -> Result<ContractCall<M, Vec<U256>>> {
         if !(0.0..=100.0).contains(&slippage_tolerance) {
-            return Err(Error::InvalidSlippage)
+            return Err(Error::InvalidSlippage);
         }
 
         let sender = self.client().default_sender();
         let to = self.get_to(to);
 
         if path.len() < 2 {
-            return Err(Error::InvalidPath)
+            return Err(Error::InvalidPath);
         }
 
         // set weth
@@ -205,7 +205,7 @@ impl<M: Middleware> Dex<M> {
         };
 
         if path_eq(path, &weth) {
-            return Err(Error::SwapToSelf)
+            return Err(Error::SwapToSelf);
         }
 
         let deadline = get_deadline_opt(deadline);
@@ -293,7 +293,7 @@ fn path_eq(path: &[Address], weth: &Address) -> bool {
     let last = path.last().expect("path is empty");
 
     if first == last {
-        return true
+        return true;
     }
 
     let fin = is_native(first);

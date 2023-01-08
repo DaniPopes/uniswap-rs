@@ -37,7 +37,7 @@ impl<M> fmt::Display for Pair<M> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let address = self.address();
         if self.tokens.is_none() && self.reserves.is_none() {
-            return writeln!(f, "Pair: {address:?}")
+            return writeln!(f, "Pair: {address:?}");
         }
         writeln!(f, "Pair:     {address:?}")?;
         if let Some((a, b)) = self.tokens {
@@ -145,7 +145,7 @@ impl<M: Middleware> Pair<M> {
             Err(MulticallError::ContractError(ContractError::DecodingError(_))) => {
                 self.tokens = None;
                 self.deployed = false;
-                return Ok(self)
+                return Ok(self);
             }
             Err(e) => return Err(e.into()),
         };
@@ -158,7 +158,7 @@ impl<M: Middleware> Pair<M> {
                 if tokens.is_none() || reserves.is_none() {
                     self.tokens = None;
                     self.deployed = false;
-                    return Ok(self)
+                    return Ok(self);
                 }
 
                 self.deployed = true;
@@ -171,7 +171,7 @@ impl<M: Middleware> Pair<M> {
                 if tokens.is_none() {
                     self.tokens = None;
                     self.deployed = false;
-                    return Ok(self)
+                    return Ok(self);
                 }
 
                 self.deployed = true;
@@ -183,7 +183,7 @@ impl<M: Middleware> Pair<M> {
                 if reserves.is_none() {
                     self.tokens = None;
                     self.deployed = false;
-                    return Ok(self)
+                    return Ok(self);
                 }
 
                 self.deployed = true;

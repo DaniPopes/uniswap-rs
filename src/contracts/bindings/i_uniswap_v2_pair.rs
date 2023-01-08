@@ -437,22 +437,22 @@ pub mod i_uniswap_v2_pair {
             Self: Sized,
         {
             if let Ok(decoded) = ApprovalFilter::decode_log(log) {
-                return Ok(IUniswapV2PairEvents::ApprovalFilter(decoded))
+                return Ok(IUniswapV2PairEvents::ApprovalFilter(decoded));
             }
             if let Ok(decoded) = BurnFilter::decode_log(log) {
-                return Ok(IUniswapV2PairEvents::BurnFilter(decoded))
+                return Ok(IUniswapV2PairEvents::BurnFilter(decoded));
             }
             if let Ok(decoded) = MintFilter::decode_log(log) {
-                return Ok(IUniswapV2PairEvents::MintFilter(decoded))
+                return Ok(IUniswapV2PairEvents::MintFilter(decoded));
             }
             if let Ok(decoded) = SwapFilter::decode_log(log) {
-                return Ok(IUniswapV2PairEvents::SwapFilter(decoded))
+                return Ok(IUniswapV2PairEvents::SwapFilter(decoded));
             }
             if let Ok(decoded) = SyncFilter::decode_log(log) {
-                return Ok(IUniswapV2PairEvents::SyncFilter(decoded))
+                return Ok(IUniswapV2PairEvents::SyncFilter(decoded));
             }
             if let Ok(decoded) = TransferFilter::decode_log(log) {
-                return Ok(IUniswapV2PairEvents::TransferFilter(decoded))
+                return Ok(IUniswapV2PairEvents::TransferFilter(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData)
         }
@@ -869,116 +869,116 @@ pub mod i_uniswap_v2_pair {
             if let Ok(decoded) =
                 <DomainSeparatorCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::DomainSeparator(decoded))
+                return Ok(IUniswapV2PairCalls::DomainSeparator(decoded));
             }
             if let Ok(decoded) =
                 <MinimumLiquidityCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::MinimumLiquidity(decoded))
+                return Ok(IUniswapV2PairCalls::MinimumLiquidity(decoded));
             }
             if let Ok(decoded) =
                 <PermitTypehashCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::PermitTypehash(decoded))
+                return Ok(IUniswapV2PairCalls::PermitTypehash(decoded));
             }
             if let Ok(decoded) =
                 <AllowanceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Allowance(decoded))
+                return Ok(IUniswapV2PairCalls::Allowance(decoded));
             }
             if let Ok(decoded) = <ApproveCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Approve(decoded))
+                return Ok(IUniswapV2PairCalls::Approve(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::BalanceOf(decoded))
+                return Ok(IUniswapV2PairCalls::BalanceOf(decoded));
             }
             if let Ok(decoded) = <BurnCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Burn(decoded))
+                return Ok(IUniswapV2PairCalls::Burn(decoded));
             }
             if let Ok(decoded) =
                 <DecimalsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Decimals(decoded))
+                return Ok(IUniswapV2PairCalls::Decimals(decoded));
             }
             if let Ok(decoded) = <FactoryCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Factory(decoded))
+                return Ok(IUniswapV2PairCalls::Factory(decoded));
             }
             if let Ok(decoded) =
                 <GetReservesCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::GetReserves(decoded))
+                return Ok(IUniswapV2PairCalls::GetReserves(decoded));
             }
             if let Ok(decoded) =
                 <InitializeCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Initialize(decoded))
+                return Ok(IUniswapV2PairCalls::Initialize(decoded));
             }
             if let Ok(decoded) = <KlastCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Klast(decoded))
+                return Ok(IUniswapV2PairCalls::Klast(decoded));
             }
             if let Ok(decoded) = <MintCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Mint(decoded))
+                return Ok(IUniswapV2PairCalls::Mint(decoded));
             }
             if let Ok(decoded) = <NameCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Name(decoded))
+                return Ok(IUniswapV2PairCalls::Name(decoded));
             }
             if let Ok(decoded) = <NoncesCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Nonces(decoded))
+                return Ok(IUniswapV2PairCalls::Nonces(decoded));
             }
             if let Ok(decoded) = <PermitCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Permit(decoded))
+                return Ok(IUniswapV2PairCalls::Permit(decoded));
             }
             if let Ok(decoded) =
                 <Price0CumulativeLastCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Price0CumulativeLast(decoded))
+                return Ok(IUniswapV2PairCalls::Price0CumulativeLast(decoded));
             }
             if let Ok(decoded) =
                 <Price1CumulativeLastCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Price1CumulativeLast(decoded))
+                return Ok(IUniswapV2PairCalls::Price1CumulativeLast(decoded));
             }
             if let Ok(decoded) = <SkimCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Skim(decoded))
+                return Ok(IUniswapV2PairCalls::Skim(decoded));
             }
             if let Ok(decoded) = <SwapCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Swap(decoded))
+                return Ok(IUniswapV2PairCalls::Swap(decoded));
             }
             if let Ok(decoded) = <SymbolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Symbol(decoded))
+                return Ok(IUniswapV2PairCalls::Symbol(decoded));
             }
             if let Ok(decoded) = <SyncCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniswapV2PairCalls::Sync(decoded))
+                return Ok(IUniswapV2PairCalls::Sync(decoded));
             }
             if let Ok(decoded) = <Token0Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Token0(decoded))
+                return Ok(IUniswapV2PairCalls::Token0(decoded));
             }
             if let Ok(decoded) = <Token1Call as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Token1(decoded))
+                return Ok(IUniswapV2PairCalls::Token1(decoded));
             }
             if let Ok(decoded) =
                 <TotalSupplyCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::TotalSupply(decoded))
+                return Ok(IUniswapV2PairCalls::TotalSupply(decoded));
             }
             if let Ok(decoded) =
                 <TransferCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::Transfer(decoded))
+                return Ok(IUniswapV2PairCalls::Transfer(decoded));
             }
             if let Ok(decoded) =
                 <TransferFromCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniswapV2PairCalls::TransferFrom(decoded))
+                return Ok(IUniswapV2PairCalls::TransferFrom(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

@@ -31,7 +31,7 @@ impl<M> fmt::Display for Pool<M> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let address = self.address();
         if self.tokens.is_none() && self.reserves.is_none() {
-            return writeln!(f, "Pool: {address:?}")
+            return writeln!(f, "Pool: {address:?}");
         }
         writeln!(f, "Pool:     {address:?}")?;
         if let Some((a, b)) = self.tokens {

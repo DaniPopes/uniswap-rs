@@ -245,16 +245,16 @@ pub mod iweth {
             Self: Sized,
         {
             if let Ok(decoded) = ApprovalFilter::decode_log(log) {
-                return Ok(IWETHEvents::ApprovalFilter(decoded))
+                return Ok(IWETHEvents::ApprovalFilter(decoded));
             }
             if let Ok(decoded) = DepositFilter::decode_log(log) {
-                return Ok(IWETHEvents::DepositFilter(decoded))
+                return Ok(IWETHEvents::DepositFilter(decoded));
             }
             if let Ok(decoded) = TransferFilter::decode_log(log) {
-                return Ok(IWETHEvents::TransferFilter(decoded))
+                return Ok(IWETHEvents::TransferFilter(decoded));
             }
             if let Ok(decoded) = WithdrawalFilter::decode_log(log) {
-                return Ok(IWETHEvents::WithdrawalFilter(decoded))
+                return Ok(IWETHEvents::WithdrawalFilter(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData)
         }
@@ -434,52 +434,52 @@ pub mod iweth {
             if let Ok(decoded) =
                 <AllowanceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Allowance(decoded))
+                return Ok(IWETHCalls::Allowance(decoded));
             }
             if let Ok(decoded) = <ApproveCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Approve(decoded))
+                return Ok(IWETHCalls::Approve(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::BalanceOf(decoded))
+                return Ok(IWETHCalls::BalanceOf(decoded));
             }
             if let Ok(decoded) =
                 <DecimalsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Decimals(decoded))
+                return Ok(IWETHCalls::Decimals(decoded));
             }
             if let Ok(decoded) = <DepositCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Deposit(decoded))
+                return Ok(IWETHCalls::Deposit(decoded));
             }
             if let Ok(decoded) = <NameCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IWETHCalls::Name(decoded))
+                return Ok(IWETHCalls::Name(decoded));
             }
             if let Ok(decoded) = <SymbolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Symbol(decoded))
+                return Ok(IWETHCalls::Symbol(decoded));
             }
             if let Ok(decoded) =
                 <TotalSupplyCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::TotalSupply(decoded))
+                return Ok(IWETHCalls::TotalSupply(decoded));
             }
             if let Ok(decoded) =
                 <TransferCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Transfer(decoded))
+                return Ok(IWETHCalls::Transfer(decoded));
             }
             if let Ok(decoded) =
                 <TransferFromCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::TransferFrom(decoded))
+                return Ok(IWETHCalls::TransferFrom(decoded));
             }
             if let Ok(decoded) =
                 <WithdrawCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IWETHCalls::Withdraw(decoded))
+                return Ok(IWETHCalls::Withdraw(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

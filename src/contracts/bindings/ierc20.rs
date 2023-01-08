@@ -190,10 +190,10 @@ pub mod ierc20 {
             Self: Sized,
         {
             if let Ok(decoded) = ApprovalFilter::decode_log(log) {
-                return Ok(IERC20Events::ApprovalFilter(decoded))
+                return Ok(IERC20Events::ApprovalFilter(decoded));
             }
             if let Ok(decoded) = TransferFilter::decode_log(log) {
-                return Ok(IERC20Events::TransferFilter(decoded))
+                return Ok(IERC20Events::TransferFilter(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData)
         }
@@ -348,43 +348,43 @@ pub mod ierc20 {
             if let Ok(decoded) =
                 <AllowanceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::Allowance(decoded))
+                return Ok(IERC20Calls::Allowance(decoded));
             }
             if let Ok(decoded) = <ApproveCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::Approve(decoded))
+                return Ok(IERC20Calls::Approve(decoded));
             }
             if let Ok(decoded) =
                 <BalanceOfCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::BalanceOf(decoded))
+                return Ok(IERC20Calls::BalanceOf(decoded));
             }
             if let Ok(decoded) =
                 <DecimalsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::Decimals(decoded))
+                return Ok(IERC20Calls::Decimals(decoded));
             }
             if let Ok(decoded) = <NameCall as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IERC20Calls::Name(decoded))
+                return Ok(IERC20Calls::Name(decoded));
             }
             if let Ok(decoded) = <SymbolCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::Symbol(decoded))
+                return Ok(IERC20Calls::Symbol(decoded));
             }
             if let Ok(decoded) =
                 <TotalSupplyCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::TotalSupply(decoded))
+                return Ok(IERC20Calls::TotalSupply(decoded));
             }
             if let Ok(decoded) =
                 <TransferCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::Transfer(decoded))
+                return Ok(IERC20Calls::Transfer(decoded));
             }
             if let Ok(decoded) =
                 <TransferFromCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IERC20Calls::TransferFrom(decoded))
+                return Ok(IERC20Calls::TransferFrom(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

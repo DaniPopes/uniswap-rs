@@ -572,152 +572,152 @@ pub mod i_universal_router {
             if let Ok(decoded) =
                 <ContractLocked as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ContractLocked(decoded))
+                return Ok(IUniversalRouterErrors::ContractLocked(decoded));
             }
             if let Ok(decoded) =
                 <ETHNotAccepted as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ETHNotAccepted(decoded))
+                return Ok(IUniversalRouterErrors::ETHNotAccepted(decoded));
             }
             if let Ok(decoded) =
                 <ExecutionFailed as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ExecutionFailed(decoded))
+                return Ok(IUniversalRouterErrors::ExecutionFailed(decoded));
             }
             if let Ok(decoded) =
                 <FromAddressIsNotOwner as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::FromAddressIsNotOwner(decoded))
+                return Ok(IUniversalRouterErrors::FromAddressIsNotOwner(decoded));
             }
             if let Ok(decoded) =
                 <InsufficientETH as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InsufficientETH(decoded))
+                return Ok(IUniversalRouterErrors::InsufficientETH(decoded));
             }
             if let Ok(decoded) =
                 <InsufficientToken as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InsufficientToken(decoded))
+                return Ok(IUniversalRouterErrors::InsufficientToken(decoded));
             }
             if let Ok(decoded) = <InvalidBips as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InvalidBips(decoded))
+                return Ok(IUniversalRouterErrors::InvalidBips(decoded));
             }
             if let Ok(decoded) =
                 <InvalidCommandType as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InvalidCommandType(decoded))
+                return Ok(IUniversalRouterErrors::InvalidCommandType(decoded));
             }
             if let Ok(decoded) =
                 <InvalidOwnerERC1155 as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InvalidOwnerERC1155(decoded))
+                return Ok(IUniversalRouterErrors::InvalidOwnerERC1155(decoded));
             }
             if let Ok(decoded) =
                 <InvalidOwnerERC721 as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InvalidOwnerERC721(decoded))
+                return Ok(IUniversalRouterErrors::InvalidOwnerERC721(decoded));
             }
             if let Ok(decoded) = <InvalidPath as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InvalidPath(decoded))
+                return Ok(IUniversalRouterErrors::InvalidPath(decoded));
             }
             if let Ok(decoded) =
                 <InvalidReserves as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::InvalidReserves(decoded))
+                return Ok(IUniversalRouterErrors::InvalidReserves(decoded));
             }
             if let Ok(decoded) =
                 <LengthMismatch as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::LengthMismatch(decoded))
+                return Ok(IUniversalRouterErrors::LengthMismatch(decoded));
             }
             if let Ok(decoded) = <NoSlice as ethers_core::abi::AbiDecode>::decode(data.as_ref()) {
-                return Ok(IUniversalRouterErrors::NoSlice(decoded))
+                return Ok(IUniversalRouterErrors::NoSlice(decoded));
             }
             if let Ok(decoded) =
                 <SliceOutOfBounds as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::SliceOutOfBounds(decoded))
+                return Ok(IUniversalRouterErrors::SliceOutOfBounds(decoded));
             }
             if let Ok(decoded) =
                 <SliceOverflow as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::SliceOverflow(decoded))
+                return Ok(IUniversalRouterErrors::SliceOverflow(decoded));
             }
             if let Ok(decoded) =
                 <ToAddressOutOfBounds as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ToAddressOutOfBounds(decoded))
+                return Ok(IUniversalRouterErrors::ToAddressOutOfBounds(decoded));
             }
             if let Ok(decoded) =
                 <ToAddressOverflow as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ToAddressOverflow(decoded))
+                return Ok(IUniversalRouterErrors::ToAddressOverflow(decoded));
             }
             if let Ok(decoded) =
                 <ToUint24OutOfBounds as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ToUint24OutOfBounds(decoded))
+                return Ok(IUniversalRouterErrors::ToUint24OutOfBounds(decoded));
             }
             if let Ok(decoded) =
                 <ToUint24Overflow as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::ToUint24Overflow(decoded))
+                return Ok(IUniversalRouterErrors::ToUint24Overflow(decoded));
             }
             if let Ok(decoded) =
                 <TransactionDeadlinePassed as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::TransactionDeadlinePassed(decoded))
+                return Ok(IUniversalRouterErrors::TransactionDeadlinePassed(decoded));
             }
             if let Ok(decoded) =
                 <UnableToClaim as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::UnableToClaim(decoded))
+                return Ok(IUniversalRouterErrors::UnableToClaim(decoded));
             }
             if let Ok(decoded) = <UnsafeCast as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::UnsafeCast(decoded))
+                return Ok(IUniversalRouterErrors::UnsafeCast(decoded));
             }
             if let Ok(decoded) =
                 <V2InvalidPath as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V2InvalidPath(decoded))
+                return Ok(IUniversalRouterErrors::V2InvalidPath(decoded));
             }
             if let Ok(decoded) =
                 <V2TooLittleReceived as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V2TooLittleReceived(decoded))
+                return Ok(IUniversalRouterErrors::V2TooLittleReceived(decoded));
             }
             if let Ok(decoded) =
                 <V2TooMuchRequested as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V2TooMuchRequested(decoded))
+                return Ok(IUniversalRouterErrors::V2TooMuchRequested(decoded));
             }
             if let Ok(decoded) =
                 <V3InvalidAmountOut as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V3InvalidAmountOut(decoded))
+                return Ok(IUniversalRouterErrors::V3InvalidAmountOut(decoded));
             }
             if let Ok(decoded) =
                 <V3InvalidCaller as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V3InvalidCaller(decoded))
+                return Ok(IUniversalRouterErrors::V3InvalidCaller(decoded));
             }
             if let Ok(decoded) =
                 <V3InvalidSwap as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V3InvalidSwap(decoded))
+                return Ok(IUniversalRouterErrors::V3InvalidSwap(decoded));
             }
             if let Ok(decoded) =
                 <V3TooLittleReceived as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V3TooLittleReceived(decoded))
+                return Ok(IUniversalRouterErrors::V3TooLittleReceived(decoded));
             }
             if let Ok(decoded) =
                 <V3TooMuchRequested as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterErrors::V3TooMuchRequested(decoded))
+                return Ok(IUniversalRouterErrors::V3TooMuchRequested(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }
@@ -1116,43 +1116,43 @@ pub mod i_universal_router {
             if let Ok(decoded) =
                 <CollectRewardsCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::CollectRewards(decoded))
+                return Ok(IUniversalRouterCalls::CollectRewards(decoded));
             }
             if let Ok(decoded) = <ExecuteCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::Execute(decoded))
+                return Ok(IUniversalRouterCalls::Execute(decoded));
             }
             if let Ok(decoded) =
                 <ExecuteWithCommandsAndInputsCall as ethers_core::abi::AbiDecode>::decode(
                     data.as_ref(),
                 )
             {
-                return Ok(IUniversalRouterCalls::ExecuteWithCommandsAndInputs(decoded))
+                return Ok(IUniversalRouterCalls::ExecuteWithCommandsAndInputs(decoded));
             }
             if let Ok(decoded) =
                 <OnERC1155BatchReceivedCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::OnERC1155BatchReceived(decoded))
+                return Ok(IUniversalRouterCalls::OnERC1155BatchReceived(decoded));
             }
             if let Ok(decoded) =
                 <OnERC1155ReceivedCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::OnERC1155Received(decoded))
+                return Ok(IUniversalRouterCalls::OnERC1155Received(decoded));
             }
             if let Ok(decoded) =
                 <OnERC721ReceivedCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::OnERC721Received(decoded))
+                return Ok(IUniversalRouterCalls::OnERC721Received(decoded));
             }
             if let Ok(decoded) =
                 <SupportsInterfaceCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::SupportsInterface(decoded))
+                return Ok(IUniversalRouterCalls::SupportsInterface(decoded));
             }
             if let Ok(decoded) =
                 <UniswapV3SwapCallbackCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(IUniversalRouterCalls::UniswapV3SwapCallback(decoded))
+                return Ok(IUniversalRouterCalls::UniswapV3SwapCallback(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }

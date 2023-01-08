@@ -195,27 +195,27 @@ pub mod i_swap_router {
             if let Ok(decoded) =
                 <ExactInputCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactInput(decoded))
+                return Ok(ISwapRouterCalls::ExactInput(decoded));
             }
             if let Ok(decoded) =
                 <ExactInputSingleCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactInputSingle(decoded))
+                return Ok(ISwapRouterCalls::ExactInputSingle(decoded));
             }
             if let Ok(decoded) =
                 <ExactOutputCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactOutput(decoded))
+                return Ok(ISwapRouterCalls::ExactOutput(decoded));
             }
             if let Ok(decoded) =
                 <ExactOutputSingleCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::ExactOutputSingle(decoded))
+                return Ok(ISwapRouterCalls::ExactOutputSingle(decoded));
             }
             if let Ok(decoded) =
                 <UniswapV3SwapCallbackCall as ethers_core::abi::AbiDecode>::decode(data.as_ref())
             {
-                return Ok(ISwapRouterCalls::UniswapV3SwapCallback(decoded))
+                return Ok(ISwapRouterCalls::UniswapV3SwapCallback(decoded));
             }
             Err(ethers_core::abi::Error::InvalidData.into())
         }
