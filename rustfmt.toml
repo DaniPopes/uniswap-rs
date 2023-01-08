@@ -5,4 +5,5 @@ use_field_init_shorthand = true
 imports_granularity = "Crate"
 wrap_comments = true
 comment_width = 100
-ignore = ["src/contracts/bindings"]
+# TODO: enable on next ethers release
+# ignore = ["src/contracts/bindings"]
