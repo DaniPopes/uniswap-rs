@@ -241,7 +241,7 @@ impl<M: Middleware> Router<M> {
                 if from_native {
                     router
                         .swap_eth_for_exact_tokens(amount_out, path, to, deadline)
-                        .value(amount_out)
+                        .value(amount_in_max)
                 } else if to_native {
                     router.swap_tokens_for_exact_eth(amount_out, amount_in_max, path, to, deadline)
                 } else {
