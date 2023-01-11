@@ -8,7 +8,7 @@ type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
 contract_struct! {
-    /// Represents a UniswapV3 liquidity pool, composed of 2 different ERC20 tokens.
+    /// A Uniswap V3 liquidity pool, composed of 2 different ERC20 tokens.
     pub struct Pool<M> {
         /// The pool contract.
         contract: IUniswapV3Pool<M>,

@@ -17,7 +17,7 @@ use crate::protocol::ProtocolType;
 use ethers_core::types::Chain;
 
 contract_struct! {
-    /// Represents a UniswapV2 router.
+    /// A UniswapV2 router.
     pub struct Router<M> {
         /// The router contract.
         contract: IUniswapV2Router02<M>,

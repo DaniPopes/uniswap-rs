@@ -41,7 +41,7 @@ macro_rules! add_command_fns {
 }
 
 contract_struct! {
-    /// Represents a UniversalRouter router.
+    /// A Universal Router.
     ///
     /// # Example
     ///

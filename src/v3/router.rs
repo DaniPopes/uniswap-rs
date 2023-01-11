@@ -2,12 +2,12 @@
 
 use crate::contracts::bindings::i_swap_router::*;
 use ethers_contract::builders::ContractCall;
-use ethers_core::types::{Address, Bytes, I256, U256};
+use ethers_core::types::{Address, U256};
 use ethers_providers::Middleware;
 use std::sync::Arc;
 
 contract_struct! {
-    /// Represents a UniswapV3 SwapRouter.
+    /// A Uniswap V3 swap router.
     pub struct Router<M> {
         /// The router contract.
         contract: ISwapRouter<M>,
@@ -43,16 +43,5 @@ impl<M: Middleware> Router<M> {
         let swap_router = self.contract();
 
         swap_router.exact_output_single(params)
-    }
-
-    pub fn uniswap_v3_swap_callback(
-        &self,
-        amount_0_delta: I256,
-        amount_1_delta: I256,
-        data: Bytes,
-    ) -> ContractCall<M, ()> {
-        let swap_router = self.contract();
-
-        swap_router.uniswap_v3_swap_callback(amount_0_delta, amount_1_delta, data)
     }
 }

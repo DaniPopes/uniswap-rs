@@ -13,13 +13,14 @@ use ethers_core::types::{Address, Chain, H256, U256};
 use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
-/// Represents an automated market maker, a protocol that facilitates peer-to-peer market making and
-/// swapping of ERC-20 tokens on the Ethereum blockchain.
+/// An Uniswap V2 or V3 protocol.
+///
+/// For Universal Router, see [UniversalRouter][crate::universal_router::UniversalRouter].
 pub enum Protocol<M> {
-    /// A UniswapV2 protocol.
+    /// A Uniswap V2 protocol.
     V2(V2Protocol<M>),
 
-    /// A UniswapV3 protocol. WIP.
+    /// A Uniswap V3 protocol. Work in progress.
     V3,
 }
 

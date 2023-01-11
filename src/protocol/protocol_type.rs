@@ -5,7 +5,7 @@ use std::fmt;
 #[cfg(feature = "addresses")]
 use crate::contracts::addresses::{address, try_address};
 
-/// Represents a type of protocol that is, or is a fork of, Uniswap v2 or v3.
+/// A type of protocol that is, or is a fork of, Uniswap V2 or V3.
 #[derive(Clone, Copy, Debug, Default, Hash, PartialEq, Eq)]
 #[cfg_attr(
     feature = "serde",
@@ -142,7 +142,7 @@ impl ProtocolType {
         }
     }
 
-    /// Returns whether the protocol is, or is a fork of, UniswapV2.
+    /// Returns whether the protocol is, or is a fork of, Uniswap V2.
     pub const fn is_v2(&self) -> bool {
         use ProtocolType::*;
         match self {
@@ -152,7 +152,7 @@ impl ProtocolType {
         }
     }
 
-    /// Returns whether the protocol is, or is a fork of, UniswapV3.
+    /// Returns whether the protocol is, or is a fork of, Uniswap V3.
     pub const fn is_v3(&self) -> bool {
         !self.is_v2()
     }

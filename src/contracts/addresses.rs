@@ -1,6 +1,6 @@
-//! Contains many useful smart contract addresses. Modified from [`addressbook`].
+//! Contains many useful smart contract addresses. Modified from [`ethers-addressbook`].
 //!
-//! [`addressbook`]: https://github.com/gakonst/ethers-rs/blob/master/ethers-addressbook
+//! [`ethers-addressbook`]: https://github.com/gakonst/ethers-rs/blob/master/ethers-addressbook
 //!
 //! ## Definitions
 //!
@@ -18,12 +18,11 @@
 //!
 //! ## Sources
 //!
-//! - UniswapV2
+//! - Uniswap V2
 //!   - Factory: <https://docs.uniswap.org/protocol/V2/reference/smart-contracts/factory>
 //!   - Router: <https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02>
-//! - UniswapV3
-//!   - V3: <https://docs.uniswap.org/protocol/reference/deployments>
-//!   - UniversalRouter: <https://github.com/Uniswap/universal-router/tree/main/deploy-addresses>
+//! - Uniswap V3: <https://docs.uniswap.org/protocol/reference/deployments>
+//! - Universal Router: <https://github.com/Uniswap/universal-router/tree/main/deploy-addresses>
 //! - Sushiswap: <https://docs.sushi.com/docs/Developers/Deployment%20Addresses>
 //! - Quickswap
 //!   - Factory: <https://docs.quickswap.exchange/reference/smart-contracts/01-factory>

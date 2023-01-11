@@ -5,7 +5,7 @@ use ethers_providers::Middleware;
 use std::sync::Arc;
 
 contract_struct! {
-    /// Represents a UniswapV2 factory.
+    /// A Uniswap V2 factory.
     pub struct Factory<M> {
         /// The factory contract.
         contract: IUniswapV2Factory<M>,

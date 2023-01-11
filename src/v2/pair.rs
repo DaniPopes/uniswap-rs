@@ -14,7 +14,7 @@ type Tokens = (Address, Address);
 type Reserves = (u128, u128, u32);
 
 contract_struct! {
-    /// Represents a UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
+    /// A UniswapV2 liquidity pair, composed of 2 different ERC20 tokens.
     pub struct Pair<M> {
         /// The pair contract.
         contract: IUniswapV2Pair<M>,

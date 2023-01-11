@@ -11,7 +11,9 @@ use ethers_core::{
 use ethers_providers::Middleware;
 use std::cmp::Ordering;
 
-/// The UniswapV2 library refactored from the official [@Uniswap/v2-periphery].
+/// The Uniswap V2 library, ported to Rust from Solidity.
+///
+/// See the original code [@Uniswap/v2-periphery].
 ///
 /// [@Uniswap/v2-periphery]: https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol
 pub struct Library;

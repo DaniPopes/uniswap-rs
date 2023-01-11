@@ -5,7 +5,7 @@ use ethers_core::types::{Address, Chain, H256, U256};
 use ethers_providers::Middleware;
 use std::{fmt, sync::Arc};
 
-/// A UniswapV2 protocol.
+/// A Uniswap V2 protocol implementation.
 pub struct Protocol<M> {
     /// The liquidity pair factory.
     factory: Factory<M>,
