@@ -13,9 +13,9 @@ mod macros;
 mod common;
 mod dex;
 mod protocol;
-mod universal_router;
 
 pub mod contracts;
+pub mod universal_router;
 pub mod v2;
 pub mod v3;
 

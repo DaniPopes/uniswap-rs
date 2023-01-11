@@ -1,4 +1,4 @@
-//! UniswapV2
+//! The [Uniswap V2 protocol](https://docs.uniswap.org/contracts/v2/overview).
 
 mod factory;
 mod library;

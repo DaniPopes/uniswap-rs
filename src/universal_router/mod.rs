@@ -1,3 +1,5 @@
+//! The Uniswap [Universal Router](https://docs.uniswap.org/contracts/universal-router/overview).
+
 mod command;
 pub use command::Command;
 
@@ -17,7 +19,7 @@ use ethers_providers::Middleware;
 use std::{mem, sync::Arc};
 
 #[cfg(feature = "addresses")]
-use crate::protocol::ProtocolType;
+use crate::contracts::addresses::try_address;
 #[cfg(feature = "addresses")]
 use ethers_core::types::Chain;
 
@@ -94,8 +96,8 @@ impl<M: Middleware> UniversalRouter<M> {
     ///
     /// [addressbook]: crate::contracts::addresses
     #[cfg(feature = "addresses")]
-    pub fn new_with_chain(client: Arc<M>, chain: Chain, protocol: ProtocolType) -> Option<Self> {
-        protocol.try_addresses(chain).1.map(|address| Self::new(client, address))
+    pub fn new_with_chain(client: Arc<M>, chain: Chain) -> Option<Self> {
+        try_address("UniversalRouter", chain).map(|address| Self::new(client, address))
     }
 
     /// Reserves capacity for at least additional more elements to be inserted.
