@@ -34,7 +34,7 @@ impl<M> Factory<M> {
 
     /// Returns the factory's chain.
     pub fn chain(&self) -> Option<Chain> {
-        self.chain.clone()
+        self.chain
     }
 
     /// Sets the factory's chain.
