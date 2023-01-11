@@ -32,10 +32,14 @@ impl<M> Factory<M> {
         self.protocol.pair_code_hash(self.chain.or(chain))
     }
 
+    /// Returns the factory's chain.
+    pub fn chain(&self) -> Option<Chain> {
+        self.chain.clone()
+    }
+
     /// Sets the factory's chain.
-    pub fn set_chain(&mut self, chain: Chain) -> &mut Self {
-        self.chain = Some(chain);
-        self
+    pub fn set_chain(&mut self, chain: Chain) {
+        self.chain = Some(chain)
     }
 }
 

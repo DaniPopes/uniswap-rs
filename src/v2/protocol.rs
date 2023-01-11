@@ -56,9 +56,22 @@ impl<M: Middleware> Protocol<M> {
         self.factory.client()
     }
 
+    /// Returns the protocol's chain.
+    #[inline(always)]
+    pub fn chain(&self) -> Option<Chain> {
+        self.factory.chain()
+    }
+
+    /// Sets the protocol's chain.
+    #[inline(always)]
+    pub fn set_chain(&mut self, chain: Chain) {
+        self.factory.set_chain(chain);
+    }
+
     /* ----------------------------------------- Factory ---------------------------------------- */
 
-    /// Returns the factory.
+    /// Returns a reference to the factory.
+    #[inline(always)]
     pub fn factory(&self) -> &Factory<M> {
         &self.factory
     }

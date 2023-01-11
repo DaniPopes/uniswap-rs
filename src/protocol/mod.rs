@@ -5,7 +5,7 @@ pub use protocol_type::*;
 
 use crate::{
     errors::Result,
-    v2::{Factory as V2Factory, Pair as V2Pair, Protocol as V2Protocol, Router as V2Router},
+    v2::{Pair as V2Pair, Protocol as V2Protocol},
     Amount,
 };
 use ethers_contract::builders::ContractCall;
@@ -72,18 +72,66 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
+    /// Returns a reference to the wrapped [V2Protocol].
+    pub fn as_v2(&self) -> Option<&V2Protocol<M>> {
+        match self {
+            Self::V2(v2) => Some(v2),
+            Self::V3 => None,
+        }
+    }
+
+    /// Returns a mutable reference to the wrapped [V2Protocol].
+    pub fn as_v2_mut(&mut self) -> Option<&mut V2Protocol<M>> {
+        match self {
+            Self::V2(v2) => Some(v2),
+            Self::V3 => None,
+        }
+    }
+
+    /// Returns the wrapped [V2Protocol].
+    pub fn into_v2(self) -> Option<V2Protocol<M>> {
+        match self {
+            Self::V2(v2) => Some(v2),
+            Self::V3 => None,
+        }
+    }
+
+    /// Returns a reference to the wrapped V3Protocol.
+    pub fn as_v3(&self) -> Option<()> {
+        match self {
+            Self::V2(_) => None,
+            Self::V3 => Some(()),
+        }
+    }
+
+    /// Returns a mutable reference to the wrapped V3Protocol.
+    pub fn as_v3_mut(&mut self) -> Option<()> {
+        match self {
+            Self::V2(_) => None,
+            Self::V3 => Some(()),
+        }
+    }
+
+    /// Returns the wrapped V3Protocol.
+    pub fn into_v3(self) -> Option<()> {
+        match self {
+            Self::V2(_) => None,
+            Self::V3 => Some(()),
+        }
+    }
+
     /* ----------------------------------------- Factory ---------------------------------------- */
 
-    /// Returns a reference to the factory.
+    /// The factory's address.
     #[inline(always)]
-    pub fn factory(&self) -> &V2Factory<M> {
+    pub fn factory_address(&self) -> Address {
         match self {
-            Self::V2(p) => p.factory(),
+            Self::V2(p) => p.factory().address(),
             Self::V3 => todo_v3(),
         }
     }
 
-    /// The protocol's `pair_codehash` method.
+    /// The factory's `pair_codehash` method.
     #[inline(always)]
     pub fn pair_codehash(&self, chain: Option<Chain>) -> H256 {
         match self {
@@ -92,7 +140,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The protocol's `create_pair` method.
+    /// The factory's `create_pair` method.
     #[inline(always)]
     pub fn create_pair(&self, token_a: Address, token_b: Address) -> ContractCall<M, Address> {
         match self {
@@ -101,7 +149,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The protocol's `pair_for` method.
+    /// The factory's `pair_for` method.
     #[inline(always)]
     pub fn pair_for(&self, token_a: Address, token_b: Address) -> V2Pair<M> {
         match self {
@@ -112,18 +160,18 @@ impl<M: Middleware> Protocol<M> {
 
     /* ----------------------------------------- Router ----------------------------------------- */
 
-    /// Returns a reference to the router.
+    /// The router's address.
     #[inline(always)]
-    pub fn router(&self) -> &V2Router<M> {
+    pub fn router_address(&self) -> Address {
         match self {
-            Self::V2(p) => p.router(),
+            Self::V2(p) => p.router().address(),
             Self::V3 => todo_v3(),
         }
     }
 
-    /// The protocol's `add_liquidity` method.
+    /// The router's `add_liquidity` method.
     #[inline(always)]
-    pub async fn add_liquidity(
+    pub fn add_liquidity(
         &self,
         token_a: Address,
         token_b: Address,
@@ -149,9 +197,9 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The protocol's `remove_liquidity` method.
+    /// The router's `remove_liquidity` method.
     #[inline(always)]
-    pub async fn remove_liquidity(
+    pub fn remove_liquidity(
         &self,
         token_a: Address,
         token_b: Address,
@@ -175,7 +223,7 @@ impl<M: Middleware> Protocol<M> {
         }
     }
 
-    /// The protocol's `swap` method.
+    /// The router's `swap` method.
     #[inline(always)]
     pub async fn swap(
         &self,

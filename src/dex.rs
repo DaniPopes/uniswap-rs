@@ -2,7 +2,7 @@ use crate::{
     contracts::bindings::iweth::IWETH,
     errors::{Error, Result},
     utils::*,
-    v2::{Factory, Pair, Router},
+    v2::Pair,
     Amount, Protocol, ProtocolType,
 };
 use ethers_contract::builders::ContractCall;
@@ -64,9 +64,9 @@ impl<M: Middleware> Dex<M> {
 
     /* ----------------------------------------- Factory ---------------------------------------- */
 
-    /// Returns the factory.
-    pub fn factory(&self) -> &Factory<M> {
-        self.protocol.factory()
+    /// The factory's address.
+    pub fn factory_address(&self) -> Address {
+        self.protocol.router_address()
     }
 
     /// Returns the contract call for creating a liquidity pair between two tokens.
@@ -81,13 +81,13 @@ impl<M: Middleware> Dex<M> {
 
     /* ----------------------------------------- Router ----------------------------------------- */
 
-    /// Returns the router.
-    pub fn router(&self) -> &Router<M> {
-        self.protocol.router()
+    /// The router's address.
+    pub fn router_address(&self) -> Address {
+        self.protocol.router_address()
     }
 
     /// Returns the contract call for adding liquidity to a pair.
-    pub async fn add_liquidity(
+    pub fn add_liquidity(
         &self,
         token_a: Address,
         token_b: Address,
@@ -105,19 +105,16 @@ impl<M: Middleware> Dex<M> {
 
         // TODO: Maths
 
-        let mut call = self
-            .protocol
-            .add_liquidity(
-                token_a,
-                token_b,
-                amount_a_desired,
-                amount_b_desired,
-                amount_a_min,
-                amount_b_min,
-                to,
-                deadline,
-            )
-            .await?;
+        let mut call = self.protocol.add_liquidity(
+            token_a,
+            token_b,
+            amount_a_desired,
+            amount_b_desired,
+            amount_a_min,
+            amount_b_min,
+            to,
+            deadline,
+        )?;
 
         if let Some(from) = sender {
             call = call.from(from);
@@ -127,7 +124,7 @@ impl<M: Middleware> Dex<M> {
     }
 
     /// Returns the contract call for removing liquidity from a pair.
-    pub async fn remove_liquidity(
+    pub fn remove_liquidity(
         &self,
         token_a: Address,
         token_b: Address,
@@ -144,10 +141,15 @@ impl<M: Middleware> Dex<M> {
 
         // TODO: Maths
 
-        let mut call = self
-            .protocol
-            .remove_liquidity(token_a, token_b, liquidity, amount_a_min, amount_b_min, to, deadline)
-            .await?;
+        let mut call = self.protocol.remove_liquidity(
+            token_a,
+            token_b,
+            liquidity,
+            amount_a_min,
+            amount_b_min,
+            to,
+            deadline,
+        )?;
 
         if let Some(from) = sender {
             call = call.from(from);
@@ -227,9 +229,17 @@ impl<M: Middleware> Dex<M> {
         self.weth
     }
 
-    /// Sets the wrapped native token address by calling the WETH() method on the router.
+    /// Sets the wrapped native token address by calling the WETH() method on the V2 router.
+    ///
+    /// Note that this does nothing on a V3 protocol.
     pub async fn set_weth(&mut self) -> Result<&mut Self> {
-        self.weth = Some(self.protocol.router().contract().weth().call().await?);
+        match &self.protocol {
+            Protocol::V2(v2) => {
+                let weth = v2.router().contract().weth().call().await?;
+                self.weth = Some(weth);
+            }
+            Protocol::V3 => {}
+        };
 
         Ok(self)
     }
@@ -439,8 +449,13 @@ mod tests {
         let path_pre =
             vec![dex.weth.unwrap(), "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48".parse().unwrap()];
 
-        let amounts_out: Vec<U256> =
-            V2Library::get_amounts_out(dex.factory(), amount_in_pre, &path_pre).await.unwrap();
+        let amounts_out = V2Library::get_amounts_out(
+            dex.protocol().as_v2().unwrap().factory(),
+            amount_in_pre,
+            &path_pre,
+        )
+        .await
+        .unwrap();
 
         let contract_call = dex.swap(amount, 0.0, &path_pre, None, None).await.unwrap();
 
@@ -464,8 +479,13 @@ mod tests {
         let path_pre =
             vec![dex.weth.unwrap(), "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48".parse().unwrap()];
 
-        let amounts_out =
-            V2Library::get_amounts_out(dex.factory(), amount_in_pre, &path_pre).await.unwrap();
+        let amounts_out = V2Library::get_amounts_out(
+            dex.protocol().as_v2().unwrap().factory(),
+            amount_in_pre,
+            &path_pre,
+        )
+        .await
+        .unwrap();
 
         let amount = Amount::ExactIn(amount_in_pre);
         for i in 2..=10 {
