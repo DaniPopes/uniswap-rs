@@ -22,13 +22,10 @@ async fn main() -> eyre::Result<()> {
     let usdc = address("USDC", chain);
 
     // instantiate a new router
-    let mut router = {
-        let address = Address::repeat_byte(0x11);
-        UniversalRouter::new(client, address)
-    };
+    let mut router = UniversalRouter::new_with_chain(client.clone(), chain).unwrap();
 
     // construct the call
-    let recipient = Address::repeat_byte(0x33);
+    let recipient = client.default_sender().unwrap();
     let value = U256::from(5) * U256::exp10(16); // 0.05 ETH
     let deadline = Some(300);
     let swap_call = router
