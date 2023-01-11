@@ -19,15 +19,19 @@ pub mod contracts;
 pub mod v2;
 pub mod v3;
 
-pub use common::*;
-pub use dex::*;
-pub use protocol::*;
+pub use common::{constants, errors, utils, Amount, CallExt, CallResult, Erc20};
+pub use constants::NATIVE_ADDRESS;
+pub use dex::Dex;
+pub use protocol::{pair_code_hashes, Protocol, ProtocolType};
 
 /// Easy imports of frequently used type definitions and traits.
 #[doc(hidden)]
 pub mod prelude {
     pub use super::{
-        constants::*,
+        common::{Amount, CallExt, CallResult, Erc20},
+        constants::NATIVE_ADDRESS,
+        dex::Dex,
+        protocol::{Protocol, ProtocolType},
         universal_router::{Command, UniversalRouter},
         v2::{
             Factory as V2Factory, Library as V2Library, Pair as V2Pair, Protocol as V2Protocol,
@@ -39,7 +43,7 @@ pub mod prelude {
     #[cfg(feature = "addresses")]
     pub use super::contracts::addresses::{address, contract, try_address, try_contract};
 
-    // convenience re-export of all ethers_* as one module.
+    // convenience re-export of all the imported ethers_* as one module.
     #[doc(hidden)]
     pub mod _ethers {
         pub use ethers_contract::{self as contract, builders::*, *};

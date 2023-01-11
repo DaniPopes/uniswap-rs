@@ -56,6 +56,8 @@ macro_rules! contract_struct {
                 self.$contract.client()
             }
 
+            // TODO: Add client_ref on next ethers release
+
             /// Returns the contract's address.
             #[inline]
             pub fn address(&self) -> ::ethers_core::types::Address {
