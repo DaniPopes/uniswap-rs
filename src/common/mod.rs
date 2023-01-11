@@ -1,6 +1,9 @@
 mod token;
 pub use token::Erc20;
 
+mod call;
+pub use call::{CallExt, CallResult};
+
 pub mod constants;
 pub mod errors;
 pub mod utils;
