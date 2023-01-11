@@ -72,7 +72,6 @@ pub trait CallExt<M>: private::Sealed {
     ///
     /// ```
     /// # use uniswap_rs::prelude::{*, _ethers::{*, abi::ParamType}};
-    /// # use uniswap_rs::ContractCallExt;
     /// # use std::sync::Arc;
     /// # async fn foo<M: Middleware + 'static>(token: Erc20<M>) -> Result<(), Box<dyn std::error::Error>> {
     /// unsafe {
