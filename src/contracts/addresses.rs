@@ -19,9 +19,9 @@
 //! ## Sources
 //!
 //! - Uniswap V2
-//!   - Factory: <https://docs.uniswap.org/protocol/V2/reference/smart-contracts/factory>
-//!   - Router: <https://docs.uniswap.org/protocol/V2/reference/smart-contracts/router-02>
-//! - Uniswap V3: <https://docs.uniswap.org/protocol/reference/deployments>
+//!   - Factory: <https://docs.uniswap.org/contracts/v2/reference/smart-contracts/factory>
+//!   - Router: <https://docs.uniswap.org/contracts/v2/reference/smart-contracts/router-02>
+//! - Uniswap V3: <https://docs.uniswap.org/contracts/v3/reference/deployments>
 //! - Universal Router: <https://github.com/Uniswap/universal-router/tree/main/deploy-addresses>
 //! - Sushiswap: <https://docs.sushi.com/docs/Developers/Deployment%20Addresses>
 //! - Quickswap
